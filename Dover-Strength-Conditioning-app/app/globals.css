@@ -1,0 +1,53 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #f6f3ee;
+  --surface: #ffffff;
+  --fg: #1d1a17;
+  --muted: #716a61;
+  --line: rgba(29, 26, 23, 0.14);
+  --accent: #c6531c;
+  --accent-ink: #ffffff;
+  --good: #2c7a47;
+  --good-bg: rgba(44, 122, 71, 0.12);
+  --warning: #9a6b0a;
+  --warning-bg: rgba(154, 107, 10, 0.14);
+  --danger: #b8311f;
+  --danger-bg: rgba(184, 49, 31, 0.12);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #15120f;
+    --surface: #201b16;
+    --fg: #f3ede4;
+    --muted: #aea294;
+    --line: rgba(243, 237, 228, 0.14);
+    --accent: #e8793a;
+    --accent-ink: #1a1108;
+    --good: #52b97b;
+    --good-bg: rgba(82, 185, 123, 0.16);
+    --warning: #d8a53f;
+    --warning-bg: rgba(216, 165, 63, 0.16);
+    --danger: #e05d4a;
+    --danger-bg: rgba(224, 93, 74, 0.16);
+  }
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}

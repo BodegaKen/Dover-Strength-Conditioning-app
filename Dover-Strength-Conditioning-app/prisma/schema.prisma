@@ -1,0 +1,75 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Role {
+  PLAYER
+  COACH
+}
+
+enum PullupTrack {
+  BODYWEIGHT
+  WEIGHTED
+}
+
+model User {
+  id           String    @id @default(cuid())
+  username     String    @unique
+  pinHash      String
+  name         String
+  role         Role      @default(PLAYER)
+  position     String?
+  bodyweight   Float?
+  pullupTrack  PullupTrack @default(BODYWEIGHT)
+  active       Boolean   @default(true)
+  mustChangePin Boolean  @default(true)
+  createdAt    DateTime  @default(now())
+
+  tests        TestEntry[]
+  sessions     SessionEntry[]
+
+  @@index([active])
+}
+
+model TestEntry {
+  id         String   @id @default(cuid())
+  athleteId  String
+  athlete    User     @relation(fields: [athleteId], references: [id], onDelete: Cascade)
+  lift       String   // "squat" | "bench" | "deadlift" | "ohp" | "pullup"
+  fiveRM     Float
+  e1RM       Float
+  date       String   // ISO yyyy-mm-dd
+  enteredAt  DateTime @default(now())
+
+  @@index([athleteId, lift])
+}
+
+model SessionEntry {
+  id          String   @id @default(cuid())
+  athleteId   String
+  athlete     User     @relation(fields: [athleteId], references: [id], onDelete: Cascade)
+  type        String   // "lift" | "practice" | "game"
+  date        String   // ISO yyyy-mm-dd
+  rpe         Int
+  durationMin Float
+  load        Float
+  enteredAt   DateTime @default(now())
+
+  @@index([athleteId, date])
+}
+
+// Singleton row (id always "current") the coach updates to say which
+// phase/week the whole team is in right now; drives every player's
+// "This Week" prescription lookup.
+model ProgramState {
+  id             String   @id @default("current")
+  trackKey       String   // e.g. "phase1", "bridge_2_3", "phase5"
+  week           Int      // week number within that track; for phase5, "week of season"
+  updatedAt      DateTime @updatedAt
+}

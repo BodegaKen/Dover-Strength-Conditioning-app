@@ -1,0 +1,1738 @@
+{
+  "liftPrescriptionProgram": {
+    "phases": [
+      {
+        "key": "phase1",
+        "name": "Phase 1 - Winter Program",
+        "notEncoded": [
+          "Novice/Technique Onboarding Track (alternate 3-week RPE 6-7 dumbbell/goblet/bodyweight track for true first-timers and flagged athletes) - coach judgment / written program",
+          "Multi-Sport Maintenance Track (2-day/week version for winter-sport athletes; same intensity as standard track but accessory circuit cut) - coach judgment / written program",
+          "Auto-regulation (drop load 5-10% if prescribed reps aren't achievable) - runtime rule, not fixed program data",
+          "Position-based load bias (linemen/skill-position +/-2.5% band around the prescribed %) - coach judgment, not encoded as a separate numeric track"
+        ],
+        "weeks": [
+          {
+            "week": 1,
+            "label": "Testing Week",
+            "lifts": {
+              "squat": {
+                "sets": 1,
+                "reps": 5,
+                "pctE1RM": null,
+                "mode": "test",
+                "note": "Work up to a heavy 5RM. Convert to e1RM (5RM / 0.87, nearest 2.5 lb) immediately after; every later % in this phase is of this e1RM."
+              },
+              "bench": {
+                "sets": 1,
+                "reps": 5,
+                "pctE1RM": null,
+                "mode": "test",
+                "note": "Work up to a heavy 5RM. Same e1RM conversion as squat."
+              },
+              "deadlift": {
+                "sets": 1,
+                "reps": 5,
+                "pctE1RM": null,
+                "mode": "test",
+                "note": "Work up to a heavy 5RM. Same e1RM conversion as squat."
+              },
+              "ohp": {
+                "sets": 1,
+                "reps": 5,
+                "pctE1RM": null,
+                "mode": "test",
+                "note": "Work up to a heavy 5RM (Day 4/Friday). Same e1RM conversion. Missed test is picked up at start of Week 2 Day C."
+              },
+              "pullup": {
+                "mode": "test",
+                "scheme": "Max strict bodyweight reps (no added weight/assistance) after 2 easy warm-up sets. 8+ reps -> rest 5 min, then test a weighted 5RM (belt/vest added weight) = Weighted-track baseline. Under 8 reps -> that rep count is the Bodyweight/Assisted-track baseline (rep-based progression, no weight). Cannot do a bodyweight pull-up -> test lat pulldown/assisted pull-up 5RM instead, same rep-based track.",
+                "note": null
+              }
+            }
+          },
+          {
+            "week": 2,
+            "label": "Week 2",
+            "lifts": {
+              "squat": {
+                "sets": 4,
+                "reps": 5,
+                "pctE1RM": 75,
+                "mode": "load",
+                "note": "Reintroduction - technique check under load",
+                "backoff": {
+                  "sets": 1,
+                  "reps": "10-12",
+                  "pctE1RM": "65-70"
+                }
+              },
+              "bench": {
+                "sets": 4,
+                "reps": 5,
+                "pctE1RM": 75,
+                "mode": "load",
+                "note": "Reintroduction - technique check under load",
+                "backoff": {
+                  "sets": 1,
+                  "reps": "10-12",
+                  "pctE1RM": "65-70"
+                }
+              },
+              "deadlift": {
+                "sets": 4,
+                "reps": 5,
+                "pctE1RM": 75,
+                "mode": "load",
+                "note": "Reintroduction - technique check under load Alternates with Romanian Deadlift every other week; on RDL weeks the % is a ceiling, not a target.",
+                "backoff": {
+                  "sets": 1,
+                  "reps": "10-12",
+                  "pctE1RM": "65-70"
+                }
+              },
+              "ohp": {
+                "sets": 3,
+                "reps": 5,
+                "pctE1RM": 75,
+                "mode": "load",
+                "note": "Day D accessory station, dosed off the tested OHP e1RM, not found-weight."
+              },
+              "pullup": {
+                "mode": "weighted|bodyweight",
+                "scheme": "Weighted track: 4x5 @ 75% of tested weighted 5RM e1RM (same weekly exceptions as other main lifts), back-off = 10-12 bodyweight-only reps. Bodyweight/Assisted track: 4 sets x max reps (after 2 warm-up sets of 3-5), progressing toward 8+ reps to graduate onto the Weighted track; no back-off set.",
+                "note": "Reintroduction - technique check under load"
+              }
+            }
+          },
+          {
+            "week": 3,
+            "label": "Week 3",
+            "lifts": {
+              "squat": {
+                "sets": 4,
+                "reps": 5,
+                "pctE1RM": 80,
+                "mode": "load",
+                "note": null,
+                "backoff": {
+                  "sets": 1,
+                  "reps": "10-12",
+                  "pctE1RM": "65-70"
+                }
+              },
+              "bench": {
+                "sets": 4,
+                "reps": 5,
+                "pctE1RM": 80,
+                "mode": "load",
+                "note": null,
+                "backoff": {
+                  "sets": 1,
+                  "reps": "10-12",
+                  "pctE1RM": "65-70"
+                }
+              },
+              "deadlift": {
+                "sets": 4,
+                "reps": 5,
+                "pctE1RM": 80,
+                "mode": "load",
+                "note": " Alternates with Romanian Deadlift every other week; on RDL weeks the % is a ceiling, not a target.",
+                "backoff": {
+                  "sets": 1,
+                  "reps": "10-12",
+                  "pctE1RM": "65-70"
+                }
+              },
+              "ohp": {
+                "sets": 3,
+                "reps": 5,
+                "pctE1RM": 80,
+                "mode": "load",
+                "note": "Day D accessory station, dosed off the tested OHP e1RM, not found-weight."
+              },
+              "pullup": {
+                "mode": "weighted|bodyweight",
+                "scheme": "Weighted track: 4x5 @ 80% of tested weighted 5RM e1RM (same weekly exceptions as other main lifts), back-off = 10-12 bodyweight-only reps. Bodyweight/Assisted track: 4 sets x max reps (after 2 warm-up sets of 3-5), progressing toward 8+ reps to graduate onto the Weighted track; no back-off set.",
+                "note": null
+              }
+            }
+          },
+          {
+            "week": 4,
+            "label": "Week 4",
+            "lifts": {
+              "squat": {
+                "sets": 3,
+                "reps": 5,
+                "pctE1RM": 82.5,
+                "mode": "load",
+                "note": "Scheduled volume dip (3x5, not 4x5) before Week 5's peak",
+                "backoff": {
+                  "sets": 1,
+                  "reps": "10-12",
+                  "pctE1RM": "65-70"
+                }
+              },
+              "bench": {
+                "sets": 3,
+                "reps": 5,
+                "pctE1RM": 82.5,
+                "mode": "load",
+                "note": "Scheduled volume dip (3x5, not 4x5) before Week 5's peak",
+                "backoff": {
+                  "sets": 1,
+                  "reps": "10-12",
+                  "pctE1RM": "65-70"
+                }
+              },
+              "deadlift": {
+                "sets": 3,
+                "reps": 5,
+                "pctE1RM": 82.5,
+                "mode": "load",
+                "note": "Scheduled volume dip (3x5, not 4x5) before Week 5's peak Alternates with Romanian Deadlift every other week; on RDL weeks the % is a ceiling, not a target.",
+                "backoff": {
+                  "sets": 1,
+                  "reps": "10-12",
+                  "pctE1RM": "65-70"
+                }
+              },
+              "ohp": {
+                "sets": 3,
+                "reps": 5,
+                "pctE1RM": 82.5,
+                "mode": "load",
+                "note": "Day D accessory station, dosed off the tested OHP e1RM, not found-weight."
+              },
+              "pullup": {
+                "mode": "weighted|bodyweight",
+                "scheme": "Weighted track: 3x5 @ 82.5% of tested weighted 5RM e1RM (same weekly exceptions as other main lifts), back-off = 10-12 bodyweight-only reps. Bodyweight/Assisted track: 4 sets x max reps (after 2 warm-up sets of 3-5), progressing toward 8+ reps to graduate onto the Weighted track; no back-off set.",
+                "note": "Scheduled volume dip (3x5, not 4x5) before Week 5's peak"
+              }
+            }
+          },
+          {
+            "week": 5,
+            "label": "Week 5",
+            "lifts": {
+              "squat": {
+                "sets": 4,
+                "reps": 4,
+                "pctE1RM": 85,
+                "mode": "load",
+                "note": "Peak week: 4x4 (not 4x5) at 85% e1RM, per Prilepin's Chart reasoning",
+                "backoff": {
+                  "sets": 1,
+                  "reps": "10-12",
+                  "pctE1RM": "65-70"
+                }
+              },
+              "bench": {
+                "sets": 4,
+                "reps": 4,
+                "pctE1RM": 85,
+                "mode": "load",
+                "note": "Peak week: 4x4 (not 4x5) at 85% e1RM, per Prilepin's Chart reasoning",
+                "backoff": {
+                  "sets": 1,
+                  "reps": "10-12",
+                  "pctE1RM": "65-70"
+                }
+              },
+              "deadlift": {
+                "sets": 4,
+                "reps": 4,
+                "pctE1RM": 85,
+                "mode": "load",
+                "note": "Peak week: 4x4 (not 4x5) at 85% e1RM, per Prilepin's Chart reasoning Alternates with Romanian Deadlift every other week; on RDL weeks the % is a ceiling, not a target.",
+                "backoff": {
+                  "sets": 1,
+                  "reps": "10-12",
+                  "pctE1RM": "65-70"
+                }
+              },
+              "ohp": {
+                "sets": 3,
+                "reps": 5,
+                "pctE1RM": 85,
+                "mode": "load",
+                "note": "Day D accessory station, dosed off the tested OHP e1RM, not found-weight. OHP accessory (Day D) is always 3 sets (not 4), at the same weekly %. The document does not explicitly state whether OHP's rep count also drops to 4 in Weeks 5/9 the way the main lifts' does -- encoded here at 5 reps unchanged, flagged as an ambiguity."
+              },
+              "pullup": {
+                "mode": "weighted|bodyweight",
+                "scheme": "Weighted track: 4x4 @ 85% of tested weighted 5RM e1RM (same weekly exceptions as other main lifts), back-off = 10-12 bodyweight-only reps. Bodyweight/Assisted track: 4 sets x max reps (after 2 warm-up sets of 3-5), progressing toward 8+ reps to graduate onto the Weighted track; no back-off set.",
+                "note": "Peak week: 4x4 (not 4x5) at 85% e1RM, per Prilepin's Chart reasoning"
+              }
+            }
+          },
+          {
+            "week": 6,
+            "label": "Retest Week",
+            "lifts": {
+              "squat": {
+                "sets": 1,
+                "reps": 5,
+                "pctE1RM": null,
+                "mode": "retest",
+                "note": "Re-establish 5RM; convert to new e1RM. Resets baseline for Weeks 7-9."
+              },
+              "bench": {
+                "sets": 1,
+                "reps": 5,
+                "pctE1RM": null,
+                "mode": "retest",
+                "note": "Re-establish 5RM; convert to new e1RM."
+              },
+              "deadlift": {
+                "sets": 1,
+                "reps": 5,
+                "pctE1RM": null,
+                "mode": "retest",
+                "note": "Re-establish 5RM; convert to new e1RM."
+              },
+              "ohp": {
+                "sets": 1,
+                "reps": 5,
+                "pctE1RM": null,
+                "mode": "retest",
+                "note": "Re-establish 5RM; convert to new e1RM."
+              },
+              "pullup": {
+                "mode": "retest",
+                "scheme": "Re-test from scratch using the same Testing Week protocol (bodyweight max reps, then weighted 5RM if 8+).",
+                "note": null
+              }
+            }
+          },
+          {
+            "week": 7,
+            "label": "Week 7",
+            "lifts": {
+              "squat": {
+                "sets": 4,
+                "reps": 5,
+                "pctE1RM": 78,
+                "mode": "load",
+                "note": "Slightly conservative restart post-retest, of the new (Week 6) e1RM",
+                "backoff": {
+                  "sets": 1,
+                  "reps": "10-12",
+                  "pctE1RM": "65-70"
+                }
+              },
+              "bench": {
+                "sets": 4,
+                "reps": 5,
+                "pctE1RM": 78,
+                "mode": "load",
+                "note": "Slightly conservative restart post-retest, of the new (Week 6) e1RM",
+                "backoff": {
+                  "sets": 1,
+                  "reps": "10-12",
+                  "pctE1RM": "65-70"
+                }
+              },
+              "deadlift": {
+                "sets": 4,
+                "reps": 5,
+                "pctE1RM": 78,
+                "mode": "load",
+                "note": "Slightly conservative restart post-retest, of the new (Week 6) e1RM Alternates with Romanian Deadlift every other week; on RDL weeks the % is a ceiling, not a target.",
+                "backoff": {
+                  "sets": 1,
+                  "reps": "10-12",
+                  "pctE1RM": "65-70"
+                }
+              },
+              "ohp": {
+                "sets": 3,
+                "reps": 5,
+                "pctE1RM": 78,
+                "mode": "load",
+                "note": "Day D accessory station, dosed off the tested OHP e1RM, not found-weight."
+              },
+              "pullup": {
+                "mode": "weighted|bodyweight",
+                "scheme": "Weighted track: 4x5 @ 78% of tested weighted 5RM e1RM (same weekly exceptions as other main lifts), back-off = 10-12 bodyweight-only reps. Bodyweight/Assisted track: 4 sets x max reps (after 2 warm-up sets of 3-5), progressing toward 8+ reps to graduate onto the Weighted track; no back-off set.",
+                "note": "Slightly conservative restart post-retest, of the new (Week 6) e1RM"
+              }
+            }
+          },
+          {
+            "week": 8,
+            "label": "Week 8",
+            "lifts": {
+              "squat": {
+                "sets": 3,
+                "reps": 5,
+                "pctE1RM": 82,
+                "mode": "load",
+                "note": "Scheduled volume dip (3x5, not 4x5) before Week 9's peak, of new e1RM",
+                "backoff": {
+                  "sets": 1,
+                  "reps": "10-12",
+                  "pctE1RM": "65-70"
+                }
+              },
+              "bench": {
+                "sets": 3,
+                "reps": 5,
+                "pctE1RM": 82,
+                "mode": "load",
+                "note": "Scheduled volume dip (3x5, not 4x5) before Week 9's peak, of new e1RM",
+                "backoff": {
+                  "sets": 1,
+                  "reps": "10-12",
+                  "pctE1RM": "65-70"
+                }
+              },
+              "deadlift": {
+                "sets": 3,
+                "reps": 5,
+                "pctE1RM": 82,
+                "mode": "load",
+                "note": "Scheduled volume dip (3x5, not 4x5) before Week 9's peak, of new e1RM Alternates with Romanian Deadlift every other week; on RDL weeks the % is a ceiling, not a target.",
+                "backoff": {
+                  "sets": 1,
+                  "reps": "10-12",
+                  "pctE1RM": "65-70"
+                }
+              },
+              "ohp": {
+                "sets": 3,
+                "reps": 5,
+                "pctE1RM": 82,
+                "mode": "load",
+                "note": "Day D accessory station, dosed off the tested OHP e1RM, not found-weight."
+              },
+              "pullup": {
+                "mode": "weighted|bodyweight",
+                "scheme": "Weighted track: 3x5 @ 82% of tested weighted 5RM e1RM (same weekly exceptions as other main lifts), back-off = 10-12 bodyweight-only reps. Bodyweight/Assisted track: 4 sets x max reps (after 2 warm-up sets of 3-5), progressing toward 8+ reps to graduate onto the Weighted track; no back-off set.",
+                "note": "Scheduled volume dip (3x5, not 4x5) before Week 9's peak, of new e1RM"
+              }
+            }
+          },
+          {
+            "week": 9,
+            "label": "Week 9",
+            "lifts": {
+              "squat": {
+                "sets": 4,
+                "reps": 4,
+                "pctE1RM": 85,
+                "mode": "load",
+                "note": "Peak week: 4x4 (not 4x5) at 85% of new e1RM. Closes Phase 1; these numbers carry into Phase 2 Testing Week.",
+                "backoff": {
+                  "sets": 1,
+                  "reps": "10-12",
+                  "pctE1RM": "65-70"
+                }
+              },
+              "bench": {
+                "sets": 4,
+                "reps": 4,
+                "pctE1RM": 85,
+                "mode": "load",
+                "note": "Peak week: 4x4 (not 4x5) at 85% of new e1RM. Closes Phase 1; these numbers carry into Phase 2 Testing Week.",
+                "backoff": {
+                  "sets": 1,
+                  "reps": "10-12",
+                  "pctE1RM": "65-70"
+                }
+              },
+              "deadlift": {
+                "sets": 4,
+                "reps": 4,
+                "pctE1RM": 85,
+                "mode": "load",
+                "note": "Peak week: 4x4 (not 4x5) at 85% of new e1RM. Closes Phase 1; these numbers carry into Phase 2 Testing Week. Alternates with Romanian Deadlift every other week; on RDL weeks the % is a ceiling, not a target.",
+                "backoff": {
+                  "sets": 1,
+                  "reps": "10-12",
+                  "pctE1RM": "65-70"
+                }
+              },
+              "ohp": {
+                "sets": 3,
+                "reps": 5,
+                "pctE1RM": 85,
+                "mode": "load",
+                "note": "Day D accessory station, dosed off the tested OHP e1RM, not found-weight. OHP accessory (Day D) is always 3 sets (not 4), at the same weekly %. The document does not explicitly state whether OHP's rep count also drops to 4 in Weeks 5/9 the way the main lifts' does -- encoded here at 5 reps unchanged, flagged as an ambiguity."
+              },
+              "pullup": {
+                "mode": "weighted|bodyweight",
+                "scheme": "Weighted track: 4x4 @ 85% of tested weighted 5RM e1RM (same weekly exceptions as other main lifts), back-off = 10-12 bodyweight-only reps. Bodyweight/Assisted track: 4 sets x max reps (after 2 warm-up sets of 3-5), progressing toward 8+ reps to graduate onto the Weighted track; no back-off set.",
+                "note": "Peak week: 4x4 (not 4x5) at 85% of new e1RM. Closes Phase 1; these numbers carry into Phase 2 Testing Week."
+              }
+            }
+          }
+        ]
+      },
+      {
+        "key": "phase2",
+        "name": "Phase 2 - Spring Program",
+        "notEncoded": [
+          "Multi-Sport Maintenance Track (2-day/week version for spring-sport athletes) - coach judgment / written program",
+          "Auto-regulation (drop 5-10% if load/speed isn't there on a given day) - runtime rule, not fixed program data",
+          "Position-based load/velocity bias (linemen vs skill-position +/-2.5% band and Power Lane emphasis) - coach judgment",
+          "Trap Bar Jump Squat/Shrug prerequisite landing-mechanics gate (unloaded CMJ/MB Scoop Toss substitute for un-gated athletes) - coach judgment"
+        ],
+        "weeks": [
+          {
+            "week": 1,
+            "label": "Testing Week",
+            "lifts": {
+              "squat": {
+                "sets": 1,
+                "reps": 5,
+                "pctE1RM": null,
+                "mode": "test",
+                "note": "Work up to a heavy 5RM (ramped off Phase 1's Week 9 e1RM, not cold). Convert to e1RM immediately."
+              },
+              "bench": {
+                "sets": 1,
+                "reps": 5,
+                "pctE1RM": null,
+                "mode": "test",
+                "note": "Work up to a heavy 5RM."
+              },
+              "deadlift": {
+                "sets": 1,
+                "reps": 5,
+                "pctE1RM": null,
+                "mode": "test",
+                "note": "Work up to a heavy 5RM. Vertical Jump (power marker) is tested same day, before this lift."
+              },
+              "ohp": {
+                "sets": 1,
+                "reps": 5,
+                "pctE1RM": null,
+                "mode": "test",
+                "note": "Work up to a heavy 5RM (Day 4/Friday)."
+              },
+              "pullup": {
+                "mode": "test",
+                "scheme": "Re-tested from scratch using Phase 1's bodyweight-then-weighted protocol (athletes can graduate tracks between phases).",
+                "note": null
+              }
+            }
+          },
+          {
+            "week": 2,
+            "label": "Week 2",
+            "lifts": {
+              "squat": {
+                "sets": 3,
+                "reps": 5,
+                "pctE1RM": 78,
+                "mode": "load",
+                "note": "Fresh off Testing Week - no reintroduction needed",
+                "powerLaneCompanion": "Accompanying Power Lane movement: Trap Bar Jump Squat, 5 sets x 3 reps at a FIXED 30-40% of this lift's e1RM, all phase (not on the climbing Strength Lane table) - separate exercise from the barbell lift itself, dosed for speed not load."
+              },
+              "bench": {
+                "sets": 3,
+                "reps": 5,
+                "pctE1RM": 78,
+                "mode": "load",
+                "note": "Fresh off Testing Week - no reintroduction needed",
+                "powerLaneCAT": {
+                  "sets": 5,
+                  "reps": 3,
+                  "pctE1RM": 50,
+                  "note": "CAT Bench Press - maximal intended bar speed, 50-70% e1RM range. Stays at prescribed % even during Week 5's Strength Lane dip (already submaximal by design)."
+                }
+              },
+              "deadlift": {
+                "sets": 3,
+                "reps": 5,
+                "pctE1RM": 78,
+                "mode": "load",
+                "note": "Fresh off Testing Week - no reintroduction needed Alternates with Romanian Deadlift every other week (% is a ceiling on RDL weeks).",
+                "powerLaneCompanion": "Accompanying Power Lane movement: Trap Bar Jump Shrug, 5 sets x 3 reps at a FIXED 30-40% of this lift's e1RM, all phase (not on the climbing Strength Lane table) - separate exercise from the barbell lift itself, dosed for speed not load."
+              },
+              "ohp": {
+                "sets": 3,
+                "reps": "5-8",
+                "pctE1RM": "70-75 (or RPE 7)",
+                "mode": "fixed",
+                "note": "Day D accessory, FIXED all phase - does NOT climb with the Strength Lane table (fixed after a reviewer caught the climbing version producing a near-maximal 84-86% load inside a 3-round accessory circuit)."
+              },
+              "pullup": {
+                "mode": "weighted|bodyweight",
+                "scheme": "Weighted track: 3 sets x 5 @ 78% of tested weighted e1RM (same Strength Lane table/exceptions as the other main lifts), via Day D, same track-selection logic as Phase 1. Bodyweight/Assisted track: same max-rep structure as Phase 1's Day D.",
+                "note": "Fresh off Testing Week - no reintroduction needed"
+              }
+            }
+          },
+          {
+            "week": 3,
+            "label": "Week 3",
+            "lifts": {
+              "squat": {
+                "sets": 3,
+                "reps": 5,
+                "pctE1RM": 80,
+                "mode": "load",
+                "note": null,
+                "powerLaneCompanion": "Accompanying Power Lane movement: Trap Bar Jump Squat, 5 sets x 3 reps at a FIXED 30-40% of this lift's e1RM, all phase (not on the climbing Strength Lane table) - separate exercise from the barbell lift itself, dosed for speed not load."
+              },
+              "bench": {
+                "sets": 3,
+                "reps": 5,
+                "pctE1RM": 80,
+                "mode": "load",
+                "note": null,
+                "powerLaneCAT": {
+                  "sets": 5,
+                  "reps": 3,
+                  "pctE1RM": 55,
+                  "note": "CAT Bench Press - maximal intended bar speed, 50-70% e1RM range. Stays at prescribed % even during Week 5's Strength Lane dip (already submaximal by design)."
+                }
+              },
+              "deadlift": {
+                "sets": 3,
+                "reps": 5,
+                "pctE1RM": 80,
+                "mode": "load",
+                "note": " Alternates with Romanian Deadlift every other week (% is a ceiling on RDL weeks).",
+                "powerLaneCompanion": "Accompanying Power Lane movement: Trap Bar Jump Shrug, 5 sets x 3 reps at a FIXED 30-40% of this lift's e1RM, all phase (not on the climbing Strength Lane table) - separate exercise from the barbell lift itself, dosed for speed not load."
+              },
+              "ohp": {
+                "sets": 3,
+                "reps": "5-8",
+                "pctE1RM": "70-75 (or RPE 7)",
+                "mode": "fixed",
+                "note": "Day D accessory, FIXED all phase - does NOT climb with the Strength Lane table (fixed after a reviewer caught the climbing version producing a near-maximal 84-86% load inside a 3-round accessory circuit)."
+              },
+              "pullup": {
+                "mode": "weighted|bodyweight",
+                "scheme": "Weighted track: 3 sets x 5 @ 80% of tested weighted e1RM (same Strength Lane table/exceptions as the other main lifts), via Day D, same track-selection logic as Phase 1. Bodyweight/Assisted track: same max-rep structure as Phase 1's Day D.",
+                "note": null
+              }
+            }
+          },
+          {
+            "week": 4,
+            "label": "Week 4",
+            "lifts": {
+              "squat": {
+                "sets": 3,
+                "reps": 4,
+                "pctE1RM": 82,
+                "mode": "load",
+                "note": null,
+                "powerLaneCompanion": "Accompanying Power Lane movement: Trap Bar Jump Squat, 5 sets x 3 reps at a FIXED 30-40% of this lift's e1RM, all phase (not on the climbing Strength Lane table) - separate exercise from the barbell lift itself, dosed for speed not load."
+              },
+              "bench": {
+                "sets": 3,
+                "reps": 4,
+                "pctE1RM": 82,
+                "mode": "load",
+                "note": null,
+                "powerLaneCAT": {
+                  "sets": 5,
+                  "reps": 3,
+                  "pctE1RM": 60,
+                  "note": "CAT Bench Press - maximal intended bar speed, 50-70% e1RM range. Stays at prescribed % even during Week 5's Strength Lane dip (already submaximal by design)."
+                }
+              },
+              "deadlift": {
+                "sets": 3,
+                "reps": 4,
+                "pctE1RM": 82,
+                "mode": "load",
+                "note": " Alternates with Romanian Deadlift every other week (% is a ceiling on RDL weeks).",
+                "powerLaneCompanion": "Accompanying Power Lane movement: Trap Bar Jump Shrug, 5 sets x 3 reps at a FIXED 30-40% of this lift's e1RM, all phase (not on the climbing Strength Lane table) - separate exercise from the barbell lift itself, dosed for speed not load."
+              },
+              "ohp": {
+                "sets": 3,
+                "reps": "5-8",
+                "pctE1RM": "70-75 (or RPE 7)",
+                "mode": "fixed",
+                "note": "Day D accessory, FIXED all phase - does NOT climb with the Strength Lane table (fixed after a reviewer caught the climbing version producing a near-maximal 84-86% load inside a 3-round accessory circuit)."
+              },
+              "pullup": {
+                "mode": "weighted|bodyweight",
+                "scheme": "Weighted track: 3 sets x 4 @ 82% of tested weighted e1RM (same Strength Lane table/exceptions as the other main lifts), via Day D, same track-selection logic as Phase 1. Bodyweight/Assisted track: same max-rep structure as Phase 1's Day D.",
+                "note": null
+              }
+            }
+          },
+          {
+            "week": 5,
+            "label": "Week 5",
+            "lifts": {
+              "squat": {
+                "sets": 3,
+                "reps": 3,
+                "pctE1RM": 78,
+                "mode": "load",
+                "note": "Post-Spring-Break dip: both intensity and volume cut (revised from 84%x4) - reuses Phase 1 Week 7's 'conservative restart' figure for a real 8-day layoff",
+                "powerLaneCompanion": "Accompanying Power Lane movement: Trap Bar Jump Squat, 5 sets x 3 reps at a FIXED 30-40% of this lift's e1RM, all phase (not on the climbing Strength Lane table) - separate exercise from the barbell lift itself, dosed for speed not load."
+              },
+              "bench": {
+                "sets": 3,
+                "reps": 3,
+                "pctE1RM": 78,
+                "mode": "load",
+                "note": "Post-Spring-Break dip: both intensity and volume cut (revised from 84%x4) - reuses Phase 1 Week 7's 'conservative restart' figure for a real 8-day layoff",
+                "powerLaneCAT": {
+                  "sets": 5,
+                  "reps": 3,
+                  "pctE1RM": 65,
+                  "note": "CAT Bench Press - maximal intended bar speed, 50-70% e1RM range. Stays at prescribed % even during Week 5's Strength Lane dip (already submaximal by design)."
+                }
+              },
+              "deadlift": {
+                "sets": 3,
+                "reps": 3,
+                "pctE1RM": 78,
+                "mode": "load",
+                "note": "Post-Spring-Break dip: both intensity and volume cut (revised from 84%x4) - reuses Phase 1 Week 7's 'conservative restart' figure for a real 8-day layoff Alternates with Romanian Deadlift every other week (% is a ceiling on RDL weeks).",
+                "powerLaneCompanion": "Accompanying Power Lane movement: Trap Bar Jump Shrug, 5 sets x 3 reps at a FIXED 30-40% of this lift's e1RM, all phase (not on the climbing Strength Lane table) - separate exercise from the barbell lift itself, dosed for speed not load."
+              },
+              "ohp": {
+                "sets": 3,
+                "reps": "5-8",
+                "pctE1RM": "70-75 (or RPE 7)",
+                "mode": "fixed",
+                "note": "Day D accessory, FIXED all phase - does NOT climb with the Strength Lane table (fixed after a reviewer caught the climbing version producing a near-maximal 84-86% load inside a 3-round accessory circuit)."
+              },
+              "pullup": {
+                "mode": "weighted|bodyweight",
+                "scheme": "Weighted track: 3 sets x 3 @ 78% of tested weighted e1RM (same Strength Lane table/exceptions as the other main lifts), via Day D, same track-selection logic as Phase 1. Bodyweight/Assisted track: same max-rep structure as Phase 1's Day D.",
+                "note": "Post-Spring-Break dip: both intensity and volume cut (revised from 84%x4) - reuses Phase 1 Week 7's 'conservative restart' figure for a real 8-day layoff"
+              }
+            }
+          },
+          {
+            "week": 6,
+            "label": "Week 6",
+            "lifts": {
+              "squat": {
+                "sets": 3,
+                "reps": 3,
+                "pctE1RM": 86,
+                "mode": "load",
+                "note": "Returns to original trajectory post-break. Auto-regulate down 5% if bar speed/technique aren't back to Week 4's standard.",
+                "powerLaneCompanion": "Accompanying Power Lane movement: Trap Bar Jump Squat, 5 sets x 3 reps at a FIXED 30-40% of this lift's e1RM, all phase (not on the climbing Strength Lane table) - separate exercise from the barbell lift itself, dosed for speed not load."
+              },
+              "bench": {
+                "sets": 3,
+                "reps": 3,
+                "pctE1RM": 86,
+                "mode": "load",
+                "note": "Returns to original trajectory post-break. Auto-regulate down 5% if bar speed/technique aren't back to Week 4's standard.",
+                "powerLaneCAT": {
+                  "sets": 5,
+                  "reps": 3,
+                  "pctE1RM": 70,
+                  "note": "CAT Bench Press - maximal intended bar speed, 50-70% e1RM range. Stays at prescribed % even during Week 5's Strength Lane dip (already submaximal by design)."
+                }
+              },
+              "deadlift": {
+                "sets": 3,
+                "reps": 3,
+                "pctE1RM": 86,
+                "mode": "load",
+                "note": "Returns to original trajectory post-break. Auto-regulate down 5% if bar speed/technique aren't back to Week 4's standard. Alternates with Romanian Deadlift every other week (% is a ceiling on RDL weeks).",
+                "powerLaneCompanion": "Accompanying Power Lane movement: Trap Bar Jump Shrug, 5 sets x 3 reps at a FIXED 30-40% of this lift's e1RM, all phase (not on the climbing Strength Lane table) - separate exercise from the barbell lift itself, dosed for speed not load."
+              },
+              "ohp": {
+                "sets": 3,
+                "reps": "5-8",
+                "pctE1RM": "70-75 (or RPE 7)",
+                "mode": "fixed",
+                "note": "Day D accessory, FIXED all phase - does NOT climb with the Strength Lane table (fixed after a reviewer caught the climbing version producing a near-maximal 84-86% load inside a 3-round accessory circuit)."
+              },
+              "pullup": {
+                "mode": "weighted|bodyweight",
+                "scheme": "Weighted track: 3 sets x 3 @ 86% of tested weighted e1RM (same Strength Lane table/exceptions as the other main lifts), via Day D, same track-selection logic as Phase 1. Bodyweight/Assisted track: same max-rep structure as Phase 1's Day D.",
+                "note": "Returns to original trajectory post-break. Auto-regulate down 5% if bar speed/technique aren't back to Week 4's standard."
+              }
+            }
+          },
+          {
+            "week": 7,
+            "label": "Retest Week",
+            "lifts": {
+              "squat": {
+                "sets": 1,
+                "reps": 5,
+                "pctE1RM": null,
+                "mode": "retest",
+                "note": "Re-establish 5RM; convert to new e1RM. Resets baseline for Weeks 8-11."
+              },
+              "bench": {
+                "sets": 1,
+                "reps": 5,
+                "pctE1RM": null,
+                "mode": "retest",
+                "note": "Re-establish 5RM; convert to new e1RM. Vertical Jump also re-tested."
+              },
+              "deadlift": {
+                "sets": 1,
+                "reps": 5,
+                "pctE1RM": null,
+                "mode": "retest",
+                "note": "Re-establish 5RM; convert to new e1RM."
+              },
+              "ohp": {
+                "sets": 1,
+                "reps": 5,
+                "pctE1RM": null,
+                "mode": "retest",
+                "note": "Re-establish 5RM; convert to new e1RM."
+              },
+              "pullup": {
+                "mode": "retest",
+                "scheme": "Re-test bodyweight-then-weighted protocol.",
+                "note": null
+              }
+            }
+          },
+          {
+            "week": 8,
+            "label": "Week 8",
+            "lifts": {
+              "squat": {
+                "sets": 3,
+                "reps": 5,
+                "pctE1RM": 80,
+                "mode": "load",
+                "note": "Of new (Week 7 retest) e1RM",
+                "powerLaneCompanion": "Accompanying Power Lane movement: Trap Bar Jump Squat, 5 sets x 3 reps at a FIXED 30-40% of this lift's e1RM, all phase (not on the climbing Strength Lane table) - separate exercise from the barbell lift itself, dosed for speed not load."
+              },
+              "bench": {
+                "sets": 3,
+                "reps": 5,
+                "pctE1RM": 80,
+                "mode": "load",
+                "note": "Of new (Week 7 retest) e1RM",
+                "powerLaneCAT": {
+                  "sets": 5,
+                  "reps": 3,
+                  "pctE1RM": 55,
+                  "note": "CAT Bench Press - maximal intended bar speed, 50-70% e1RM range. Stays at prescribed % even during Week 5's Strength Lane dip (already submaximal by design)."
+                }
+              },
+              "deadlift": {
+                "sets": 3,
+                "reps": 5,
+                "pctE1RM": 80,
+                "mode": "load",
+                "note": "Of new (Week 7 retest) e1RM Alternates with Romanian Deadlift every other week (% is a ceiling on RDL weeks).",
+                "powerLaneCompanion": "Accompanying Power Lane movement: Trap Bar Jump Shrug, 5 sets x 3 reps at a FIXED 30-40% of this lift's e1RM, all phase (not on the climbing Strength Lane table) - separate exercise from the barbell lift itself, dosed for speed not load."
+              },
+              "ohp": {
+                "sets": 3,
+                "reps": "5-8",
+                "pctE1RM": "70-75 (or RPE 7)",
+                "mode": "fixed",
+                "note": "Day D accessory, FIXED all phase - does NOT climb with the Strength Lane table (fixed after a reviewer caught the climbing version producing a near-maximal 84-86% load inside a 3-round accessory circuit)."
+              },
+              "pullup": {
+                "mode": "weighted|bodyweight",
+                "scheme": "Weighted track: 3 sets x 5 @ 80% of tested weighted e1RM (same Strength Lane table/exceptions as the other main lifts), via Day D, same track-selection logic as Phase 1. Bodyweight/Assisted track: same max-rep structure as Phase 1's Day D.",
+                "note": "Of new (Week 7 retest) e1RM"
+              }
+            }
+          },
+          {
+            "week": 9,
+            "label": "Week 9",
+            "lifts": {
+              "squat": {
+                "sets": 3,
+                "reps": 4,
+                "pctE1RM": 82,
+                "mode": "load",
+                "note": "Of new e1RM",
+                "powerLaneCompanion": "Accompanying Power Lane movement: Trap Bar Jump Squat, 5 sets x 3 reps at a FIXED 30-40% of this lift's e1RM, all phase (not on the climbing Strength Lane table) - separate exercise from the barbell lift itself, dosed for speed not load."
+              },
+              "bench": {
+                "sets": 3,
+                "reps": 4,
+                "pctE1RM": 82,
+                "mode": "load",
+                "note": "Of new e1RM",
+                "powerLaneCAT": {
+                  "sets": 5,
+                  "reps": 3,
+                  "pctE1RM": 60,
+                  "note": "CAT Bench Press - maximal intended bar speed, 50-70% e1RM range. Stays at prescribed % even during Week 5's Strength Lane dip (already submaximal by design)."
+                }
+              },
+              "deadlift": {
+                "sets": 3,
+                "reps": 4,
+                "pctE1RM": 82,
+                "mode": "load",
+                "note": "Of new e1RM Alternates with Romanian Deadlift every other week (% is a ceiling on RDL weeks).",
+                "powerLaneCompanion": "Accompanying Power Lane movement: Trap Bar Jump Shrug, 5 sets x 3 reps at a FIXED 30-40% of this lift's e1RM, all phase (not on the climbing Strength Lane table) - separate exercise from the barbell lift itself, dosed for speed not load."
+              },
+              "ohp": {
+                "sets": 3,
+                "reps": "5-8",
+                "pctE1RM": "70-75 (or RPE 7)",
+                "mode": "fixed",
+                "note": "Day D accessory, FIXED all phase - does NOT climb with the Strength Lane table (fixed after a reviewer caught the climbing version producing a near-maximal 84-86% load inside a 3-round accessory circuit)."
+              },
+              "pullup": {
+                "mode": "weighted|bodyweight",
+                "scheme": "Weighted track: 3 sets x 4 @ 82% of tested weighted e1RM (same Strength Lane table/exceptions as the other main lifts), via Day D, same track-selection logic as Phase 1. Bodyweight/Assisted track: same max-rep structure as Phase 1's Day D.",
+                "note": "Of new e1RM"
+              }
+            }
+          },
+          {
+            "week": 10,
+            "label": "Week 10",
+            "lifts": {
+              "squat": {
+                "sets": 3,
+                "reps": 4,
+                "pctE1RM": 84,
+                "mode": "load",
+                "note": "Of new e1RM",
+                "powerLaneCompanion": "Accompanying Power Lane movement: Trap Bar Jump Squat, 5 sets x 3 reps at a FIXED 30-40% of this lift's e1RM, all phase (not on the climbing Strength Lane table) - separate exercise from the barbell lift itself, dosed for speed not load."
+              },
+              "bench": {
+                "sets": 3,
+                "reps": 4,
+                "pctE1RM": 84,
+                "mode": "load",
+                "note": "Of new e1RM",
+                "powerLaneCAT": {
+                  "sets": 5,
+                  "reps": 3,
+                  "pctE1RM": 65,
+                  "note": "CAT Bench Press - maximal intended bar speed, 50-70% e1RM range. Stays at prescribed % even during Week 5's Strength Lane dip (already submaximal by design)."
+                }
+              },
+              "deadlift": {
+                "sets": 3,
+                "reps": 4,
+                "pctE1RM": 84,
+                "mode": "load",
+                "note": "Of new e1RM Alternates with Romanian Deadlift every other week (% is a ceiling on RDL weeks).",
+                "powerLaneCompanion": "Accompanying Power Lane movement: Trap Bar Jump Shrug, 5 sets x 3 reps at a FIXED 30-40% of this lift's e1RM, all phase (not on the climbing Strength Lane table) - separate exercise from the barbell lift itself, dosed for speed not load."
+              },
+              "ohp": {
+                "sets": 3,
+                "reps": "5-8",
+                "pctE1RM": "70-75 (or RPE 7)",
+                "mode": "fixed",
+                "note": "Day D accessory, FIXED all phase - does NOT climb with the Strength Lane table (fixed after a reviewer caught the climbing version producing a near-maximal 84-86% load inside a 3-round accessory circuit)."
+              },
+              "pullup": {
+                "mode": "weighted|bodyweight",
+                "scheme": "Weighted track: 3 sets x 4 @ 84% of tested weighted e1RM (same Strength Lane table/exceptions as the other main lifts), via Day D, same track-selection logic as Phase 1. Bodyweight/Assisted track: same max-rep structure as Phase 1's Day D.",
+                "note": "Of new e1RM"
+              }
+            }
+          },
+          {
+            "week": 11,
+            "label": "Week 11",
+            "lifts": {
+              "squat": {
+                "sets": 3,
+                "reps": 3,
+                "pctE1RM": 86,
+                "mode": "load",
+                "note": "Closes Phase 2. Of new e1RM. Bench/OHP/Pull-up e1RM carry into Phase 3's Day D maintenance lift; Squat/Deadlift aren't used again until Phase 3 Day D's returning-athlete maintenance touch.",
+                "powerLaneCompanion": "Accompanying Power Lane movement: Trap Bar Jump Squat, 5 sets x 3 reps at a FIXED 30-40% of this lift's e1RM, all phase (not on the climbing Strength Lane table) - separate exercise from the barbell lift itself, dosed for speed not load."
+              },
+              "bench": {
+                "sets": 3,
+                "reps": 3,
+                "pctE1RM": 86,
+                "mode": "load",
+                "note": "Closes Phase 2. Of new e1RM. Bench/OHP/Pull-up e1RM carry into Phase 3's Day D maintenance lift; Squat/Deadlift aren't used again until Phase 3 Day D's returning-athlete maintenance touch.",
+                "powerLaneCAT": {
+                  "sets": 5,
+                  "reps": 3,
+                  "pctE1RM": 70,
+                  "note": "CAT Bench Press - maximal intended bar speed, 50-70% e1RM range. Stays at prescribed % even during Week 5's Strength Lane dip (already submaximal by design)."
+                }
+              },
+              "deadlift": {
+                "sets": 3,
+                "reps": 3,
+                "pctE1RM": 86,
+                "mode": "load",
+                "note": "Closes Phase 2. Of new e1RM. Bench/OHP/Pull-up e1RM carry into Phase 3's Day D maintenance lift; Squat/Deadlift aren't used again until Phase 3 Day D's returning-athlete maintenance touch. Alternates with Romanian Deadlift every other week (% is a ceiling on RDL weeks).",
+                "powerLaneCompanion": "Accompanying Power Lane movement: Trap Bar Jump Shrug, 5 sets x 3 reps at a FIXED 30-40% of this lift's e1RM, all phase (not on the climbing Strength Lane table) - separate exercise from the barbell lift itself, dosed for speed not load."
+              },
+              "ohp": {
+                "sets": 3,
+                "reps": "5-8",
+                "pctE1RM": "70-75 (or RPE 7)",
+                "mode": "fixed",
+                "note": "Day D accessory, FIXED all phase - does NOT climb with the Strength Lane table (fixed after a reviewer caught the climbing version producing a near-maximal 84-86% load inside a 3-round accessory circuit)."
+              },
+              "pullup": {
+                "mode": "weighted|bodyweight",
+                "scheme": "Weighted track: 3 sets x 3 @ 86% of tested weighted e1RM (same Strength Lane table/exceptions as the other main lifts), via Day D, same track-selection logic as Phase 1. Bodyweight/Assisted track: same max-rep structure as Phase 1's Day D.",
+                "note": "Closes Phase 2. Of new e1RM. Bench/OHP/Pull-up e1RM carry into Phase 3's Day D maintenance lift; Squat/Deadlift aren't used again until Phase 3 Day D's returning-athlete maintenance touch."
+              }
+            }
+          }
+        ]
+      },
+      {
+        "key": "phase3",
+        "name": "Phase 3 - Early Summer Program",
+        "notEncoded": [
+          "First-time-athlete tracks: Bench/Pull-up/OHP RPE 6-7 technique track (Weeks 2-3, test at Week 3) and Squat/Deadlift's longer 3-session Goblet Squat/DB RDL technique track (Weeks 2, 3, 4; actual 5RM test deferred to Phase 4 Week 1) - coach judgment / written program, no e1RM on file to compute",
+          "Staggered and Late Arrivals catch-up protocols - coach judgment / written program",
+          "Auto-regulation (sled technique breakdown -> drop load 5-10%; same for Day D barbell work) - runtime rule, not fixed program data"
+        ],
+        "weeks": [
+          {
+            "week": 1,
+            "label": "Testing Window (Day T1/T2)",
+            "lifts": {
+              "squat": {
+                "sets": null,
+                "reps": null,
+                "pctE1RM": null,
+                "mode": "not_tested",
+                "note": "Squat is NOT tested in Phase 3 for anyone. Returning athletes carry forward Phase 2 Week 7 e1RM (used later at Day D's maintenance touch). First-time athletes get an unloaded movement-screen only here; their own technique track and eventual test are out of this document's scope (see Phase 4)."
+              },
+              "bench": {
+                "sets": null,
+                "reps": null,
+                "pctE1RM": null,
+                "mode": "not_tested",
+                "note": "Not tested at Testing Window. Returning athletes carry forward Phase 2 Week 7 e1RM for Day D. First-time athletes get an unloaded movement-screen only here (own RPE-based track out of scope)."
+              },
+              "deadlift": {
+                "sets": null,
+                "reps": null,
+                "pctE1RM": null,
+                "mode": "not_tested",
+                "note": "Not tested in Phase 3 for anyone - same as squat."
+              },
+              "ohp": {
+                "sets": null,
+                "reps": null,
+                "pctE1RM": null,
+                "mode": "not_tested",
+                "note": "Not tested at Testing Window. Returning athletes carry forward Phase 2 Week 7 e1RM for Day D."
+              },
+              "pullup": {
+                "mode": "not_tested",
+                "scheme": "Not tested at Testing Window; Phase 2's Week 7 retest track carries forward for returning athletes.",
+                "note": null
+              }
+            }
+          },
+          {
+            "week": 2,
+            "label": "Week 2 (Day D - Wed)",
+            "lifts": {
+              "squat": {
+                "sets": 2,
+                "reps": 5,
+                "pctE1RM": 60,
+                "mode": "maintenance",
+                "note": "Returning athletes only - light motor-pattern maintenance touch (not a strength stimulus), off Phase 2 Week 7 e1RM. 90 sec rest. First-time athletes skip this and instead run a separate RPE 6-7 Goblet Squat/DB RDL technique track (out of scope)."
+              },
+              "bench": {
+                "sets": 3,
+                "reps": 5,
+                "pctE1RM": 80,
+                "mode": "load",
+                "note": "Upper-body maintenance lift, off most recently tested (Phase 2 Week 7) e1RM. 2-3 min rest."
+              },
+              "deadlift": {
+                "sets": 2,
+                "reps": 5,
+                "pctE1RM": 60,
+                "mode": "maintenance",
+                "note": "Returning athletes only - same light maintenance touch and reasoning as Squat above."
+              },
+              "ohp": {
+                "sets": 3,
+                "reps": 5,
+                "pctE1RM": 80,
+                "mode": "load",
+                "note": "Same maintenance-lift dosing as Bench."
+              },
+              "pullup": {
+                "mode": "weighted|bodyweight",
+                "scheme": "Weighted: 3x5 at tested added weight. Bodyweight: 3x5 with 2-3 reps in reserve (same technique-gating standard as Phase 1).",
+                "note": "Flat dose, unchanged Weeks 2-3."
+              }
+            }
+          },
+          {
+            "week": 3,
+            "label": "Week 3 (Day D - Wed)",
+            "lifts": {
+              "squat": {
+                "sets": 2,
+                "reps": 5,
+                "pctE1RM": 60,
+                "mode": "maintenance",
+                "note": "Same as Week 2 - flat dose."
+              },
+              "bench": {
+                "sets": 3,
+                "reps": 5,
+                "pctE1RM": 80,
+                "mode": "load",
+                "note": "Same as Week 2 - flat dose."
+              },
+              "deadlift": {
+                "sets": 2,
+                "reps": 5,
+                "pctE1RM": 60,
+                "mode": "maintenance",
+                "note": "Same as Week 2 - flat dose."
+              },
+              "ohp": {
+                "sets": 3,
+                "reps": 5,
+                "pctE1RM": 80,
+                "mode": "load",
+                "note": "Same as Week 2 - flat dose."
+              },
+              "pullup": {
+                "mode": "weighted|bodyweight",
+                "scheme": "Same as Week 2 - flat dose.",
+                "note": null
+              }
+            }
+          },
+          {
+            "week": 4,
+            "label": "Retest Week (speed/conditioning only)",
+            "lifts": {
+              "squat": {
+                "sets": null,
+                "reps": null,
+                "pctE1RM": null,
+                "mode": "no_session",
+                "note": "No Day D this week - Wednesday stays open/rest between the Monday speed retest and Thursday conditioning retest. Squat/Deadlift/Bench/OHP/Pull-up are NOT retested here (Phase 3's retest is bodyweight + 10m/20m + 40-yard + 300-yard shuttle only)."
+              },
+              "bench": {
+                "sets": null,
+                "reps": null,
+                "pctE1RM": null,
+                "mode": "no_session",
+                "note": "No Day D this week - see squat note."
+              },
+              "deadlift": {
+                "sets": null,
+                "reps": null,
+                "pctE1RM": null,
+                "mode": "no_session",
+                "note": "No Day D this week - see squat note."
+              },
+              "ohp": {
+                "sets": null,
+                "reps": null,
+                "pctE1RM": null,
+                "mode": "no_session",
+                "note": "No Day D this week - see squat note."
+              },
+              "pullup": {
+                "mode": "no_session",
+                "scheme": "No Day D this week - see squat note.",
+                "note": null
+              }
+            }
+          }
+        ]
+      },
+      {
+        "key": "phase4",
+        "name": "Phase 4 - Pre-Camp Taper",
+        "notEncoded": [
+          "Late-arriving first-time athletes' standalone on-ramp (capped-load sled work, Phase 3 technique content in place of the taper lift) - coach judgment / written program",
+          "Auto-regulation (sled/technique breakdown -> drop load; 'less volume not more effort' in Week 2) - runtime rule, not fixed program data"
+        ],
+        "weeks": [
+          {
+            "week": 1,
+            "label": "Week 1 (Day D - Wed)",
+            "lifts": {
+              "squat": {
+                "sets": 2,
+                "reps": 5,
+                "pctE1RM": 60,
+                "mode": "maintenance",
+                "note": "Returning athletes only - light maintenance touch, off Phase 2 Week 7 e1RM, unaffected by this week's taper trim (already light). First-time athletes who banked Phase 3's 3-session technique floor instead run their Squat/Deadlift 5RM TEST here (in place of this maintenance touch) - this is their designed test session, out of this document's returning-athlete standard-track scope."
+              },
+              "bench": {
+                "sets": 3,
+                "reps": 5,
+                "pctE1RM": 80,
+                "mode": "load",
+                "note": "Unchanged from Phase 3's dose: 3x5 @ ~80% of most recently tested e1RM."
+              },
+              "deadlift": {
+                "sets": 2,
+                "reps": 5,
+                "pctE1RM": 60,
+                "mode": "maintenance",
+                "note": "Returning athletes only - same maintenance touch as Squat above."
+              },
+              "ohp": {
+                "sets": 3,
+                "reps": 5,
+                "pctE1RM": 80,
+                "mode": "load",
+                "note": "Unchanged from Phase 3's dose."
+              },
+              "pullup": {
+                "mode": "weighted|bodyweight",
+                "scheme": "Weighted: 3x5 at tested added weight. Bodyweight: 3x5 with 2-3 reps in reserve.",
+                "note": "Unchanged from Phase 3's dose."
+              }
+            }
+          },
+          {
+            "week": 2,
+            "label": "Week 2 (Day D - Wed) - Taper Lift",
+            "lifts": {
+              "squat": {
+                "sets": 2,
+                "reps": 5,
+                "pctE1RM": 60,
+                "mode": "maintenance",
+                "note": "Unchanged from Week 1 - already light enough that the taper's volume/intensity trim doesn't apply to it. Returning athletes only. (First-timers who tested in Week 1 instead run a second light Goblet Squat/DB RDL touch, 2x5 @ RPE 6, here.)"
+              },
+              "bench": {
+                "sets": 2,
+                "reps": 5,
+                "pctE1RM": 75,
+                "mode": "load",
+                "note": "Taper cut: down from Week 1's 3x5 @ ~80% to 2x5 @ ~75%."
+              },
+              "deadlift": {
+                "sets": 2,
+                "reps": 5,
+                "pctE1RM": 60,
+                "mode": "maintenance",
+                "note": "Unchanged from Week 1 - same reasoning as Squat above."
+              },
+              "ohp": {
+                "sets": 2,
+                "reps": 5,
+                "pctE1RM": 75,
+                "mode": "load",
+                "note": "Taper cut: down from Week 1's 3x5 @ ~80% to 2x5 @ ~75%."
+              },
+              "pullup": {
+                "mode": "weighted|bodyweight",
+                "scheme": "Weighted: 2x5 at tested added weight (down from Week 1's 3x5). Bodyweight: 2x5 with 2-3 reps in reserve.",
+                "note": "Taper cut from Week 1."
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "bridges": [
+      {
+        "key": "bridge_2_3",
+        "name": "Phase 2 to 3 Bridge (Multi-Sport Maintenance Track continuation, May 25 - June 15)",
+        "description": "Continues Phase 2's Multi-Sport Maintenance Track unchanged (2 days/week: Track Day 1 Squat+Bench, Track Day 2 Deadlift+Pull-up), at Week 11's load, with one re-entry dip on June 4. Closes the ~6-day gap before Phase 3's Testing Window (down from 4.5 weeks unbridged).",
+        "sessions": [
+          {
+            "date": "May 25",
+            "label": "full",
+            "lifts": {
+              "squat": {
+                "sets": 3,
+                "reps": 3,
+                "pctE1RM": 86,
+                "mode": "maintenance",
+                "note": "Holds at Phase 2 Week 11's peak numbers (86% e1RM x3). Strength Lane only (Trap Bar Jump Squat Power Lane companion also continues, fixed 30-40% e1RM, not shown here)."
+              },
+              "bench": {
+                "sets": 3,
+                "reps": 3,
+                "pctE1RM": 86,
+                "mode": "maintenance",
+                "note": "Holds at Phase 2 Week 11's peak numbers (86% e1RM x3).",
+                "powerLaneCAT": {
+                  "sets": 5,
+                  "reps": 3,
+                  "pctE1RM": 70,
+                  "note": "CAT Bench Press stays at its prescribed 70% e1RM throughout the bridge (already submaximal by design, not subject to the June 4 dip)."
+                }
+              },
+              "deadlift": {
+                "sets": 3,
+                "reps": 3,
+                "pctE1RM": 86,
+                "mode": "maintenance",
+                "note": "Holds at Phase 2 Week 11's peak numbers (86% e1RM x3). Alternates with RDL every other week, % is a ceiling on RDL weeks."
+              },
+              "ohp": {
+                "sets": 2,
+                "reps": "10-12",
+                "pctE1RM": null,
+                "mode": "fixed_touch",
+                "note": "Not a %e1RM lift on this track. Light, found-weight, submaximal dumbbell OHP touch (2x10-12) in the Track Day 1 finisher, to keep the overhead pattern trained."
+              },
+              "pullup": {
+                "mode": "weighted|bodyweight",
+                "scheme": "Weighted track: 3 sets x 3 @ 86% of tested weighted e1RM, same Strength-Lane logic as Squat/Bench/Deadlift above. Bodyweight/Assisted: same max-rep structure as the full program's Day D.",
+                "note": "Holds at Phase 2 Week 11's peak numbers (86% e1RM x3)."
+              }
+            }
+          },
+          {
+            "date": "May 28",
+            "label": "bonus - contingent emergency day, don't plan around it",
+            "lifts": {
+              "squat": {
+                "sets": 3,
+                "reps": 3,
+                "pctE1RM": 86,
+                "mode": "maintenance",
+                "note": "Holds at Phase 2 Week 11's peak numbers (86% e1RM x3). Contingent/bonus date - only runs if that year's emergency days are used; not planned around. Strength Lane only (Trap Bar Jump Squat Power Lane companion also continues, fixed 30-40% e1RM, not shown here)."
+              },
+              "bench": {
+                "sets": 3,
+                "reps": 3,
+                "pctE1RM": 86,
+                "mode": "maintenance",
+                "note": "Holds at Phase 2 Week 11's peak numbers (86% e1RM x3). Contingent/bonus date - only runs if that year's emergency days are used; not planned around.",
+                "powerLaneCAT": {
+                  "sets": 5,
+                  "reps": 3,
+                  "pctE1RM": 70,
+                  "note": "CAT Bench Press stays at its prescribed 70% e1RM throughout the bridge (already submaximal by design, not subject to the June 4 dip)."
+                }
+              },
+              "deadlift": {
+                "sets": 3,
+                "reps": 3,
+                "pctE1RM": 86,
+                "mode": "maintenance",
+                "note": "Holds at Phase 2 Week 11's peak numbers (86% e1RM x3). Contingent/bonus date - only runs if that year's emergency days are used; not planned around. Alternates with RDL every other week, % is a ceiling on RDL weeks."
+              },
+              "ohp": {
+                "sets": 2,
+                "reps": "10-12",
+                "pctE1RM": null,
+                "mode": "fixed_touch",
+                "note": "Not a %e1RM lift on this track. Light, found-weight, submaximal dumbbell OHP touch (2x10-12) in the Track Day 1 finisher, to keep the overhead pattern trained."
+              },
+              "pullup": {
+                "mode": "weighted|bodyweight",
+                "scheme": "Weighted track: 3 sets x 3 @ 86% of tested weighted e1RM, same Strength-Lane logic as Squat/Bench/Deadlift above. Bodyweight/Assisted: same max-rep structure as the full program's Day D.",
+                "note": "Holds at Phase 2 Week 11's peak numbers (86% e1RM x3). Contingent/bonus date - only runs if that year's emergency days are used; not planned around."
+              }
+            }
+          },
+          {
+            "date": "June 1",
+            "label": "bonus - contingent emergency day, don't plan around it",
+            "lifts": {
+              "squat": {
+                "sets": 3,
+                "reps": 3,
+                "pctE1RM": 86,
+                "mode": "maintenance",
+                "note": "Holds at Phase 2 Week 11's peak numbers (86% e1RM x3). Contingent/bonus date - only runs if that year's emergency days are used; not planned around. Strength Lane only (Trap Bar Jump Squat Power Lane companion also continues, fixed 30-40% e1RM, not shown here)."
+              },
+              "bench": {
+                "sets": 3,
+                "reps": 3,
+                "pctE1RM": 86,
+                "mode": "maintenance",
+                "note": "Holds at Phase 2 Week 11's peak numbers (86% e1RM x3). Contingent/bonus date - only runs if that year's emergency days are used; not planned around.",
+                "powerLaneCAT": {
+                  "sets": 5,
+                  "reps": 3,
+                  "pctE1RM": 70,
+                  "note": "CAT Bench Press stays at its prescribed 70% e1RM throughout the bridge (already submaximal by design, not subject to the June 4 dip)."
+                }
+              },
+              "deadlift": {
+                "sets": 3,
+                "reps": 3,
+                "pctE1RM": 86,
+                "mode": "maintenance",
+                "note": "Holds at Phase 2 Week 11's peak numbers (86% e1RM x3). Contingent/bonus date - only runs if that year's emergency days are used; not planned around. Alternates with RDL every other week, % is a ceiling on RDL weeks."
+              },
+              "ohp": {
+                "sets": 2,
+                "reps": "10-12",
+                "pctE1RM": null,
+                "mode": "fixed_touch",
+                "note": "Not a %e1RM lift on this track. Light, found-weight, submaximal dumbbell OHP touch (2x10-12) in the Track Day 1 finisher, to keep the overhead pattern trained."
+              },
+              "pullup": {
+                "mode": "weighted|bodyweight",
+                "scheme": "Weighted track: 3 sets x 3 @ 86% of tested weighted e1RM, same Strength-Lane logic as Squat/Bench/Deadlift above. Bodyweight/Assisted: same max-rep structure as the full program's Day D.",
+                "note": "Holds at Phase 2 Week 11's peak numbers (86% e1RM x3). Contingent/bonus date - only runs if that year's emergency days are used; not planned around."
+              }
+            }
+          },
+          {
+            "date": "June 4",
+            "label": "re-entry ramp session (10 days after the last reliable session)",
+            "lifts": {
+              "squat": {
+                "sets": 3,
+                "reps": 3,
+                "pctE1RM": 78,
+                "mode": "maintenance",
+                "note": "One-session re-entry ramp: 78% e1RM x3 (not Week 11's 86% x3) - the bridge's two most reliable sessions (May 25, June 4) sit 10 days apart once the two contingent bonus dates are discounted; holding Week 11's peak load across that internal gap would recreate a cold-start-at-high-load scenario. Strength Lane only (Trap Bar Jump Squat Power Lane companion also continues, fixed 30-40% e1RM, not shown here)."
+              },
+              "bench": {
+                "sets": 3,
+                "reps": 3,
+                "pctE1RM": 78,
+                "mode": "maintenance",
+                "note": "One-session re-entry ramp: 78% e1RM x3 (not Week 11's 86% x3) - the bridge's two most reliable sessions (May 25, June 4) sit 10 days apart once the two contingent bonus dates are discounted; holding Week 11's peak load across that internal gap would recreate a cold-start-at-high-load scenario.",
+                "powerLaneCAT": {
+                  "sets": 5,
+                  "reps": 3,
+                  "pctE1RM": 70,
+                  "note": "CAT Bench Press stays at its prescribed 70% e1RM throughout the bridge (already submaximal by design, not subject to the June 4 dip)."
+                }
+              },
+              "deadlift": {
+                "sets": 3,
+                "reps": 3,
+                "pctE1RM": 78,
+                "mode": "maintenance",
+                "note": "One-session re-entry ramp: 78% e1RM x3 (not Week 11's 86% x3) - the bridge's two most reliable sessions (May 25, June 4) sit 10 days apart once the two contingent bonus dates are discounted; holding Week 11's peak load across that internal gap would recreate a cold-start-at-high-load scenario. Alternates with RDL every other week, % is a ceiling on RDL weeks."
+              },
+              "ohp": {
+                "sets": 2,
+                "reps": "10-12",
+                "pctE1RM": null,
+                "mode": "fixed_touch",
+                "note": "Not a %e1RM lift on this track. Light, found-weight, submaximal dumbbell OHP touch (2x10-12) in the Track Day 1 finisher, to keep the overhead pattern trained."
+              },
+              "pullup": {
+                "mode": "weighted|bodyweight",
+                "scheme": "Weighted track: 3 sets x 3 @ 78% of tested weighted e1RM, same Strength-Lane logic as Squat/Bench/Deadlift above. Bodyweight/Assisted: same max-rep structure as the full program's Day D.",
+                "note": "One-session re-entry ramp: 78% e1RM x3 (not Week 11's 86% x3) - the bridge's two most reliable sessions (May 25, June 4) sit 10 days apart once the two contingent bonus dates are discounted; holding Week 11's peak load across that internal gap would recreate a cold-start-at-high-load scenario."
+              }
+            }
+          },
+          {
+            "date": "June 8",
+            "label": "full",
+            "lifts": {
+              "squat": {
+                "sets": 3,
+                "reps": 3,
+                "pctE1RM": 86,
+                "mode": "maintenance",
+                "note": "Holds at Phase 2 Week 11's peak numbers (86% e1RM x3). Strength Lane only (Trap Bar Jump Squat Power Lane companion also continues, fixed 30-40% e1RM, not shown here)."
+              },
+              "bench": {
+                "sets": 3,
+                "reps": 3,
+                "pctE1RM": 86,
+                "mode": "maintenance",
+                "note": "Holds at Phase 2 Week 11's peak numbers (86% e1RM x3).",
+                "powerLaneCAT": {
+                  "sets": 5,
+                  "reps": 3,
+                  "pctE1RM": 70,
+                  "note": "CAT Bench Press stays at its prescribed 70% e1RM throughout the bridge (already submaximal by design, not subject to the June 4 dip)."
+                }
+              },
+              "deadlift": {
+                "sets": 3,
+                "reps": 3,
+                "pctE1RM": 86,
+                "mode": "maintenance",
+                "note": "Holds at Phase 2 Week 11's peak numbers (86% e1RM x3). Alternates with RDL every other week, % is a ceiling on RDL weeks."
+              },
+              "ohp": {
+                "sets": 2,
+                "reps": "10-12",
+                "pctE1RM": null,
+                "mode": "fixed_touch",
+                "note": "Not a %e1RM lift on this track. Light, found-weight, submaximal dumbbell OHP touch (2x10-12) in the Track Day 1 finisher, to keep the overhead pattern trained."
+              },
+              "pullup": {
+                "mode": "weighted|bodyweight",
+                "scheme": "Weighted track: 3 sets x 3 @ 86% of tested weighted e1RM, same Strength-Lane logic as Squat/Bench/Deadlift above. Bodyweight/Assisted: same max-rep structure as the full program's Day D.",
+                "note": "Holds at Phase 2 Week 11's peak numbers (86% e1RM x3)."
+              }
+            }
+          },
+          {
+            "date": "June 11",
+            "label": "full",
+            "lifts": {
+              "squat": {
+                "sets": 3,
+                "reps": 3,
+                "pctE1RM": 86,
+                "mode": "maintenance",
+                "note": "Holds at Phase 2 Week 11's peak numbers (86% e1RM x3). Strength Lane only (Trap Bar Jump Squat Power Lane companion also continues, fixed 30-40% e1RM, not shown here)."
+              },
+              "bench": {
+                "sets": 3,
+                "reps": 3,
+                "pctE1RM": 86,
+                "mode": "maintenance",
+                "note": "Holds at Phase 2 Week 11's peak numbers (86% e1RM x3).",
+                "powerLaneCAT": {
+                  "sets": 5,
+                  "reps": 3,
+                  "pctE1RM": 70,
+                  "note": "CAT Bench Press stays at its prescribed 70% e1RM throughout the bridge (already submaximal by design, not subject to the June 4 dip)."
+                }
+              },
+              "deadlift": {
+                "sets": 3,
+                "reps": 3,
+                "pctE1RM": 86,
+                "mode": "maintenance",
+                "note": "Holds at Phase 2 Week 11's peak numbers (86% e1RM x3). Alternates with RDL every other week, % is a ceiling on RDL weeks."
+              },
+              "ohp": {
+                "sets": 2,
+                "reps": "10-12",
+                "pctE1RM": null,
+                "mode": "fixed_touch",
+                "note": "Not a %e1RM lift on this track. Light, found-weight, submaximal dumbbell OHP touch (2x10-12) in the Track Day 1 finisher, to keep the overhead pattern trained."
+              },
+              "pullup": {
+                "mode": "weighted|bodyweight",
+                "scheme": "Weighted track: 3 sets x 3 @ 86% of tested weighted e1RM, same Strength-Lane logic as Squat/Bench/Deadlift above. Bodyweight/Assisted: same max-rep structure as the full program's Day D.",
+                "note": "Holds at Phase 2 Week 11's peak numbers (86% e1RM x3)."
+              }
+            }
+          },
+          {
+            "date": "June 15",
+            "label": "full - last confirmed bridge session",
+            "lifts": {
+              "squat": {
+                "sets": 3,
+                "reps": 3,
+                "pctE1RM": 86,
+                "mode": "maintenance",
+                "note": "Holds at Phase 2 Week 11's peak numbers (86% e1RM x3). Strength Lane only (Trap Bar Jump Squat Power Lane companion also continues, fixed 30-40% e1RM, not shown here)."
+              },
+              "bench": {
+                "sets": 3,
+                "reps": 3,
+                "pctE1RM": 86,
+                "mode": "maintenance",
+                "note": "Holds at Phase 2 Week 11's peak numbers (86% e1RM x3).",
+                "powerLaneCAT": {
+                  "sets": 5,
+                  "reps": 3,
+                  "pctE1RM": 70,
+                  "note": "CAT Bench Press stays at its prescribed 70% e1RM throughout the bridge (already submaximal by design, not subject to the June 4 dip)."
+                }
+              },
+              "deadlift": {
+                "sets": 3,
+                "reps": 3,
+                "pctE1RM": 86,
+                "mode": "maintenance",
+                "note": "Holds at Phase 2 Week 11's peak numbers (86% e1RM x3). Alternates with RDL every other week, % is a ceiling on RDL weeks."
+              },
+              "ohp": {
+                "sets": 2,
+                "reps": "10-12",
+                "pctE1RM": null,
+                "mode": "fixed_touch",
+                "note": "Not a %e1RM lift on this track. Light, found-weight, submaximal dumbbell OHP touch (2x10-12) in the Track Day 1 finisher, to keep the overhead pattern trained."
+              },
+              "pullup": {
+                "mode": "weighted|bodyweight",
+                "scheme": "Weighted track: 3 sets x 3 @ 86% of tested weighted e1RM, same Strength-Lane logic as Squat/Bench/Deadlift above. Bodyweight/Assisted: same max-rep structure as the full program's Day D.",
+                "note": "Holds at Phase 2 Week 11's peak numbers (86% e1RM x3)."
+              }
+            }
+          }
+        ],
+        "notEncoded": [
+          "Which specific weekday (Track Day 1 vs Track Day 2) each date maps to isn't itemized here - both lift pairs are shown as available each listed date per the Multi-Sport Track's normal weekly rotation.",
+          "Nordic hamstring lower, shoulder-health finisher, NMT warm-up - continue unchanged, not lift-prescription data."
+        ]
+      },
+      {
+        "key": "camp_bridge",
+        "name": "Camp Bridge (Phase 4 to 5, once two-a-days begin)",
+        "description": "No lifting in the first 5 days of NJSIAA's 14-day heat-acclimatization ramp. Once two-a-day sessions begin (Day 6 onward), this once-a-week session (Phase 4 Week 2's taper-lift dose) continues through the rest of camp to the season opener.",
+        "weeks": [
+          {
+            "week": "once-weekly, Day 6 of acclimatization ramp onward",
+            "label": "Camp Bridge Lift",
+            "lifts": {
+              "squat": {
+                "sets": 2,
+                "reps": 5,
+                "pctE1RM": 60,
+                "mode": "maintenance",
+                "note": "Light maintenance touch, continues unchanged from Phase 3/4's Day D. Closes the gap where Squat/Deadlift would otherwise go fully dormant from Phase 2's close through camp."
+              },
+              "bench": {
+                "sets": 2,
+                "reps": 5,
+                "pctE1RM": 75,
+                "mode": "load",
+                "note": "Continues Phase 4 Week 2's taper-lift dose unchanged."
+              },
+              "deadlift": {
+                "sets": 2,
+                "reps": 5,
+                "pctE1RM": 60,
+                "mode": "maintenance",
+                "note": "Same maintenance touch and reasoning as Squat above."
+              },
+              "ohp": {
+                "sets": 2,
+                "reps": 5,
+                "pctE1RM": 75,
+                "mode": "load",
+                "note": "Continues Phase 4 Week 2's taper-lift dose unchanged."
+              },
+              "pullup": {
+                "mode": "weighted|bodyweight",
+                "scheme": "Weighted: 2x5 at tested added weight. Bodyweight: 2x5 with 2-3 reps in reserve, no added weight.",
+                "note": "Scheduled into whichever of that day's two practice sessions (or that week's single-practice day) leaves the most practical window - camp's daily schedule is the football staff's to set."
+              }
+            }
+          }
+        ],
+        "notEncoded": [
+          "Conditioning (end-of-practice SIT shuttle work) - uses Phase 3's Day C template, scaled to the practice window; not a barbell-lift prescription",
+          "First-time athlete (no off-season e1RM) RPE-based substitute - coach judgment / written program"
+        ]
+      }
+    ],
+    "phase5": {
+      "key": "phase5",
+      "name": "Phase 5 - In-Season",
+      "structure": "Ongoing weekly, keyed to game day (GD-4 / GD-2 labels, not fixed weekdays), not a fixed week count. Flat at 80-85% e1RM ('Heavy Maintenance' pace) once fully ramped in, with a Week 1-2 re-entry ramp for Squat/Deadlift only.",
+      "reentryRamp": [
+        {
+          "weekOfSeason": 1,
+          "squat": {
+            "sets": 3,
+            "reps": "3-5",
+            "pctE1RM": 70,
+            "note": "Re-entry ramp week 1 of 2 - Squat/Deadlift's Phase 2 Week 7 e1RM is ~3-4 months old by the opener; Bench/Pull-up never went dormant and start at full 80-85% from Week 1."
+          },
+          "deadlift": {
+            "sets": 3,
+            "reps": "3-5",
+            "pctE1RM": 70,
+            "note": "Same re-entry ramp as Squat."
+          },
+          "bench": {
+            "sets": 3,
+            "reps": "3-5",
+            "pctE1RM": "80-85",
+            "note": "No ramp - starts at full prescription, never went dormant (Phase 3/4 Day D kept it current)."
+          },
+          "ohp": {
+            "pctE1RM": null,
+            "note": "Not part of Phase 5's rotation at all - see steadyState.ohp."
+          },
+          "pullup": {
+            "note": "No ramp - starts at full prescription (same as Bench)."
+          }
+        },
+        {
+          "weekOfSeason": 2,
+          "squat": {
+            "sets": 3,
+            "reps": "3-5",
+            "pctE1RM": 78,
+            "note": "Re-entry ramp week 2 of 2."
+          },
+          "deadlift": {
+            "sets": 3,
+            "reps": "3-5",
+            "pctE1RM": 78,
+            "note": "Same re-entry ramp as Squat."
+          },
+          "bench": {
+            "sets": 3,
+            "reps": "3-5",
+            "pctE1RM": "80-85",
+            "note": "Full prescription (unchanged)."
+          },
+          "pullup": {
+            "note": "Full prescription (unchanged)."
+          }
+        },
+        {
+          "weekOfSeason": "3+",
+          "squat": {
+            "sets": 3,
+            "reps": "3-5",
+            "pctE1RM": "80-85",
+            "mode": "heavy_maintenance",
+            "note": "Full prescription for the remainder of the season, subject to the Monday auto-regulation note and the sRPE/ACWR tracking system (runtime rules, not encoded as numbers here)."
+          },
+          "deadlift": {
+            "sets": 3,
+            "reps": "3-5",
+            "pctE1RM": "80-85",
+            "mode": "heavy_maintenance",
+            "note": "Same as Squat."
+          }
+        }
+      ],
+      "steadyState": {
+        "squat": {
+          "sets": 3,
+          "reps": "3-5",
+          "pctE1RM": "80-85",
+          "day": "GD-4 (Lift Day 1)",
+          "mode": "heavy_maintenance",
+          "note": "'Heavy Maintenance' pace - controlled/purposeful bar speed, deliberately NOT labeled CAT (CAT stays defined at 50-70% e1RM elsewhere in this program). Off each athlete's most recently tested e1RM (Phase 2 Week 7 retest)."
+        },
+        "bench": {
+          "sets": 3,
+          "reps": "3-5",
+          "pctE1RM": "80-85",
+          "day": "GD-4 (Lift Day 1)",
+          "mode": "heavy_maintenance",
+          "note": "Same Heavy Maintenance pace as Squat. Runs alongside Squat on GD-4."
+        },
+        "deadlift": {
+          "sets": 3,
+          "reps": "3-5",
+          "pctE1RM": "80-85",
+          "day": "GD-2 (Lift Day 2)",
+          "mode": "heavy_maintenance",
+          "note": "Same Heavy Maintenance pace as Squat. (Or RDL if technique/load management calls for it.)"
+        },
+        "ohp": {
+          "pctE1RM": null,
+          "mode": "not_applicable",
+          "note": "Overhead Press is explicitly NOT part of Phase 5's rotation - Bench Press already covers the push pattern on the phase's two lift days, and a 2-lift-per-day maintenance phase has no room for a fifth exercise. Not tested or prescribed again until a later program cycle."
+        },
+        "pullup": {
+          "day": "GD-2 (Lift Day 2)",
+          "mode": "weighted|bodyweight",
+          "note": "Weighted: 3 sets x 3-5 reps at tested added weight. Bodyweight: 3x3-5 with 2-3 reps in reserve. Same Heavy Maintenance intensity standard, full prescription from Week 1 (never went dormant off-season)."
+        }
+      },
+      "mondayAutoRegulationNote": "GD-4 (Monday, for a typical Friday-game week) lands ~60-65 hours post-game, inside the 24-72hr post-game muscle-damage window. After a high-snap-count/physically demanding game, default to the LOW END of 80-85% e1RM, or drop to 2 work sets instead of 3, based on coaching judgment and the prior week's sRPE/ACWR data. A quiet week with no unusual game toll runs the full prescription as written. (This is a runtime/coach-judgment rule, not a fixed number - included here descriptively per the schema, not as program data to apply automatically.)",
+      "notEncoded": [
+        "sRPE/ACWR load-tracking system (the mechanism that replaces a mid-season retest) - runtime/data-collection system, not a lift prescription",
+        "First-time athletes arriving after the off-season program (RPE-based substitute until a real 5RM test clears them) - coach judgment / written program",
+        "General auto-regulation (drop 5-10% on technique breakdown) - runtime rule"
+      ]
+    }
+  }
+}
