@@ -5,14 +5,12 @@ import { prisma } from "@/lib/db";
 import NavBar from "@/components/NavBar";
 import MonthCalendar from "@/components/MonthCalendar";
 import DayCards from "@/components/DayCards";
-import BalanceCard from "@/components/BalanceCard";
 import LogForms from "@/app/dashboard/LogForms";
 import EntryActions from "./EntryActions";
 import { getCalendarData } from "@/lib/calendar";
 import { getPeriod, getTrack } from "@/lib/prescription";
 import { buildPlanDays, isTestPeriod, type TrainingTrack, type PullupMode } from "@/lib/plan";
 import { weekInfo } from "@/lib/schedule";
-import { teamMedians } from "@/lib/balance";
 import { LIFTS, LIFT_LABEL, computeLoadStats, acwrStatus, addDaysISO, todayISO } from "@/lib/calc";
 import type { AthleteRecord, TestEntryRecord, SessionEntryRecord } from "@/lib/types";
 
@@ -97,19 +95,6 @@ export default async function AthleteDetailPage({
   const latestFull: Record<string, { e1RM: number; fiveRM: number }> = {};
   for (const t of tests) if (!(t.lift in latestFull)) latestFull[t.lift] = { e1RM: t.e1RM, fiveRM: t.fiveRM };
   const winfo = weekInfo(trackKey, week);
-
-  // Team medians for the balance card (active players only).
-  const roster = await prisma.user.findMany({ where: { role: "PLAYER", active: true } });
-  const rosterTests = await prisma.testEntry.findMany({
-    where: { athleteId: { in: roster.map((r: AthleteRecord) => r.id) } },
-    orderBy: { date: "desc" },
-  });
-  const rosterE1: Record<string, Record<string, number>> = {};
-  for (const t of rosterTests) {
-    rosterE1[t.athleteId] ??= {};
-    if (!(t.lift in rosterE1[t.athleteId])) rosterE1[t.athleteId][t.lift] = t.e1RM;
-  }
-  const medians = teamMedians(roster.map((r: AthleteRecord) => ({ e1: rosterE1[r.id] ?? {}, bodyweight: r.bodyweight })));
 
   const stats = computeLoadStats(sessions.map((s) => ({ date: s.date, load: s.load })));
   const status = acwrStatus(stats);
@@ -251,13 +236,6 @@ export default async function AthleteDetailPage({
             </div>
           </details>
         )}
-
-        <BalanceCard
-          e1={latestByLift}
-          bodyweight={athlete.bodyweight}
-          tests={tests.map((t: TestEntryRecord) => ({ lift: t.lift, e1RM: t.e1RM, date: t.date }))}
-          teamMedians={medians}
-        />
 
         <div className="flex flex-col gap-2">
           <h3 className="text-base">Training calendar &amp; logged sets</h3>

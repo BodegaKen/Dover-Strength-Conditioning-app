@@ -18,8 +18,8 @@ import { buildSessionExtras, ITEM_LABEL, type DayId } from "./sessionContent";
 
 export type TrainingTrack = "FULL" | "MULTI_SPORT";
 export type PullupMode = "BODYWEIGHT" | "WEIGHTED";
-export type PositionGroup = "LINE" | "SKILL" | "UNKNOWN";
-export type EntryKind = "weight" | "reps" | "time" | "check";
+export type PositionGroup = "LINE" | "SKILL" | "MIXED" | "UNKNOWN";
+export type EntryKind = "weight" | "reps" | "time" | "check" | "info";
 export type PlanSection = "warmup" | "main" | "accessory" | "finisher";
 
 export const BACKOFF_BASE = 100; // back-off sets are stored as setNumber 101, 102...
@@ -40,7 +40,7 @@ export type PlanExercise = {
   unit?: string; // "per leg", "per side", "sec"
   pctE1RM: number | string | null;
   atTestedWeight: boolean; // pull-up phases that say "at tested added weight"
-  entry: EntryKind; // weight = weight x reps; reps / time = reps (or seconds) only; check = done/not done
+  entry: EntryKind; // weight = weight x reps; reps / time = reps (or seconds) only; check = done/not done; info = display only, never logged or counted
   allowBodyweight?: boolean; // weight entry where reps alone also counts (bodyweight allowed)
   optional?: boolean; // never blocks day completion
   ramp: boolean; // show the 50/65/75% ramp sets
@@ -69,21 +69,37 @@ const WEEKDAY_TO_DAYID: Record<string, DayId> = { Monday: "A", Tuesday: "B", Thu
 // Linemen are the only group the written program singles out by name
 // (everyone else is "skill positions"). Free-text positions are matched
 // loosely; blank / unrecognised means UNKNOWN and gets the standard station.
+// A two-way player is classified by BOTH sides of the ball:
+//   all linemen tokens (OL/DL)        -> LINE
+//   all skill tokens (RB/LB, WR/DB)   -> SKILL
+//   one of each (OL/LB, DL/RB)        -> MIXED (alternates by week, see laneFor)
+const LINE_TOKENS = ["OL", "OT", "OG", "C", "DL", "DT", "DE", "NT", "NG", "LINE", "LINEMAN", "LINEMEN", "TACKLE", "GUARD", "CENTER", "END"];
+const SKILL_TOKENS = [
+  "TE", "QB", "RB", "FB", "WR", "DB", "CB", "S", "FS", "SS", "LB", "ILB", "OLB", "MLB", "WLB", "SLB", "ATH", "K", "P", "KR", "PR",
+  "BACK", "BACKER", "LINEBACKER", "RECEIVER", "QUARTERBACK", "SAFETY", "CORNERBACK", "CORNER", "RUNNING", "WIDE",
+];
+
 export function positionGroup(position: string | null | undefined): PositionGroup {
-  const p = (position ?? "").toUpperCase().replace(/[^A-Z]/g, " ").trim();
+  let p = (position ?? "").toUpperCase().replace(/[^A-Z]/g, " ").replace(/\s+/g, " ").trim();
   if (!p) return "UNKNOWN";
-  const tokens = p.split(/\s+/);
-  const has = (list: string[]) => tokens.some((t) => list.includes(t));
-  // "Tight End" / "TE" is a skill position even though it contains "END".
-  if (has(["TE", "TIGHT"])) return "SKILL";
-  const LINE = ["OL", "OT", "OG", "C", "DL", "DT", "DE", "NT", "NG", "LINE", "LINEMAN", "LINEMEN", "TACKLE", "GUARD", "CENTER", "END"];
-  const SKILL = [
-    "QB", "RB", "FB", "WR", "DB", "CB", "S", "FS", "SS", "LB", "ILB", "OLB", "MLB", "WLB", "SLB", "ATH", "K", "P", "KR", "PR",
-    "BACK", "BACKER", "LINEBACKER", "RECEIVER", "QUARTERBACK", "SAFETY", "CORNERBACK", "CORNER", "RUNNING", "WIDE",
-  ];
-  if (has(LINE)) return "LINE";
-  if (has(SKILL)) return "SKILL";
+  // Multi-word names that would otherwise split into a lineman token + a skill token.
+  p = p.replace(/TIGHT END/g, "TE").replace(/LINE BACKER/g, "LB");
+  const tokens = p.split(" ");
+  const isLine = tokens.some((t) => LINE_TOKENS.includes(t));
+  const isSkill = tokens.some((t) => SKILL_TOKENS.includes(t));
+  if (isLine && isSkill) return "MIXED";
+  if (isLine) return "LINE";
+  if (isSkill) return "SKILL";
   return "UNKNOWN";
+}
+
+// Which lane an athlete trains in this week. MIXED athletes (lineman on one side
+// of the ball, skill on the other) alternate: odd program weeks skill, even weeks
+// lineman (same odd/even idea as the deadlift / RDL alternation).
+export function laneFor(position: string | null | undefined, week: number): { group: PositionGroup; lane: "LINE" | "SKILL" | "UNKNOWN"; mixed: boolean } {
+  const group = positionGroup(position);
+  if (group === "MIXED") return { group, lane: week % 2 === 1 ? "SKILL" : "LINE", mixed: true };
+  return { group, lane: group, mixed: false };
 }
 
 function asCount(v: unknown): number | null {
@@ -257,7 +273,7 @@ export function buildPlanDays(args: {
   const phaseNum = trackKey === "phase1" ? 1 : trackKey === "phase2" ? 2 : 0;
   const week = period.index;
   const rdlWeek = phaseNum > 0 && (week % 2 === 1) === RDL_ON_ODD_WEEKS;
-  const skill = positionGroup(args.position) === "SKILL";
+  const skill = laneFor(args.position, week).lane === "SKILL";
 
   let beforeRetest = false;
   if (phaseNum > 0) {

@@ -4,7 +4,7 @@ import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { getPeriod, getTrack, computeTargetWeight, formatSetsReps, type RawLift } from "@/lib/prescription";
 import { LIFTS, type LiftKey } from "@/lib/calc";
-import { buildPlanDays, dayProgress, isTestPeriod, type TrainingTrack, type PullupMode } from "@/lib/plan";
+import { buildPlanDays, dayProgress, isTestPeriod, laneFor, type TrainingTrack, type PullupMode } from "@/lib/plan";
 import { weekInfo } from "@/lib/schedule";
 import NavBar from "@/components/NavBar";
 import DayCards from "@/components/DayCards";
@@ -118,6 +118,20 @@ export default async function DashboardPage() {
             <p className="text-xs text-muted mt-2">
               Load bias: linemen train at the upper end of the +/-2.5% band around the prescribed %, skill positions at the
               lower end. Your coach will tell you which you are.
+            </p>
+          )}
+          {(trackKey === "phase1" || trackKey === "phase2") && !testWeek && laneFor(user.position, period?.index ?? 1).mixed && (
+            <p className="text-xs text-muted mt-1">
+              You play a lineman spot on one side of the ball and a skill spot on the other, so you alternate: this is a{" "}
+              <span className="text-fg font-semibold">
+                {laneFor(user.position, period?.index ?? 1).lane === "LINE" ? "lineman" : "skill"}
+              </span>{" "}
+              week
+              {trackKey === "phase1"
+                ? laneFor(user.position, period?.index ?? 1).lane === "LINE"
+                  ? " (standard circuit stations)."
+                  : " (Jump Station replaces one circuit station)."
+                : "."}
             </p>
           )}
           {track?.trailingNote && <p className="text-sm text-muted mt-2">{track.trailingNote}</p>}

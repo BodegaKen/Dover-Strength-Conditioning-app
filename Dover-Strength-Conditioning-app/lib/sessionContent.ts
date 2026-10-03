@@ -44,6 +44,11 @@ function mk(
 const chk = (lift: string, label: string, section: PlanSection, extra: Partial<PlanExercise> = {}) =>
   mk({ lift, label, section, entry: "check", ...extra });
 
+// Display-only item: shown so athletes know it is part of the day, never logged
+// and never counted toward completion (sets = 0). The warm-up is usually run as a team.
+const info = (lift: string, label: string, section: PlanSection, extra: Partial<PlanExercise> = {}) =>
+  mk({ lift, label, section, entry: "info", sets: 0, ...extra });
+
 // ---------------------------------------------------------------- NMT warm-up
 
 const PART1 = [
@@ -82,9 +87,12 @@ function warmup(ctx: SessionCtx): PlanExercise[] {
     "Bodyweight squat to calf/toe raise, 10 reps (2 sets)",
   ];
 
+  // Phase 1 Day C/D: the lateral bound sits in the warm-up (after Part 2, before Part 3).
+  if (lateralPre) part2.push("Lateral bound, stick the landing, 6-8 per side");
+
   const out: PlanExercise[] = [
-    chk("wu_part1", "NMT Part 1 - Activation (3-4 min)", "warmup", { details: PART1 }),
-    chk("wu_part2", "NMT Part 2 - Strength, balance & neck (5-6 min)", "warmup", { details: part2 }),
+    info("wu_part1", "NMT Part 1 - Activation (3-4 min)", "warmup", { details: PART1 }),
+    info("wu_part2", "NMT Part 2 - Strength, balance & neck (5-6 min)", "warmup", { details: part2 }),
   ];
   if (nordicPre) {
     out.push(
@@ -99,10 +107,7 @@ function warmup(ctx: SessionCtx): PlanExercise[] {
       })
     );
   }
-  if (lateralPre) {
-    out.push(chk("lateral_bound", "Lateral bound, stick the landing (6-8 per side)", "warmup"));
-  }
-  out.push(chk("wu_part3", "NMT Part 3 - Sport-specific movement (2-3 min)", "warmup", { details: PART3 }));
+  out.push(info("wu_part3", "NMT Part 3 - Sport-specific movement (2-3 min)", "warmup", { details: PART3 }));
   return out;
 }
 
@@ -265,7 +270,7 @@ export function buildSessionExtras(ctx: SessionCtx): SessionExtras {
     accessory: accessories(ctx),
     finisher: finisher(ctx),
     notes: {
-      warmup: "NMT warm-up (~10 min, every session). Check each part off as you finish it.",
+      warmup: "NMT warm-up (~10 min, every session), usually run together as a team. Nothing to check off here - it is on the page so you know it is part of the day.",
       accessory: accessoryNote(ctx),
     },
   };

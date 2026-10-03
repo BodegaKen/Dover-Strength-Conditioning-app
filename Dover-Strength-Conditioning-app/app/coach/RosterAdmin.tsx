@@ -217,9 +217,10 @@ export default function RosterAdmin({ athletes }: { athletes: Athlete[] }) {
             logged under.
           </p>
           <p>
-            <span className="text-fg font-semibold">Position</span> &mdash; in Phase 1, skill positions (anyone recognised as not OL/DL) swap one
-            circuit station for the Jump Station. Positions are matched from what&rsquo;s typed (QB, RB, WR, TE, DB, LB, OL, DL&hellip;);
-            a blank position gets the standard circuit.
+            <span className="text-fg font-semibold">Position</span> &mdash; type every position they play, e.g. &ldquo;OL/DL&rdquo;, &ldquo;RB/LB&rdquo;
+            or &ldquo;OL/LB&rdquo;. Lineman on both sides (OL/DL) = lineman lane. Skill on both sides (RB/LB, WR/DB) = skill lane, which in
+            Phase 1 swaps one circuit station for the Jump Station. Lineman on one side and skill on the other (OL/LB, DL/RB) alternates:
+            skill lane on odd weeks, lineman lane on even weeks. A blank or unrecognised position gets the standard circuit.
           </p>
         </div>
       )}

@@ -16,7 +16,7 @@ export type ExerciseView = {
   pctLabel: string; // e.g. "75% e1RM" or ""
   target: string | null; // e.g. "225" or "205-215"
   targetFirst: number | null;
-  entry: "weight" | "reps" | "time" | "check";
+  entry: "weight" | "reps" | "time" | "check" | "info";
   allowBodyweight?: boolean;
   backoff: { sets: number; reps: string; pctLabel: string; target: string | null } | null;
   ramp?: string; // "50% x5 -> 112.5 lb · 65% x3 -> 145 lb · 75% x2 -> 167.5 lb"
@@ -30,7 +30,7 @@ export type LoggedSetView = { lift: string; setNumber: number; weight: number | 
 const BACKOFF_BASE = 100;
 
 const SECTION_TITLE: Record<Section, string> = {
-  warmup: "Warm-up (NMT)",
+  warmup: "Warm-up (NMT) - do before lifting",
   main: "Main work",
   accessory: "Accessory circuit",
   finisher: "Finisher",
@@ -222,7 +222,24 @@ export default function SetLogger({
     );
   }
 
+  function renderInfo(ex: ExerciseView) {
+    return (
+      <div key={ex.lift} className="border border-line rounded-lg p-3">
+        <div className="font-bold">{ex.label}</div>
+        {ex.note && <div className="text-xs text-muted mt-0.5">{ex.note}</div>}
+        {ex.details && ex.details.length > 0 && (
+          <ul className="list-disc ml-5 mt-1.5 text-sm text-muted flex flex-col gap-0.5">
+            {ex.details.map((d, i) => (
+              <li key={i}>{d}</li>
+            ))}
+          </ul>
+        )}
+      </div>
+    );
+  }
+
   function renderCard(ex: ExerciseView) {
+    if (ex.entry === "info") return renderInfo(ex);
     if (ex.entry === "check") return renderCheck(ex);
     return (
       <div key={ex.lift} className="border border-line rounded-lg p-3">
