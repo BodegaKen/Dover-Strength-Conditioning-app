@@ -5,6 +5,7 @@ import { LIFTS } from "@/lib/calc";
 type Row = {
   name: string;
   position: string;
+  gradYear: number | string;
   bodyweight: number | string;
   lifts: Record<string, number>;
   acwr: number | null;
@@ -18,12 +19,13 @@ function csvCell(value: string | number): string {
 
 export default function ExportCsvButton({ rows }: { rows: Row[] }) {
   function download() {
-    const header = ["Name", "Position", "Bodyweight", ...LIFTS.map((l) => l.label), "ACWR"];
+    const header = ["Name", "Position", "Grad Year", "Bodyweight", ...LIFTS.map((l) => l.label), "ACWR"];
     const lines = [header.map(csvCell).join(",")];
     for (const r of rows) {
       const cells = [
         r.name,
         r.position,
+        r.gradYear,
         r.bodyweight,
         ...LIFTS.map((l) => (r.lifts[l.key] != null ? r.lifts[l.key] : "")),
         r.acwr != null ? Math.round(r.acwr * 100) / 100 : "",

@@ -17,6 +17,7 @@ export type AthleteRecord = {
   name: string;
   role: Role;
   position: string | null;
+  gradYear: number | null;
   bodyweight: number | null;
   pullupTrack: PullupTrack;
   active: boolean;

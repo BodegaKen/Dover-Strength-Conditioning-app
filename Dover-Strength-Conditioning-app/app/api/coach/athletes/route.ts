@@ -32,6 +32,7 @@ export async function GET() {
       name: a.name,
       username: a.username,
       position: a.position,
+      gradYear: a.gradYear,
       bodyweight: a.bodyweight,
       pullupTrack: a.pullupTrack,
       active: a.active,
@@ -49,12 +50,13 @@ export async function POST(req: NextRequest) {
   if (!name) return NextResponse.json({ error: "Name is required." }, { status: 400 });
   const position = body?.position ? body.position.toString().trim() : null;
   const bodyweight = body?.bodyweight ? Number(body.bodyweight) : null;
+  const gradYear = body?.gradYear ? Number(body.gradYear) : null;
   const pin = (body?.pin ?? randomPin()).toString();
 
   const username = await uniqueUsername(name);
   const pinHash = await hashPin(pin);
   const athlete = await prisma.user.create({
-    data: { name, username, position, bodyweight, pinHash, role: "PLAYER" },
+    data: { name, username, position, gradYear, bodyweight, pinHash, role: "PLAYER" },
   });
   return NextResponse.json({
     athlete: { id: athlete.id, name: athlete.name, username: athlete.username },

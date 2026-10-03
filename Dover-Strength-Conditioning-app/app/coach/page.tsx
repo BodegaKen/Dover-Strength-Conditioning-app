@@ -4,6 +4,7 @@ import { prisma } from "@/lib/db";
 import { getAllTracks } from "@/lib/prescription";
 import { LIFTS, computeLoadStats, acwrStatus } from "@/lib/calc";
 import type { AthleteRecord, TestEntryRecord, SessionEntryRecord } from "@/lib/types";
+import Link from "next/link";
 import NavBar from "@/components/NavBar";
 import RosterAdmin from "./RosterAdmin";
 import PhaseWeekSetter from "./PhaseWeekSetter";
@@ -60,24 +61,27 @@ export default async function CoachPage() {
             name: a.name,
             username: a.username,
             position: a.position,
+            gradYear: a.gradYear,
             bodyweight: a.bodyweight,
             active: a.active,
           }))}
         />
 
         <div className="bg-surface border border-line rounded-xl p-4">
-          <div className="flex items-center justify-between gap-3 mb-3">
+          <div className="flex items-center justify-between gap-3 mb-1">
             <h2 className="text-lg">Current numbers</h2>
             <ExportCsvButton
               rows={rows.map((r) => ({
                 name: r.athlete.name,
                 position: r.athlete.position ?? "",
+                gradYear: r.athlete.gradYear ?? "",
                 bodyweight: r.athlete.bodyweight ?? "",
                 lifts: r.lifts,
                 acwr: r.stats.acwr,
               }))}
             />
           </div>
+          <p className="text-sm text-muted mb-3">Click a player&rsquo;s name for their day-by-day log.</p>
           <div className="overflow-x-auto -mx-4 px-4">
             <table className="w-full text-sm border-collapse">
               <thead>
@@ -101,7 +105,11 @@ export default async function CoachPage() {
                 )}
                 {rows.map((r) => (
                   <tr key={r.athlete.id} className="border-t border-line">
-                    <td className="py-2 pr-3 font-semibold whitespace-nowrap">{r.athlete.name}</td>
+                    <td className="py-2 pr-3 font-semibold whitespace-nowrap">
+                      <Link href={`/coach/athletes/${r.athlete.id}`} className="hover:text-accent hover:underline">
+                        {r.athlete.name}
+                      </Link>
+                    </td>
                     {LIFTS.map((l) => (
                       <td key={l.key} className="py-2 pr-3 num">
                         {r.lifts[l.key] != null ? r.lifts[l.key] : <span className="text-muted">&mdash;</span>}

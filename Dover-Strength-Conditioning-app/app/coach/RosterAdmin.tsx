@@ -2,12 +2,14 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 type Athlete = {
   id: string;
   name: string;
   username: string;
   position: string | null;
+  gradYear: number | null;
   bodyweight: number | null;
   active: boolean;
 };
@@ -17,6 +19,7 @@ export default function RosterAdmin({ athletes }: { athletes: Athlete[] }) {
   const [showArchived, setShowArchived] = useState(false);
   const [name, setName] = useState("");
   const [position, setPosition] = useState("");
+  const [gradYear, setGradYear] = useState("");
   const [bodyweight, setBodyweight] = useState("");
   const [addResult, setAddResult] = useState<string | null>(null);
   const [bulkText, setBulkText] = useState("");
@@ -34,13 +37,14 @@ export default function RosterAdmin({ athletes }: { athletes: Athlete[] }) {
     const res = await fetch("/api/coach/athletes", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, position, bodyweight: bodyweight || undefined }),
+      body: JSON.stringify({ name, position, gradYear: gradYear || undefined, bodyweight: bodyweight || undefined }),
     });
     const data = await res.json();
     if (res.ok) {
       setAddResult(`Added ${data.athlete.name} — username "${data.athlete.username}", PIN ${data.pin}. Give this to them now; it only shows once.`);
       setName("");
       setPosition("");
+      setGradYear("");
       setBodyweight("");
       router.refresh();
     } else {
@@ -129,6 +133,16 @@ export default function RosterAdmin({ athletes }: { athletes: Athlete[] }) {
             placeholder="e.g. LB/RB"
           />
         </div>
+        <div className="w-28">
+          <label className="block text-xs font-semibold uppercase tracking-wide text-muted mb-1">Grad year</label>
+          <input
+            type="number"
+            className="w-full bg-bg border border-line rounded-md px-3 py-2.5"
+            value={gradYear}
+            onChange={(e) => setGradYear(e.target.value)}
+            placeholder="e.g. 2027"
+          />
+        </div>
         <div className="w-32">
           <label className="block text-xs font-semibold uppercase tracking-wide text-muted mb-1">Bodyweight</label>
           <input
@@ -159,14 +173,15 @@ export default function RosterAdmin({ athletes }: { athletes: Athlete[] }) {
         <form onSubmit={addBulk} className="flex flex-col gap-2">
           <p className="text-sm text-muted">
             One athlete per line, pasted from Hudl, MaxPreps, a spreadsheet, anywhere. A leading jersey
-            number is stripped; a comma, tab, or dash after the name becomes their position.
+            number is stripped; a comma, tab, or dash after the name becomes their position; a class
+            year anywhere in the line (2027, &lsquo;27, or class of 2027) becomes their graduation year.
           </p>
           <textarea
             className="w-full bg-bg border border-line rounded-md px-3 py-2.5 font-mono text-sm"
             rows={6}
             value={bulkText}
             onChange={(e) => setBulkText(e.target.value)}
-            placeholder={"34 John Smith, LB\n22 Alex Rivera - RB\nChris Lee"}
+            placeholder={"34 John Smith, LB, 2027\n22 Alex Rivera - RB '26\nChris Lee 2028"}
           />
           <button
             type="submit"
@@ -189,9 +204,12 @@ export default function RosterAdmin({ athletes }: { athletes: Athlete[] }) {
         {list.map((a) => (
           <div key={a.id} className="flex items-center justify-between gap-3 py-2">
             <div>
-              <div className="font-semibold text-sm">{a.name}</div>
+              <Link href={`/coach/athletes/${a.id}`} className="font-semibold text-sm hover:text-accent hover:underline">
+                {a.name}
+              </Link>
               <div className="text-xs text-muted">
                 @{a.username}
+                {a.gradYear ? ` · Class of ${a.gradYear}` : ""}
                 {a.position ? ` · ${a.position}` : ""}
                 {a.bodyweight ? ` · ${a.bodyweight} lb` : ""}
               </div>

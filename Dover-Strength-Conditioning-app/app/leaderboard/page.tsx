@@ -28,11 +28,11 @@ export default async function LeaderboardPage() {
     const entries = athletes
       .map((a) => {
         const val = latestByAthleteLift[a.id]?.[l.key];
-        return val != null ? { name: a.name, val } : null;
+        return val != null ? { name: a.name, gradYear: a.gradYear, val } : null;
       })
-      .filter((x): x is { name: string; val: number } => x !== null)
+      .filter((x): x is { name: string; gradYear: number | null; val: number } => x !== null)
       .sort((a, b) => b.val - a.val)
-      .slice(0, 10);
+      .slice(0, 5);
     return { key: l.key, label: l.label, entries };
   });
 
@@ -41,22 +41,22 @@ export default async function LeaderboardPage() {
       const lifts = latestByAthleteLift[a.id] ?? {};
       if (!TOTAL_LIFTS.every((k) => k in lifts)) return null;
       const sum = TOTAL_LIFTS.reduce((s, k) => s + lifts[k], 0);
-      return { name: a.name, val: sum };
+      return { name: a.name, gradYear: a.gradYear, val: sum };
     })
-    .filter((x): x is { name: string; val: number } => x !== null)
+    .filter((x): x is { name: string; gradYear: number | null; val: number } => x !== null)
     .sort((a, b) => b.val - a.val)
-    .slice(0, 10);
+    .slice(0, 5);
 
   const relative = athletes
     .map((a) => {
       const lifts = latestByAthleteLift[a.id] ?? {};
       if (!a.bodyweight || !TOTAL_LIFTS.every((k) => k in lifts)) return null;
       const sum = TOTAL_LIFTS.reduce((s, k) => s + lifts[k], 0);
-      return { name: a.name, val: sum / a.bodyweight };
+      return { name: a.name, gradYear: a.gradYear, val: sum / a.bodyweight };
     })
-    .filter((x): x is { name: string; val: number } => x !== null)
+    .filter((x): x is { name: string; gradYear: number | null; val: number } => x !== null)
     .sort((a, b) => b.val - a.val)
-    .slice(0, 10);
+    .slice(0, 5);
 
   return (
     <div>
@@ -82,7 +82,7 @@ function LbCard({
   unit,
 }: {
   title: string;
-  entries: { name: string; val: number }[];
+  entries: { name: string; gradYear: number | null; val: number }[];
   unit: "lb" | "x";
 }) {
   return (
@@ -95,7 +95,10 @@ function LbCard({
           {entries.map((e, i) => (
             <li key={e.name + i} className="flex items-baseline gap-2">
               <span className="num text-muted w-5">{i + 1}</span>
-              <span className="flex-1 font-semibold truncate">{e.name}</span>
+              <span className="flex-1 truncate">
+                <span className="font-semibold">{e.name}</span>
+                {e.gradYear ? <span className="text-muted text-sm"> &rsquo;{String(e.gradYear).slice(-2)}</span> : ""}
+              </span>
               <span className={`num font-semibold ${i === 0 ? "text-accent" : ""}`}>
                 {unit === "x" ? `${(Math.round(e.val * 100) / 100).toFixed(2)}×` : `${Math.round(e.val * 10) / 10} lb`}
               </span>

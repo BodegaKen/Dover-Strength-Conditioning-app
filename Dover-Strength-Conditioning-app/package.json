@@ -10,7 +10,7 @@
     "postinstall": "prisma generate",
     "seed": "ts-node prisma/seed.ts"
   },
-    "prisma": {
+  "prisma": {
     "seed": "ts-node prisma/seed.ts"
   },
   "ts-node": {

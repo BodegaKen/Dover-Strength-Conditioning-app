@@ -40,6 +40,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   const data: Record<string, unknown> = {};
   if (typeof body?.name === "string" && body.name.trim()) data.name = body.name.trim();
   if ("position" in (body ?? {})) data.position = body.position ? String(body.position).trim() : null;
+  if ("gradYear" in (body ?? {})) data.gradYear = body.gradYear ? Number(body.gradYear) : null;
   if ("bodyweight" in (body ?? {})) data.bodyweight = body.bodyweight ? Number(body.bodyweight) : null;
   if (body?.pullupTrack === "BODYWEIGHT" || body?.pullupTrack === "WEIGHTED") {
     data.pullupTrack = body.pullupTrack;

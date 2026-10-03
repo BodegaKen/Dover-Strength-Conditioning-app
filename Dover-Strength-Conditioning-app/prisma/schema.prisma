@@ -25,6 +25,7 @@ model User {
   name         String
   role         Role      @default(PLAYER)
   position     String?
+  gradYear     Int?
   bodyweight   Float?
   pullupTrack  PullupTrack @default(BODYWEIGHT)
   active       Boolean   @default(true)
