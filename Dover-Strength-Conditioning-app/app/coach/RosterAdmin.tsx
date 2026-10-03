@@ -11,6 +11,8 @@ type Athlete = {
   position: string | null;
   gradYear: number | null;
   bodyweight: number | null;
+  pullupTrack: "BODYWEIGHT" | "WEIGHTED";
+  trainingTrack: "FULL" | "MULTI_SPORT";
   active: boolean;
 };
 
@@ -83,6 +85,15 @@ export default function RosterAdmin({ athletes }: { athletes: Athlete[] }) {
     if (action === "resetPin" && res.ok) {
       setPinNotice(`New PIN: ${data.pin}. They'll be asked to set their own on next login.`);
     }
+    router.refresh();
+  }
+
+  async function setField(id: string, patch: Record<string, string>) {
+    await fetch(`/api/coach/athletes/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "update", ...patch }),
+    });
     router.refresh();
   }
 
@@ -213,6 +224,32 @@ export default function RosterAdmin({ athletes }: { athletes: Athlete[] }) {
                 {a.position ? ` · ${a.position}` : ""}
                 {a.bodyweight ? ` · ${a.bodyweight} lb` : ""}
               </div>
+              {!showArchived && (
+                <div className="flex flex-wrap gap-2 mt-1.5">
+                  <label className="text-xs text-muted flex items-center gap-1">
+                    Track
+                    <select
+                      className="bg-bg border border-line rounded-md px-1.5 py-1 text-xs text-fg"
+                      value={a.trainingTrack}
+                      onChange={(e) => setField(a.id, { trainingTrack: e.target.value })}
+                    >
+                      <option value="FULL">Full (4 days)</option>
+                      <option value="MULTI_SPORT">Multi-Sport (2 days)</option>
+                    </select>
+                  </label>
+                  <label className="text-xs text-muted flex items-center gap-1">
+                    Pull-ups
+                    <select
+                      className="bg-bg border border-line rounded-md px-1.5 py-1 text-xs text-fg"
+                      value={a.pullupTrack}
+                      onChange={(e) => setField(a.id, { pullupTrack: e.target.value })}
+                    >
+                      <option value="BODYWEIGHT">Bodyweight / assisted</option>
+                      <option value="WEIGHTED">Weighted</option>
+                    </select>
+                  </label>
+                </div>
+              )}
             </div>
             <div className="flex gap-1.5 flex-shrink-0">
               {!showArchived && (

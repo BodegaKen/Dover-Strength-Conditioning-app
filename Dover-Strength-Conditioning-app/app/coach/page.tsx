@@ -63,6 +63,8 @@ export default async function CoachPage() {
             position: a.position,
             gradYear: a.gradYear,
             bodyweight: a.bodyweight,
+            pullupTrack: a.pullupTrack,
+            trainingTrack: a.trainingTrack,
             active: a.active,
           }))}
         />

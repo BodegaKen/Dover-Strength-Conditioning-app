@@ -10,6 +10,10 @@ export type RawLift = {
   note?: string;
   scheme?: string;
   powerLaneCAT?: { sets?: number | string; reps?: number | string; pctE1RM?: number | string | null; note?: string };
+  backoff?: { sets?: number | string; reps?: number | string; pctE1RM?: number | string | null };
+  // Pull-up only: structured version of the prose in `scheme`, one per track.
+  weightedPlan?: { sets: number; reps: string; pctE1RM?: number; atTestedWeight?: boolean };
+  bodyweightPlan?: { sets: number; reps: string };
 };
 
 export type Period = {

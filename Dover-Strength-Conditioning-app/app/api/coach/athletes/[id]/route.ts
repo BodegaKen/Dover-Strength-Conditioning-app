@@ -45,6 +45,9 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   if (body?.pullupTrack === "BODYWEIGHT" || body?.pullupTrack === "WEIGHTED") {
     data.pullupTrack = body.pullupTrack;
   }
+  if (body?.trainingTrack === "FULL" || body?.trainingTrack === "MULTI_SPORT") {
+    data.trainingTrack = body.trainingTrack;
+  }
   await prisma.user.update({ where: { id: athlete.id }, data });
   return NextResponse.json({ ok: true });
 }

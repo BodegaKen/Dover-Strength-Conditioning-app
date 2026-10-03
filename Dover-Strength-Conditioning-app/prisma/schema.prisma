@@ -18,6 +18,14 @@ enum PullupTrack {
   WEIGHTED
 }
 
+// Full 4-day track vs. the 2-day Multi-Sport Maintenance Track (winter/spring
+// sport athletes). Assigned per athlete by the coach, independent of the
+// team-wide phase/week in ProgramState.
+enum TrainingTrack {
+  FULL
+  MULTI_SPORT
+}
+
 model User {
   id           String    @id @default(cuid())
   username     String    @unique
@@ -28,12 +36,14 @@ model User {
   gradYear     Int?
   bodyweight   Float?
   pullupTrack  PullupTrack @default(BODYWEIGHT)
+  trainingTrack TrainingTrack @default(FULL)
   active       Boolean   @default(true)
   mustChangePin Boolean  @default(true)
   createdAt    DateTime  @default(now())
 
   tests        TestEntry[]
   sessions     SessionEntry[]
+  setLogs      SetLog[]
 
   @@index([active])
 }
@@ -73,4 +83,33 @@ model ProgramState {
   trackKey       String   // e.g. "phase1", "bridge_2_3", "phase5"
   week           Int      // week number within that track; for phase5, "week of season"
   updatedAt      DateTime @updatedAt
+}
+
+// One row per set an athlete logs against a day of the prescribed program
+// (e.g. Monday's "Squat 4x5 @ 75%" -> setNumber 1-4; back-off sets are
+// numbered 101+). A plan day is complete once every work set has a row, and
+// the calendar checkmarks the date it was performed. trackKey/week/planDay
+// identify WHICH prescribed day the set belongs to (the team's current week
+// moves on, so history can't be rebuilt from ProgramState); variant and
+// pullupMode freeze the athlete's setup at log time so a later track change
+// doesn't retroactively change what "complete" meant.
+model SetLog {
+  id          String   @id @default(cuid())
+  athleteId   String
+  athlete     User     @relation(fields: [athleteId], references: [id], onDelete: Cascade)
+  date        String   // ISO yyyy-mm-dd the work was actually performed
+  trackKey    String   // e.g. "phase1"
+  week        Int
+  planDay     String   // "Monday", "Track Day 1", "GD-4 (Lift Day 1)", "Session"
+  variant     String   @default("FULL")       // "FULL" | "MULTI_SPORT"
+  pullupMode  String   @default("BODYWEIGHT") // "BODYWEIGHT" | "WEIGHTED"
+  lift        String   // "squat" | "bench" | "deadlift" | "ohp" | "pullup"
+  setNumber   Int      // 1..n work sets; 101.. = back-off sets
+  weight      Float?   // null for bodyweight pull-ups (reps only)
+  reps        Int?
+  enteredAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([athleteId, trackKey, week, planDay, lift, setNumber])
+  @@index([athleteId, date])
 }

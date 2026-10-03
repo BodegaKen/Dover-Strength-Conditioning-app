@@ -35,6 +35,7 @@ export async function GET() {
       gradYear: a.gradYear,
       bodyweight: a.bodyweight,
       pullupTrack: a.pullupTrack,
+      trainingTrack: a.trainingTrack,
       active: a.active,
       mustChangePin: a.mustChangePin,
     })),

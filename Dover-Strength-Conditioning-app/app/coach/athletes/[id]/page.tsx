@@ -3,6 +3,8 @@ import Link from "next/link";
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import NavBar from "@/components/NavBar";
+import MonthCalendar from "@/components/MonthCalendar";
+import { getCalendarData } from "@/lib/calendar";
 import { LIFTS, LIFT_LABEL, computeLoadStats, acwrStatus, addDaysISO, todayISO } from "@/lib/calc";
 import type { AthleteRecord, TestEntryRecord, SessionEntryRecord } from "@/lib/types";
 
@@ -26,7 +28,13 @@ type ActivityRow =
   | { kind: "session"; date: string; type: string; rpe: number; durationMin: number; load: number }
   | { kind: "test"; date: string; lift: string; fiveRM: number; e1RM: number };
 
-export default async function AthleteDetailPage({ params }: { params: { id: string } }) {
+export default async function AthleteDetailPage({
+  params,
+  searchParams,
+}: {
+  params: { id: string };
+  searchParams: { m?: string };
+}) {
   const session = await getSession();
   if (!session) redirect("/login");
   const coach = await prisma.user.findUnique({ where: { id: session.sub } });
@@ -56,6 +64,9 @@ export default async function AthleteDetailPage({ params }: { params: { id: stri
     where: { athleteId: athlete.id },
     orderBy: { date: "desc" },
   });
+
+  const calendarData = await getCalendarData(athlete.id);
+  const calMonth = /^\d{4}-\d{2}$/.test(searchParams?.m ?? "") ? (searchParams.m as string) : todayISO().slice(0, 7);
 
   const latestByLift: Record<string, number> = {};
   for (const t of tests) {
@@ -124,6 +135,7 @@ export default async function AthleteDetailPage({ params }: { params: { id: stri
                 {athlete.gradYear ? ` · Class of ${athlete.gradYear}` : ""}
                 {athlete.position ? ` · ${athlete.position}` : ""}
                 {athlete.bodyweight ? ` · ${athlete.bodyweight} lb` : ""}
+                {athlete.trainingTrack === "MULTI_SPORT" ? " · Multi-Sport track" : " · Full track"}
                 {!athlete.active ? " · Archived" : ""}
               </div>
             </div>
@@ -162,8 +174,18 @@ export default async function AthleteDetailPage({ params }: { params: { id: stri
           </div>
         </div>
 
+        <div className="flex flex-col gap-2">
+          <h3 className="text-base">Training calendar &amp; logged sets</h3>
+          <MonthCalendar
+            month={calMonth}
+            data={calendarData}
+            today={todayISO()}
+            basePath={`/coach/athletes/${athlete.id}`}
+          />
+        </div>
+
         <div className="flex flex-col gap-4">
-          <h3 className="text-base">Weekly log</h3>
+          <h3 className="text-base">Weekly log (max tests &amp; session RPE)</h3>
           {weeks.length === 0 && (
             <p className="text-sm text-muted">No tests or sessions logged yet.</p>
           )}

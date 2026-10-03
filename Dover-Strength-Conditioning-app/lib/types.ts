@@ -9,6 +9,7 @@
 
 export type Role = "PLAYER" | "COACH";
 export type PullupTrack = "BODYWEIGHT" | "WEIGHTED";
+export type TrainingTrack = "FULL" | "MULTI_SPORT";
 
 export type AthleteRecord = {
   id: string;
@@ -20,6 +21,7 @@ export type AthleteRecord = {
   gradYear: number | null;
   bodyweight: number | null;
   pullupTrack: PullupTrack;
+  trainingTrack: TrainingTrack;
   active: boolean;
   mustChangePin: boolean;
   createdAt: Date;
@@ -43,5 +45,16 @@ export type SessionEntryRecord = {
   rpe: number;
   durationMin: number;
   load: number;
+  enteredAt: Date;
+};
+
+export type SetLogRecord = {
+  id: string;
+  athleteId: string;
+  date: string;
+  lift: string;
+  setNumber: number;
+  weight: number;
+  reps: number | null;
   enteredAt: Date;
 };
