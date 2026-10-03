@@ -20,33 +20,38 @@
                 "reps": 5,
                 "pctE1RM": null,
                 "mode": "test",
-                "note": "Work up to a heavy 5RM. Convert to e1RM (5RM / 0.87, nearest 2.5 lb) immediately after; every later % in this phase is of this e1RM."
+                "note": "Work up to a heavy 5RM. Convert to e1RM (5RM / 0.87, nearest 2.5 lb) immediately after; every later % in this phase is of this e1RM.",
+                "day": "Monday"
               },
               "bench": {
                 "sets": 1,
                 "reps": 5,
                 "pctE1RM": null,
                 "mode": "test",
-                "note": "Work up to a heavy 5RM. Same e1RM conversion as squat."
+                "note": "Work up to a heavy 5RM. Same e1RM conversion as squat.",
+                "day": "Monday"
               },
               "deadlift": {
                 "sets": 1,
                 "reps": 5,
                 "pctE1RM": null,
                 "mode": "test",
-                "note": "Work up to a heavy 5RM. Same e1RM conversion as squat."
+                "note": "Work up to a heavy 5RM. Same e1RM conversion as squat.",
+                "day": "Tuesday"
               },
               "ohp": {
                 "sets": 1,
                 "reps": 5,
                 "pctE1RM": null,
                 "mode": "test",
-                "note": "Work up to a heavy 5RM (Day 4/Friday). Same e1RM conversion. Missed test is picked up at start of Week 2 Day C."
+                "note": "Work up to a heavy 5RM (Day 4/Friday). Same e1RM conversion. Missed test is picked up at start of Week 2 Day C.",
+                "day": "Friday"
               },
               "pullup": {
                 "mode": "test",
                 "scheme": "Max strict bodyweight reps (no added weight/assistance) after 2 easy warm-up sets. 8+ reps -> rest 5 min, then test a weighted 5RM (belt/vest added weight) = Weighted-track baseline. Under 8 reps -> that rep count is the Bodyweight/Assisted-track baseline (rep-based progression, no weight). Cannot do a bodyweight pull-up -> test lat pulldown/assisted pull-up 5RM instead, same rep-based track.",
-                "note": null
+                "note": null,
+                "day": "Tuesday"
               }
             }
           },
@@ -275,33 +280,38 @@
                 "reps": 5,
                 "pctE1RM": null,
                 "mode": "retest",
-                "note": "Re-establish 5RM; convert to new e1RM. Resets baseline for Weeks 7-9."
+                "note": "Re-establish 5RM; convert to new e1RM. Resets baseline for Weeks 7-9.",
+                "day": "Monday"
               },
               "bench": {
                 "sets": 1,
                 "reps": 5,
                 "pctE1RM": null,
                 "mode": "retest",
-                "note": "Re-establish 5RM; convert to new e1RM."
+                "note": "Re-establish 5RM; convert to new e1RM.",
+                "day": "Monday"
               },
               "deadlift": {
                 "sets": 1,
                 "reps": 5,
                 "pctE1RM": null,
                 "mode": "retest",
-                "note": "Re-establish 5RM; convert to new e1RM."
+                "note": "Re-establish 5RM; convert to new e1RM.",
+                "day": "Tuesday"
               },
               "ohp": {
                 "sets": 1,
                 "reps": 5,
                 "pctE1RM": null,
                 "mode": "retest",
-                "note": "Re-establish 5RM; convert to new e1RM."
+                "note": "Re-establish 5RM; convert to new e1RM.",
+                "day": "Friday"
               },
               "pullup": {
                 "mode": "retest",
                 "scheme": "Re-test from scratch using the same Testing Week protocol (bodyweight max reps, then weighted 5RM if 8+).",
-                "note": null
+                "note": null,
+                "day": "Tuesday"
               }
             }
           },
@@ -488,33 +498,38 @@
                 "reps": 5,
                 "pctE1RM": null,
                 "mode": "test",
-                "note": "Work up to a heavy 5RM (ramped off Phase 1's Week 9 e1RM, not cold). Convert to e1RM immediately."
+                "note": "Work up to a heavy 5RM (ramped off Phase 1's Week 9 e1RM, not cold). Convert to e1RM immediately.",
+                "day": "Monday"
               },
               "bench": {
                 "sets": 1,
                 "reps": 5,
                 "pctE1RM": null,
                 "mode": "test",
-                "note": "Work up to a heavy 5RM."
+                "note": "Work up to a heavy 5RM.",
+                "day": "Monday"
               },
               "deadlift": {
                 "sets": 1,
                 "reps": 5,
                 "pctE1RM": null,
                 "mode": "test",
-                "note": "Work up to a heavy 5RM. Vertical Jump (power marker) is tested same day, before this lift."
+                "note": "Work up to a heavy 5RM. Vertical Jump (power marker) is tested same day, before this lift.",
+                "day": "Tuesday"
               },
               "ohp": {
                 "sets": 1,
                 "reps": 5,
                 "pctE1RM": null,
                 "mode": "test",
-                "note": "Work up to a heavy 5RM (Day 4/Friday)."
+                "note": "Work up to a heavy 5RM (Day 4/Friday).",
+                "day": "Friday"
               },
               "pullup": {
                 "mode": "test",
                 "scheme": "Re-tested from scratch using Phase 1's bodyweight-then-weighted protocol (athletes can graduate tracks between phases).",
-                "note": null
+                "note": null,
+                "day": "Tuesday"
               }
             }
           },
@@ -762,33 +777,38 @@
                 "reps": 5,
                 "pctE1RM": null,
                 "mode": "retest",
-                "note": "Re-establish 5RM; convert to new e1RM. Resets baseline for Weeks 8-11."
+                "note": "Re-establish 5RM; convert to new e1RM. Resets baseline for Weeks 8-11.",
+                "day": "Monday"
               },
               "bench": {
                 "sets": 1,
                 "reps": 5,
                 "pctE1RM": null,
                 "mode": "retest",
-                "note": "Re-establish 5RM; convert to new e1RM. Vertical Jump also re-tested."
+                "note": "Re-establish 5RM; convert to new e1RM. Vertical Jump also re-tested.",
+                "day": "Monday"
               },
               "deadlift": {
                 "sets": 1,
                 "reps": 5,
                 "pctE1RM": null,
                 "mode": "retest",
-                "note": "Re-establish 5RM; convert to new e1RM."
+                "note": "Re-establish 5RM; convert to new e1RM.",
+                "day": "Tuesday"
               },
               "ohp": {
                 "sets": 1,
                 "reps": 5,
                 "pctE1RM": null,
                 "mode": "retest",
-                "note": "Re-establish 5RM; convert to new e1RM."
+                "note": "Re-establish 5RM; convert to new e1RM.",
+                "day": "Friday"
               },
               "pullup": {
                 "mode": "retest",
                 "scheme": "Re-test bodyweight-then-weighted protocol.",
-                "note": null
+                "note": null,
+                "day": "Tuesday"
               }
             }
           },

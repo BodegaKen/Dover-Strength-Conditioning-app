@@ -1,7 +1,7 @@
 import programData from "@/data/program-data.json";
 import { round2_5 } from "./calc";
 
-type RawLift = {
+export type RawLift = {
   sets?: number | string;
   reps?: number | string;
   pctE1RM?: number | string | null;
