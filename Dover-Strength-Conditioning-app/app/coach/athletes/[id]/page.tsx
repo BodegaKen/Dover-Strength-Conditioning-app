@@ -4,7 +4,15 @@ import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import NavBar from "@/components/NavBar";
 import MonthCalendar from "@/components/MonthCalendar";
+import DayCards from "@/components/DayCards";
+import BalanceCard from "@/components/BalanceCard";
+import LogForms from "@/app/dashboard/LogForms";
+import EntryActions from "./EntryActions";
 import { getCalendarData } from "@/lib/calendar";
+import { getPeriod, getTrack } from "@/lib/prescription";
+import { buildPlanDays, isTestPeriod, type TrainingTrack, type PullupMode } from "@/lib/plan";
+import { weekInfo } from "@/lib/schedule";
+import { teamMedians } from "@/lib/balance";
 import { LIFTS, LIFT_LABEL, computeLoadStats, acwrStatus, addDaysISO, todayISO } from "@/lib/calc";
 import type { AthleteRecord, TestEntryRecord, SessionEntryRecord } from "@/lib/types";
 
@@ -25,8 +33,8 @@ function cap(s: string): string {
 }
 
 type ActivityRow =
-  | { kind: "session"; date: string; type: string; rpe: number; durationMin: number; load: number }
-  | { kind: "test"; date: string; lift: string; fiveRM: number; e1RM: number };
+  | { kind: "session"; id: string; date: string; type: string; rpe: number; durationMin: number; load: number }
+  | { kind: "test"; id: string; date: string; lift: string; fiveRM: number; e1RM: number };
 
 export default async function AthleteDetailPage({
   params,
@@ -73,6 +81,36 @@ export default async function AthleteDetailPage({
     if (!(t.lift in latestByLift)) latestByLift[t.lift] = t.e1RM;
   }
 
+  // This week's plan for this athlete (coach can edit what they logged).
+  const state = await prisma.programState.findUnique({ where: { id: "current" } });
+  const trackKey = state?.trackKey ?? "phase1";
+  const week = state?.week ?? 1;
+  const period = getPeriod(trackKey, week);
+  const planDays = buildPlanDays({
+    trackKey,
+    period,
+    variant: (athlete.trainingTrack ?? "FULL") as TrainingTrack,
+    pullupMode: (athlete.pullupTrack ?? "BODYWEIGHT") as PullupMode,
+    position: athlete.position,
+  }).filter((d) => !d.isTest);
+  const setRows = await prisma.setLog.findMany({ where: { athleteId: athlete.id, trackKey, week } });
+  const latestFull: Record<string, { e1RM: number; fiveRM: number }> = {};
+  for (const t of tests) if (!(t.lift in latestFull)) latestFull[t.lift] = { e1RM: t.e1RM, fiveRM: t.fiveRM };
+  const winfo = weekInfo(trackKey, week);
+
+  // Team medians for the balance card (active players only).
+  const roster = await prisma.user.findMany({ where: { role: "PLAYER", active: true } });
+  const rosterTests = await prisma.testEntry.findMany({
+    where: { athleteId: { in: roster.map((r: AthleteRecord) => r.id) } },
+    orderBy: { date: "desc" },
+  });
+  const rosterE1: Record<string, Record<string, number>> = {};
+  for (const t of rosterTests) {
+    rosterE1[t.athleteId] ??= {};
+    if (!(t.lift in rosterE1[t.athleteId])) rosterE1[t.athleteId][t.lift] = t.e1RM;
+  }
+  const medians = teamMedians(roster.map((r: AthleteRecord) => ({ e1: rosterE1[r.id] ?? {}, bodyweight: r.bodyweight })));
+
   const stats = computeLoadStats(sessions.map((s) => ({ date: s.date, load: s.load })));
   const status = acwrStatus(stats);
 
@@ -83,6 +121,7 @@ export default async function AthleteDetailPage({
     ...sessions.map(
       (s): ActivityRow => ({
         kind: "session",
+        id: s.id,
         date: s.date,
         type: s.type,
         rpe: s.rpe,
@@ -93,6 +132,7 @@ export default async function AthleteDetailPage({
     ...tests.map(
       (t): ActivityRow => ({
         kind: "test",
+        id: t.id,
         date: t.date,
         lift: t.lift,
         fiveRM: t.fiveRM,
@@ -174,6 +214,51 @@ export default async function AthleteDetailPage({
           </div>
         </div>
 
+        <details className="bg-surface border border-line rounded-xl">
+          <summary className="p-4 cursor-pointer font-display uppercase tracking-wide text-sm">
+            Enter or fix numbers for {athlete.name}
+          </summary>
+          <div className="px-4 pb-4 flex flex-col gap-2">
+            <p className="text-sm text-muted">
+              Log a test max or a session on this player&rsquo;s behalf. To correct or delete an existing entry, use Edit /
+              Delete in the weekly log below.
+            </p>
+            <LogForms
+              athleteId={athlete.id}
+              currentE1RMs={Object.fromEntries(LIFTS.map((l) => [l.key, latestByLift[l.key] ?? null]))}
+            />
+          </div>
+        </details>
+
+        {!isTestPeriod(period) && planDays.length > 0 && (
+          <details className="bg-surface border border-line rounded-xl">
+            <summary className="p-4 cursor-pointer font-display uppercase tracking-wide text-sm">
+              This week&rsquo;s logged sets &mdash; edit for {athlete.name}
+            </summary>
+            <div className="px-4 pb-4 flex flex-col gap-3">
+              <p className="text-sm text-muted">
+                {getTrack(trackKey)?.name ?? "Program"} &middot; {period?.label}
+                {winfo?.dates ? ` (${winfo.dates})` : ""}. Edits save to the date shown in each day&rsquo;s Date done field. Only
+                the team&rsquo;s current week can be edited here.
+              </p>
+              <DayCards
+                days={planDays}
+                rows={setRows}
+                latest={latestFull}
+                dayNotes={winfo?.dayNotes}
+                athleteId={athlete.id}
+              />
+            </div>
+          </details>
+        )}
+
+        <BalanceCard
+          e1={latestByLift}
+          bodyweight={athlete.bodyweight}
+          tests={tests.map((t: TestEntryRecord) => ({ lift: t.lift, e1RM: t.e1RM, date: t.date }))}
+          teamMedians={medians}
+        />
+
         <div className="flex flex-col gap-2">
           <h3 className="text-base">Training calendar &amp; logged sets</h3>
           <MonthCalendar
@@ -206,6 +291,7 @@ export default async function AthleteDetailPage({
                       <th className="py-1.5 pr-3">Date</th>
                       <th className="py-1.5 pr-3">Entry</th>
                       <th className="py-1.5 pr-3">Detail</th>
+                      <th className="py-1.5 pr-3"></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -227,6 +313,13 @@ export default async function AthleteDetailPage({
                             </td>
                           </>
                         )}
+                        <td className="py-2 pr-3">
+                          {r.kind === "session" ? (
+                            <EntryActions kind="session" id={r.id} type={r.type} rpe={r.rpe} durationMin={r.durationMin} date={r.date} />
+                          ) : (
+                            <EntryActions kind="test" id={r.id} fiveRM={r.fiveRM} date={r.date} />
+                          )}
+                        </td>
                       </tr>
                     ))}
                   </tbody>

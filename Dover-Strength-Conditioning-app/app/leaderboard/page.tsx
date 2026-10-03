@@ -61,7 +61,31 @@ export default async function LeaderboardPage() {
   return (
     <div>
       <NavBar role={user.role} name={user.name} />
-      <main className="max-w-3xl mx-auto px-4 py-5">
+      <main className="max-w-3xl mx-auto px-4 py-5 flex flex-col gap-4">
+        <div className="bg-surface border border-line rounded-xl p-4">
+          <h2 className="text-lg">Team Leaderboard</h2>
+          <p className="text-sm text-muted mt-1">
+            The all-time top 5 in the program for each lift. It ranks each player&rsquo;s most recent{" "}
+            <span className="text-fg font-semibold">tested max</span>, shown as an estimated one-rep max (e1RM = tested 5-rep
+            max &divide; 0.87). It moves when someone logs a new test max &mdash; the weights you log in your daily workouts
+            don&rsquo;t change it.
+          </p>
+          <ul className="text-sm text-muted mt-2 list-disc ml-5 flex flex-col gap-0.5">
+            <li>
+              <span className="text-fg font-semibold">Big-4 Total</span> adds squat + bench + deadlift + overhead press. A
+              player needs all four tested to appear.
+            </li>
+            <li>
+              <span className="text-fg font-semibold">Relative Strength</span> is that total divided by bodyweight, so
+              smaller players can climb it too.
+            </li>
+            <li>
+              <span className="text-fg font-semibold">Weighted Pull-up</span> ranks the added weight only.
+            </li>
+            <li>Players who graduate stay on the board, so records last past a player&rsquo;s senior year.</li>
+          </ul>
+          <p className="text-xs text-muted mt-2">Only the leaderboard is shared between players &mdash; nobody&rsquo;s daily logs are visible to teammates.</p>
+        </div>
         <div className="grid sm:grid-cols-2 gap-4">
           <LbCard title="Big-4 Total (Squat+Bench+DL+OHP)" entries={totals} unit="lb" />
           {perLift.map((p) => (

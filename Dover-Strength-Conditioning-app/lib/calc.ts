@@ -117,3 +117,9 @@ export const LIFT_LABEL: Record<string, string> = Object.fromEntries(
 );
 
 export const TOTAL_LIFTS: LiftKey[] = ["squat", "bench", "deadlift", "ohp"];
+
+const WEEKDAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+// "2026-10-03" -> "Saturday" (pure calendar math, independent of server time zone)
+export function weekdayOf(iso: string): string {
+  return WEEKDAY_NAMES[new Date(iso + "T12:00:00Z").getUTCDay()];
+}

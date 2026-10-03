@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
   const variant = (athlete.trainingTrack ?? "FULL") as TrainingTrack;
   const pullupMode = (athlete.pullupTrack ?? "BODYWEIGHT") as PullupMode;
 
-  const days = buildPlanDays({ trackKey, period: getPeriod(trackKey, week), variant, pullupMode });
+  const days = buildPlanDays({ trackKey, period: getPeriod(trackKey, week), variant, pullupMode, position: athlete.position });
   const day = days.find((d) => d.day === planDay && !d.isTest);
   if (!day) return NextResponse.json({ error: "That day isn't loggable this week." }, { status: 400 });
 

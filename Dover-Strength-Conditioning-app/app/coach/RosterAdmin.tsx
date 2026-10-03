@@ -208,6 +208,22 @@ export default function RosterAdmin({ athletes }: { athletes: Athlete[] }) {
 
       {pinNotice && <div className="text-sm rounded-md border border-line bg-bg px-3 py-2">{pinNotice}</div>}
 
+      {!showArchived && (
+        <div className="text-xs text-muted rounded-md border border-line bg-bg px-3 py-2 flex flex-col gap-1">
+          <p>
+            <span className="text-fg font-semibold">Track</span> &mdash; Multi-Sport (2 days/week, no accessory circuit) is for
+            basketball/wrestling in Phase 1 and spring sports in Phase 2. It only changes Phase 1 and 2 weeks, and the player
+            sees it on their This Week page. Switch a player any time; sets they already logged keep the track they were
+            logged under.
+          </p>
+          <p>
+            <span className="text-fg font-semibold">Position</span> &mdash; in Phase 1, skill positions (anyone recognised as not OL/DL) swap one
+            circuit station for the Jump Station. Positions are matched from what&rsquo;s typed (QB, RB, WR, TE, DB, LB, OL, DL&hellip;);
+            a blank position gets the standard circuit.
+          </p>
+        </div>
+      )}
+
       <div className="flex flex-col divide-y divide-line">
         {list.length === 0 && (
           <p className="text-sm text-muted py-2">{showArchived ? "No archived athletes." : "No athletes yet."}</p>

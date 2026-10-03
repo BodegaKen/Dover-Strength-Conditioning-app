@@ -4,37 +4,15 @@ import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { getPeriod, getTrack, computeTargetWeight, formatSetsReps, type RawLift } from "@/lib/prescription";
 import { LIFTS, type LiftKey } from "@/lib/calc";
-import { buildPlanDays, dayProgress, isTestPeriod, type TrainingTrack, type PullupMode, type PlanExercise } from "@/lib/plan";
+import { buildPlanDays, dayProgress, isTestPeriod, type TrainingTrack, type PullupMode } from "@/lib/plan";
+import { weekInfo } from "@/lib/schedule";
 import NavBar from "@/components/NavBar";
+import DayCards from "@/components/DayCards";
 import LogForms from "./LogForms";
-import SetLogger, { type ExerciseView } from "./SetLogger";
 
 const DAY_ORDER = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
 type LiftItem = { key: LiftKey; label: string; lift: RawLift };
-
-// "70-75 (or RPE 7)" -> "70-75"; 75 -> 75; anything unparseable -> null
-function leadingPct(p: number | string | null | undefined): number | string | null {
-  if (p == null) return null;
-  if (typeof p === "number") return p;
-  const m = /^(\d+(?:\.\d+)?)(?:\s*-\s*(\d+(?:\.\d+)?))?/.exec(p.trim());
-  if (!m) return null;
-  return m[2] ? `${m[1]}-${m[2]}` : parseFloat(m[1]);
-}
-
-function pctLabel(p: number | string | null | undefined): string {
-  if (p == null) return "";
-  if (typeof p === "number") return `${p}% e1RM`;
-  const m = /^([\d.]+(?:\s*-\s*[\d.]+)?)(.*)$/.exec(p.trim());
-  return m ? `${m[1]}% e1RM${m[2]}` : p;
-}
-
-function targetOf(e1rm: number | undefined, pct: number | string | null | undefined) {
-  if (e1rm == null) return null;
-  const t = computeTargetWeight(e1rm, leadingPct(pct));
-  if (!t) return null;
-  return { text: t.high ? `${t.low}-${t.high}` : `${t.low}`, first: t.low };
-}
 
 export default async function DashboardPage() {
   const session = await getSession();
@@ -62,33 +40,8 @@ export default async function DashboardPage() {
   }
 
   const testWeek = isTestPeriod(period);
-  const planDays = buildPlanDays({ trackKey, period, variant, pullupMode }).filter((d) => !d.isTest);
+  const planDays = buildPlanDays({ trackKey, period, variant, pullupMode, position: user.position }).filter((d) => !d.isTest);
   const setRows = await prisma.setLog.findMany({ where: { athleteId: user.id, trackKey, week } });
-
-  function viewOf(ex: PlanExercise): ExerciseView {
-    const e1 = latestByLift[ex.lift]?.e1RM;
-    let target = ex.entry === "weight" ? targetOf(e1, ex.pctE1RM) : null;
-    if (ex.atTestedWeight && latestByLift[ex.lift]) {
-      const fw = latestByLift[ex.lift].fiveRM;
-      target = { text: `${fw}`, first: fw };
-    }
-    const bo = ex.backoff ? targetOf(e1, ex.backoff.pctE1RM) : null;
-    return {
-      lift: ex.lift,
-      label: ex.label,
-      sets: ex.sets,
-      reps: ex.reps,
-      pctLabel: ex.atTestedWeight ? "tested added weight" : pctLabel(ex.pctE1RM),
-      target: target?.text ?? null,
-      targetFirst: target?.first ?? null,
-      entry: ex.entry,
-      backoff: ex.backoff
-        ? { sets: ex.backoff.sets, reps: ex.backoff.reps, pctLabel: pctLabel(ex.backoff.pctE1RM), target: bo?.text ?? null }
-        : null,
-      note: ex.note,
-      hint: ex.entry === "weight" && target == null && e1 == null && (ex.pctE1RM != null || ex.atTestedWeight) ? "Log a test max to see your target weight." : undefined,
-    };
-  }
 
   // Testing / retest weeks: max-effort tests spread across specific days,
   // logged with the test form below rather than set by set.
@@ -143,6 +96,7 @@ export default async function DashboardPage() {
         : "Your track: Full (4 days/week)"
       : null;
 
+  const info = weekInfo(trackKey, week);
   const progressByDay = planDays.map((d) => {
     const rows = setRows.filter((r) => r.planDay === d.day);
     return { day: d, rows, progress: dayProgress(d, rows) };
@@ -157,7 +111,15 @@ export default async function DashboardPage() {
             {track?.name ?? "Program"}
           </div>
           <h2 className="text-lg mt-0.5">{period?.label ?? "This week"}</h2>
+          {info?.dates && <div className="text-sm text-muted mt-0.5">{info.dates}</div>}
+          {info?.note && <p className="text-sm mt-2">{info.note}</p>}
           {trackLabel && <div className="text-sm text-muted mt-1">{trackLabel}</div>}
+          {(trackKey === "phase1" || trackKey === "phase2") && !testWeek && (
+            <p className="text-xs text-muted mt-2">
+              Load bias: linemen train at the upper end of the +/-2.5% band around the prescribed %, skill positions at the
+              lower end. Your coach will tell you which you are.
+            </p>
+          )}
           {track?.trailingNote && <p className="text-sm text-muted mt-2">{track.trailingNote}</p>}
 
           {!testWeek && progressByDay.length > 0 && (
@@ -199,7 +161,7 @@ export default async function DashboardPage() {
             ))}
             <p className="text-sm text-muted">
               No test is scheduled Thursday &mdash; it&rsquo;s open for rest, or to make up a missed Monday/Tuesday test.
-              Log each max with &ldquo;Log a test max&rdquo; below.
+              Log each max with &ldquo;Log a test max&rdquo; below. Start every test day with the NMT warm-up.
             </p>
           </div>
         ) : planDays.length === 0 ? (
@@ -207,25 +169,12 @@ export default async function DashboardPage() {
             No barbell lifts are scheduled for this period.
           </div>
         ) : (
-          progressByDay.map(({ day, rows, progress }) => {
-            const latestDate = rows.map((r) => r.date).sort().pop();
-            return (
-              <div key={day.day} className="bg-surface border border-line rounded-xl p-4">
-                <div className="flex items-center justify-between gap-3 mb-3">
-                  <h3 className="text-base uppercase tracking-wide font-display">{day.day}</h3>
-                  <span className={`text-xs ${progress.complete ? "text-good font-semibold" : "text-muted"}`}>
-                    {progress.complete ? "Complete ✓" : `${progress.done}/${progress.total} sets`}
-                  </span>
-                </div>
-                <SetLogger
-                  planDay={day.day}
-                  exercises={day.exercises.map(viewOf)}
-                  initial={rows.map((r) => ({ lift: r.lift, setNumber: r.setNumber, weight: r.weight, reps: r.reps }))}
-                  initialDate={latestDate}
-                />
-              </div>
-            );
-          })
+          <DayCards
+            days={planDays}
+            rows={setRows}
+            latest={latestByLift}
+            dayNotes={info?.dayNotes}
+          />
         )}
 
         <LogForms

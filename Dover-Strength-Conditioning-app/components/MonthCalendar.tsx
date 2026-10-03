@@ -101,7 +101,7 @@ export default function MonthCalendar({
                       <span className={e.complete ? "text-good font-semibold" : "text-warning"}>{e.complete ? "✓" : "●"}</span>{" "}
                       <span className="font-semibold">{e.label}</span>
                       {!e.complete && (
-                        <span className="text-muted"> &middot; {e.done}/{e.total} {e.kind === "test" ? "tests" : "sets"}</span>
+                        <span className="text-muted"> &middot; {e.done}/{e.total} {e.kind === "test" ? "tests" : "items"}</span>
                       )}
                       {e.detail && <span className="text-muted"> &middot; {e.detail}</span>}
                     </div>

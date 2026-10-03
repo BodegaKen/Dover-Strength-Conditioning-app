@@ -4,7 +4,13 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { LIFTS, RPE_DESC, calcE1RM, todayISO, LiftKey } from "@/lib/calc";
 
-export default function LogForms({ currentE1RMs }: { currentE1RMs: Record<string, number | null> }) {
+export default function LogForms({
+  currentE1RMs,
+  athleteId,
+}: {
+  currentE1RMs: Record<string, number | null>;
+  athleteId?: string; // coach logging on a player's behalf
+}) {
   const [mode, setMode] = useState<"test" | "session" | null>(null);
 
   return (
@@ -19,8 +25,8 @@ export default function LogForms({ currentE1RMs }: { currentE1RMs: Record<string
           <span className="text-muted text-xs">RPE + duration &rarr; auto load</span>
         </ModeButton>
       </div>
-      {mode === "test" && <TestForm currentE1RMs={currentE1RMs} />}
-      {mode === "session" && <SessionForm />}
+      {mode === "test" && <TestForm currentE1RMs={currentE1RMs} athleteId={athleteId} />}
+      {mode === "session" && <SessionForm athleteId={athleteId} />}
     </div>
   );
 }
@@ -59,7 +65,7 @@ function Feedback({ message, isError }: { message: string; isError?: boolean }) 
   );
 }
 
-function TestForm({ currentE1RMs }: { currentE1RMs: Record<string, number | null> }) {
+function TestForm({ currentE1RMs, athleteId }: { currentE1RMs: Record<string, number | null>; athleteId?: string }) {
   const router = useRouter();
   const [lift, setLift] = useState<LiftKey>(LIFTS[0].key);
   const [fiveRM, setFiveRM] = useState("");
@@ -79,7 +85,7 @@ function TestForm({ currentE1RMs }: { currentE1RMs: Record<string, number | null
       const res = await fetch("/api/tests", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ lift, fiveRM: parsed, date }),
+        body: JSON.stringify({ lift, fiveRM: parsed, date, athleteId }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -149,7 +155,7 @@ function TestForm({ currentE1RMs }: { currentE1RMs: Record<string, number | null
   );
 }
 
-function SessionForm() {
+function SessionForm({ athleteId }: { athleteId?: string }) {
   const router = useRouter();
   const [type, setType] = useState("lift");
   const [date, setDate] = useState(todayISO());
@@ -170,7 +176,7 @@ function SessionForm() {
       const res = await fetch("/api/sessions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type, date, rpe, durationMin: d }),
+        body: JSON.stringify({ type, date, rpe, durationMin: d, athleteId }),
       });
       const data = await res.json();
       if (!res.ok) {

@@ -1,6 +1,7 @@
 import { prisma } from "./db";
 import { getPeriod } from "./prescription";
-import { buildPlanDays, dayProgress, type TrainingTrack, type PullupMode } from "./plan";
+import { buildPlanDays, dayProgress, labelForKey, type TrainingTrack, type PullupMode } from "./plan";
+import { CHECK_KEYS, TIME_KEYS } from "./sessionContent";
 import { LIFT_LABEL, mondayOf } from "./calc";
 import type { SetLogRecord } from "./types";
 
@@ -26,6 +27,7 @@ export type CalendarData = Record<string, CalendarEntry[]>;
 export async function getCalendarData(athleteId: string): Promise<CalendarData> {
   const rows: SetLogRecord[] = (await prisma.setLog.findMany({ where: { athleteId } })) as any;
   const tests = await prisma.testEntry.findMany({ where: { athleteId } });
+  const athlete = await prisma.user.findUnique({ where: { id: athleteId } });
 
   const groups = new Map<string, any[]>();
   for (const r of rows as any[]) {
@@ -42,6 +44,7 @@ export async function getCalendarData(athleteId: string): Promise<CalendarData> 
       period: getPeriod(first.trackKey, first.week),
       variant: first.variant as TrainingTrack,
       pullupMode: first.pullupMode as PullupMode,
+      position: athlete?.position,
     }).find((d) => d.day === first.planDay);
     const progress = day ? dayProgress(day, g) : { done: g.length, total: g.length, complete: false, started: true };
     const date = g.map((r) => r.date as string).sort().pop() as string;
@@ -62,7 +65,6 @@ export async function getCalendarData(athleteId: string): Promise<CalendarData> 
   // (Deadlift+Pull-up) and Friday (Overhead Press). Bodyweight-track
   // athletes test pull-up reps, not a weighted 5RM, so pull-up isn't required
   // of them.
-  const athlete = await prisma.user.findUnique({ where: { id: athleteId } });
   const needsPullup = athlete?.pullupTrack === "WEIGHTED";
   const TEST_GROUPS: string[][] = [["squat", "bench"], ["deadlift", "pullup"], ["ohp"]];
   for (const group of TEST_GROUPS) {
@@ -102,13 +104,16 @@ export function summarizeSets(sets: CalendarSet[]): { lift: string; text: string
     by.get(s.lift)!.push(s);
   }
   return Array.from(by.entries()).map(([lift, ss]) => ({
-    lift: LIFT_LABEL[lift] ?? lift,
-    text: ss
-      .map((s) => {
-        const bo = s.setNumber > 100 ? " (back-off)" : "";
-        if (s.weight != null) return `${s.weight}${s.reps != null ? `×${s.reps}` : ""}${bo}`;
-        return `${s.reps ?? "?"} reps${bo}`;
-      })
-      .join(", "),
+    lift: labelForKey(lift, LIFT_LABEL),
+    text: CHECK_KEYS.has(lift)
+      ? "done"
+      : ss
+          .map((s) => {
+            const bo = s.setNumber > 100 ? " (back-off)" : "";
+            if (TIME_KEYS.has(lift)) return `${s.reps ?? "?"} sec${bo}`;
+            if (s.weight != null) return `${s.weight}${s.reps != null ? `\u00d7${s.reps}` : ""}${bo}`;
+            return `${s.reps ?? "?"} reps${bo}`;
+          })
+          .join(", "),
   }));
 }
