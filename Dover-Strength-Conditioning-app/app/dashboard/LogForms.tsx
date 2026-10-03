@@ -119,7 +119,7 @@ function TestForm({ currentE1RMs }: { currentE1RMs: Record<string, number | null
             type="number"
             min={1}
             max={800}
-            step={2.5}
+            step="any"
             className="w-full bg-bg border border-line rounded-md px-3 py-2.5"
             value={fiveRM}
             onChange={(e) => setFiveRM(e.target.value)}
@@ -216,7 +216,7 @@ function SessionForm() {
             type="number"
             min={1}
             max={240}
-            step={5}
+            step="any"
             className="w-full bg-bg border border-line rounded-md px-3 py-2.5"
             value={durationMin}
             onChange={(e) => setDurationMin(e.target.value)}
