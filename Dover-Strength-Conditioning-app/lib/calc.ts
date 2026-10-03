@@ -17,8 +17,25 @@ export function isoDateLocal(d: Date): string {
   return local.toISOString().slice(0, 10);
 }
 
-export function todayISO(): string {
-  return isoDateLocal(new Date());
+// The team is in Dover, NJ. "Today" is always the Eastern-time date, no
+// matter where the code runs: Vercel's servers run on UTC, so without this a
+// 9pm Friday workout would be stamped as Saturday.
+export const APP_TZ = "America/New_York";
+
+export function todayISO(now: Date = new Date()): string {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: APP_TZ,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(now);
+}
+
+// Monday (ISO yyyy-mm-dd) of the week containing the given date.
+export function mondayOf(iso: string): string {
+  const d = new Date(iso + "T00:00:00");
+  const day = d.getDay(); // 0 Sun .. 6 Sat
+  return addDaysISO(iso, day === 0 ? -6 : 1 - day);
 }
 
 export function addDaysISO(iso: string, n: number): string {

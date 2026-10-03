@@ -1,7 +1,7 @@
 import { prisma } from "./db";
 import { getPeriod } from "./prescription";
 import { buildPlanDays, dayProgress, type TrainingTrack, type PullupMode } from "./plan";
-import { LIFT_LABEL } from "./calc";
+import { LIFT_LABEL, mondayOf } from "./calc";
 import type { SetLogRecord } from "./types";
 
 export type CalendarSet = { lift: string; setNumber: number; weight: number | null; reps: number | null };
@@ -56,16 +56,41 @@ export async function getCalendarData(athleteId: string): Promise<CalendarData> 
         .sort((a, b) => a.lift.localeCompare(b.lift) || a.setNumber - b.setNumber),
     });
   }
-  for (const t of tests) {
-    (out[t.date] ??= []).push({
-      kind: "test",
-      label: `${LIFT_LABEL[t.lift] ?? t.lift} max test`,
-      complete: true,
-      done: 1,
-      total: 1,
-      sets: [],
-      detail: `5RM ${t.fiveRM} → e1RM ${t.e1RM}`,
-    });
+  // Max tests follow the same rule as training days: a test day only gets a
+  // checkmark once every lift scheduled for it is logged that week. Testing
+  // Week / Retest Week split the lifts Monday (Squat+Bench), Tuesday
+  // (Deadlift+Pull-up) and Friday (Overhead Press). Bodyweight-track
+  // athletes test pull-up reps, not a weighted 5RM, so pull-up isn't required
+  // of them.
+  const athlete = await prisma.user.findUnique({ where: { id: athleteId } });
+  const needsPullup = athlete?.pullupTrack === "WEIGHTED";
+  const TEST_GROUPS: string[][] = [["squat", "bench"], ["deadlift", "pullup"], ["ohp"]];
+  for (const group of TEST_GROUPS) {
+    const required = group.filter((l) => l !== "pullup" || needsPullup);
+    const byWeek = new Map<string, typeof tests>();
+    for (const t of tests) {
+      if (!group.includes(t.lift)) continue;
+      const wk = mondayOf(t.date);
+      if (!byWeek.has(wk)) byWeek.set(wk, []);
+      byWeek.get(wk)!.push(t);
+    }
+    for (const [, ts] of byWeek) {
+      const latest = new Map<string, (typeof tests)[number]>();
+      for (const t of ts.slice().sort((a, b) => (a.date < b.date ? -1 : 1))) latest.set(t.lift, t);
+      const done = required.filter((l) => latest.has(l)).length;
+      const date = ts.map((t) => t.date).sort().pop() as string;
+      (out[date] ??= []).push({
+        kind: "test",
+        label: `Max tests: ${group.filter((l) => latest.has(l) || required.includes(l)).map((l) => LIFT_LABEL[l] ?? l).join(" + ")}`,
+        complete: required.length > 0 && done >= required.length,
+        done,
+        total: required.length,
+        sets: [],
+        detail: Array.from(latest.values())
+          .map((t) => `${LIFT_LABEL[t.lift] ?? t.lift} 5RM ${t.fiveRM} \u2192 e1RM ${t.e1RM}`)
+          .join("; "),
+      });
+    }
   }
   return out;
 }
