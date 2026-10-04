@@ -260,7 +260,7 @@ function accessories(ctx: SessionCtx): PlanExercise[] {
 function accessoryNote(ctx: SessionCtx): string | undefined {
   if (ctx.dayId === "MS1" || ctx.dayId === "MS2") return undefined;
   const base =
-    "True circuit: go station 1, 2, 3, 4, then repeat for 3 rounds in total. Each station row below is one round. Found weight: pick a weight where the last 1-2 reps of the last round are hard but form holds (~2-3 reps in reserve). Write it down, and add weight next week once all 3 rounds feel clearly easy. Bodyweight only? Leave weight blank and enter reps.";
+    "True circuit: go through the stations in order, then repeat for 3 rounds in total. Each station row below is one round. Found weight: pick a weight where the last 1-2 reps of the last round are hard but form holds (~2-3 reps in reserve). Write it down, and add weight next week once all 3 rounds feel clearly easy. Bodyweight only? Leave weight blank and enter reps.";
   return base;
 }
 

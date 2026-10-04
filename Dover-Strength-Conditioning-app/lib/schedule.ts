@@ -9,7 +9,7 @@ export type WeekInfo = {
 };
 
 const P1: Record<number, WeekInfo> = {
-  1: { dates: "Dec 14-18, 2026", note: "Testing Week. Timed to land before Winter Break (Dec 21 - Jan 3)." },
+  1: { dates: "Dec 14-18, 2026", note: "Testing Week. Timed to land before Winter Break (district closure Dec 24 - Jan 1; Dec 21-23 are intentionally left unprogrammed)." },
   2: { dates: "Jan 4-8, 2027", note: "First week back after Winter Break: 3 work sets instead of 4, same prescribed %." },
   3: { dates: "Jan 11-15, 2027" },
   4: {
@@ -47,6 +47,9 @@ const P2: Record<number, WeekInfo> = {
   5: {
     dates: "Apr 5-9, 2027",
     note: "First week back from Spring Break: Strength Lane runs 78% x 3 (not 84% x 4). The Power Lane stays as written.",
+    dayNotes: {
+      Friday: "Fri Apr 9 is a staff in-service, single-session day for students. Day D still runs - your coach will set the time (after school or a shortened session).",
+    },
   },
   6: { dates: "Apr 12-16, 2027" },
   7: { dates: "Apr 19-23, 2027", note: "Retest week." },

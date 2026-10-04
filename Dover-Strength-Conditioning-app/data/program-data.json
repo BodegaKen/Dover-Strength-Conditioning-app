@@ -60,11 +60,11 @@
             "label": "Week 2",
             "lifts": {
               "squat": {
-                "sets": 4,
+                "sets": 3,
                 "reps": 5,
                 "pctE1RM": 75,
                 "mode": "load",
-                "note": "Reintroduction - technique check under load",
+                "note": "Reintroduction after Winter Break - 3 sets (volume dip), technique check under load",
                 "backoff": {
                   "sets": 1,
                   "reps": "10-12",
@@ -73,11 +73,11 @@
                 "day": "Monday"
               },
               "bench": {
-                "sets": 4,
+                "sets": 3,
                 "reps": 5,
                 "pctE1RM": 75,
                 "mode": "load",
-                "note": "Reintroduction - technique check under load",
+                "note": "Reintroduction after Winter Break - 3 sets (volume dip), technique check under load",
                 "backoff": {
                   "sets": 1,
                   "reps": "10-12",
@@ -86,11 +86,11 @@
                 "day": "Thursday"
               },
               "deadlift": {
-                "sets": 4,
+                "sets": 3,
                 "reps": 5,
                 "pctE1RM": 75,
                 "mode": "load",
-                "note": "Reintroduction - technique check under load Alternates with Romanian Deadlift every other week; on RDL weeks the % is a ceiling, not a target.",
+                "note": "Reintroduction after Winter Break - 3 sets (volume dip), technique check under load Alternates with Romanian Deadlift every other week; on RDL weeks the % is a ceiling, not a target.",
                 "backoff": {
                   "sets": 1,
                   "reps": "10-12",
@@ -108,16 +108,16 @@
               },
               "pullup": {
                 "mode": "weighted|bodyweight",
-                "scheme": "Weighted track: 4x5 @ 75% of tested weighted 5RM e1RM (same weekly exceptions as other main lifts), back-off = 10-12 bodyweight-only reps. Bodyweight/Assisted track: 4 sets x max reps (after 2 warm-up sets of 3-5), progressing toward 8+ reps to graduate onto the Weighted track; no back-off set.",
+                "scheme": "Weighted track: 3x5 @ 75% of tested weighted 5RM e1RM (same weekly exceptions as other main lifts), back-off = 10-12 bodyweight-only reps. Bodyweight/Assisted track: 3 sets x max reps (after 2 warm-up sets of 3-5), progressing toward 8+ reps to graduate onto the Weighted track; no back-off set.",
                 "note": "Reintroduction - technique check under load",
                 "day": "Friday",
                 "weightedPlan": {
-                  "sets": 4,
+                  "sets": 3,
                   "reps": "5",
                   "pctE1RM": 75
                 },
                 "bodyweightPlan": {
-                  "sets": 4,
+                  "sets": 3,
                   "reps": "max"
                 }
               }
@@ -244,7 +244,7 @@
               },
               "pullup": {
                 "mode": "weighted|bodyweight",
-                "scheme": "Weighted track: 3x5 @ 82.5% of tested weighted 5RM e1RM (same weekly exceptions as other main lifts), back-off = 10-12 bodyweight-only reps. Bodyweight/Assisted track: 4 sets x max reps (after 2 warm-up sets of 3-5), progressing toward 8+ reps to graduate onto the Weighted track; no back-off set.",
+                "scheme": "Weighted track: 3x5 @ 82.5% of tested weighted 5RM e1RM (same weekly exceptions as other main lifts), back-off = 10-12 bodyweight-only reps. Bodyweight/Assisted track: 3 sets x max reps (after 2 warm-up sets of 3-5), progressing toward 8+ reps to graduate onto the Weighted track; no back-off set.",
                 "note": "Scheduled volume dip (3x5, not 4x5) before Week 5's peak",
                 "day": "Friday",
                 "weightedPlan": {
@@ -253,7 +253,7 @@
                   "pctE1RM": 82.5
                 },
                 "bodyweightPlan": {
-                  "sets": 4,
+                  "sets": 3,
                   "reps": "max"
                 }
               }
@@ -304,10 +304,10 @@
               },
               "ohp": {
                 "sets": 3,
-                "reps": 5,
+                "reps": 4,
                 "pctE1RM": 85,
                 "mode": "load",
-                "note": "Day D accessory station, dosed off the tested OHP e1RM, not found-weight. OHP accessory (Day D) is always 3 sets (not 4), at the same weekly %. The document does not explicitly state whether OHP's rep count also drops to 4 in Weeks 5/9 the way the main lifts' does -- encoded here at 5 reps unchanged, flagged as an ambiguity.",
+                "note": "Day D accessory station, dosed off the tested OHP e1RM, not found-weight. 3 sets of 4 (not 5) this week, the same peak-week rep-scheme fix as the main lifts.",
                 "day": "Friday"
               },
               "pullup": {
@@ -492,7 +492,7 @@
               },
               "pullup": {
                 "mode": "weighted|bodyweight",
-                "scheme": "Weighted track: 3x5 @ 82% of tested weighted 5RM e1RM (same weekly exceptions as other main lifts), back-off = 10-12 bodyweight-only reps. Bodyweight/Assisted track: 4 sets x max reps (after 2 warm-up sets of 3-5), progressing toward 8+ reps to graduate onto the Weighted track; no back-off set.",
+                "scheme": "Weighted track: 3x5 @ 82% of tested weighted 5RM e1RM (same weekly exceptions as other main lifts), back-off = 10-12 bodyweight-only reps. Bodyweight/Assisted track: 3 sets x max reps (after 2 warm-up sets of 3-5), progressing toward 8+ reps to graduate onto the Weighted track; no back-off set.",
                 "note": "Scheduled volume dip (3x5, not 4x5) before Week 9's peak, of new e1RM",
                 "day": "Friday",
                 "weightedPlan": {
@@ -501,7 +501,7 @@
                   "pctE1RM": 82
                 },
                 "bodyweightPlan": {
-                  "sets": 4,
+                  "sets": 3,
                   "reps": "max"
                 }
               }
@@ -552,10 +552,10 @@
               },
               "ohp": {
                 "sets": 3,
-                "reps": 5,
+                "reps": 4,
                 "pctE1RM": 85,
                 "mode": "load",
-                "note": "Day D accessory station, dosed off the tested OHP e1RM, not found-weight. OHP accessory (Day D) is always 3 sets (not 4), at the same weekly %. The document does not explicitly state whether OHP's rep count also drops to 4 in Weeks 5/9 the way the main lifts' does -- encoded here at 5 reps unchanged, flagged as an ambiguity.",
+                "note": "Day D accessory station, dosed off the tested OHP e1RM, not found-weight. 3 sets of 4 (not 5) this week, the same peak-week rep-scheme fix as the main lifts.",
                 "day": "Friday"
               },
               "pullup": {
