@@ -44,6 +44,7 @@ export type PlanExercise = {
   allowBodyweight?: boolean; // weight entry where reps alone also counts (bodyweight allowed)
   optional?: boolean; // never blocks day completion
   ramp: boolean; // show the 50/65/75% ramp sets
+  rampCapped?: boolean; // Phase 5: drop ramp steps at or above the work-set percentage
   backoff: { sets: number; reps: string; pctE1RM: number | string | null } | null;
   note?: string;
   details?: string[]; // checklist contents for warm-up parts
@@ -115,7 +116,8 @@ function exerciseFor(
   variant: TrainingTrack,
   multiSportEligible: boolean,
   rdlWeek: boolean,
-  phaseNum: number
+  phaseNum: number,
+  rampOn: false | "full" | "capped"
 ): PlanExercise | null {
   const cap = (n: number) => (variant === "MULTI_SPORT" && multiSportEligible ? Math.min(n, 3) : n);
 
@@ -178,8 +180,9 @@ function exerciseFor(
     pctE1RM: lift.pctE1RM ?? null,
     atTestedWeight: false,
     entry: "weight",
-    // The 50/65/75% warm-up ramp is written into Phase 1 and Phase 2 only; Phases 3-5 prescribe straight work sets.
-    ramp: phaseNum > 0 && (key === "squat" || key === "bench" || key === "deadlift"),
+    // The 50/65/75% warm-up ramp is written into Phases 1, 2 and 5. Phase 3/4 maintenance lifts are straight work sets.
+    ramp: rampOn !== false && (key === "squat" || key === "bench" || key === "deadlift"),
+    rampCapped: rampOn === "capped",
     backoff: bo && boSets ? { sets: boSets, reps: String(bo.reps ?? ""), pctE1RM: bo.pctE1RM ?? null } : null,
     note,
   };
@@ -274,6 +277,7 @@ export function buildPlanDays(args: {
   const phaseNum = trackKey === "phase1" ? 1 : trackKey === "phase2" ? 2 : 0;
   const week = period.index;
   const rdlWeek = phaseNum > 0 && (week % 2 === 1) === RDL_ON_ODD_WEEKS;
+  const rampOn: false | "full" | "capped" = phaseNum > 0 ? "full" : trackKey === "phase5" ? "capped" : false;
   const skill = laneFor(args.position, week).lane === "SKILL";
 
   let beforeRetest = false;
@@ -310,7 +314,7 @@ export function buildPlanDays(args: {
       dayFor(dayName, true);
       continue; // test days list their lifts via the existing test cards, not set rows
     }
-    const ex = exerciseFor(l.key, l.label, lift, pullupMode, variant, multiSport, rdlWeek, phaseNum);
+    const ex = exerciseFor(l.key, l.label, lift, pullupMode, variant, multiSport, rdlWeek, phaseNum, rampOn);
     if (!ex) continue;
     const d = dayFor(dayName, false);
     d.exercises.push(ex);

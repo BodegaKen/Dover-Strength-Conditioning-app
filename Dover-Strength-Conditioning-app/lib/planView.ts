@@ -39,10 +39,18 @@ export function viewOf(ex: PlanExercise, latest: Record<string, LatestTest | und
 
   let ramp: string | undefined;
   if (ex.ramp) {
-    ramp =
-      e1 != null
-        ? `50% x5 (${round2_5(e1 * 0.5)}) · 65% x3 (${round2_5(e1 * 0.65)}) · 75% x2 (${round2_5(e1 * 0.75)}) lb`
-        : "50% x5 · 65% x3 · 75% x2 of your e1RM";
+    // Phase 5 skips any ramp step at or above the work-set percentage (Week 1 re-entry runs 70%).
+    const work = ex.rampCapped ? leadingPct(ex.pctE1RM) : null;
+    const workLow = typeof work === "number" ? work : typeof work === "string" ? parseFloat(work) : null;
+    const steps = [
+      { pct: 50, reps: 5 },
+      { pct: 65, reps: 3 },
+      { pct: 75, reps: 2 },
+    ].filter((s) => workLow == null || s.pct < workLow);
+    ramp = steps
+      .map((s) => `${s.pct}% x${s.reps}` + (e1 != null ? ` (${round2_5(e1 * (s.pct / 100))})` : ""))
+      .join(" · ");
+    ramp += e1 != null ? " lb" : " of your e1RM";
   }
 
   const needsMax = ex.entry === "weight" && !!ex.e1Lift && (ex.pctE1RM != null || ex.atTestedWeight);
