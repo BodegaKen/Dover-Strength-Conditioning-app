@@ -145,7 +145,7 @@ function exerciseFor(
       e1Lift: null,
       section: "main",
       label: "Pull-up (bodyweight / assisted)",
-      sets: b.sets,
+      sets: cap(b.sets),
       reps: String(b.reps),
       pctE1RM: null,
       atTestedWeight: false,
@@ -178,7 +178,8 @@ function exerciseFor(
     pctE1RM: lift.pctE1RM ?? null,
     atTestedWeight: false,
     entry: "weight",
-    ramp: key === "squat" || key === "bench" || key === "deadlift",
+    // The 50/65/75% warm-up ramp is written into Phase 1 and Phase 2 only; Phases 3-5 prescribe straight work sets.
+    ramp: phaseNum > 0 && (key === "squat" || key === "bench" || key === "deadlift"),
     backoff: bo && boSets ? { sets: boSets, reps: String(bo.reps ?? ""), pctE1RM: bo.pctE1RM ?? null } : null,
     note,
   };
