@@ -39,6 +39,8 @@ model User {
   trainingTrack TrainingTrack @default(FULL)
   active       Boolean   @default(true)
   mustChangePin Boolean  @default(true)
+  failedLogins Int       @default(0)   // wrong-PIN counter (see api/auth/login)
+  lockedUntil  DateTime?               // set when the counter passes the limit
   createdAt    DateTime  @default(now())
 
   tests        TestEntry[]

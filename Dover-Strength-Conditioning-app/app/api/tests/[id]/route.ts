@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSession } from "@/lib/auth";
+import { getApiSession } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { calcE1RM } from "@/lib/calc";
+import { validDate } from "@/lib/validate";
 
 // Coach-only: correct or remove a test max entered for any athlete.
 async function requireCoach() {
-  const session = await getSession();
+  const session = await getApiSession();
   if (!session) return { error: NextResponse.json({ error: "Not signed in." }, { status: 401 }) };
   if (session.role !== "COACH") return { error: NextResponse.json({ error: "Coach only." }, { status: 403 }) };
   return { session };
@@ -25,7 +26,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     data.e1RM = calcE1RM(fiveRM);
   }
   if (body && "date" in body) {
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(String(body.date))) return NextResponse.json({ error: "Bad date." }, { status: 400 });
+    if (!validDate(String(body.date))) return NextResponse.json({ error: "Bad date." }, { status: 400 });
     data.date = String(body.date);
   }
   if (body && "lift" in body) {

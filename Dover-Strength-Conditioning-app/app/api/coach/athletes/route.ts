@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSession, hashPin, slugifyUsername, randomPin } from "@/lib/auth";
+import { getApiSession, hashPin, slugifyUsername, randomPin, weakPinReason } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import type { AthleteRecord } from "@/lib/types";
 
 async function requireCoach() {
-  const session = await getSession();
+  const session = await getApiSession();
   if (!session || session.role !== "COACH") return null;
   return session;
 }
@@ -52,7 +52,12 @@ export async function POST(req: NextRequest) {
   const position = body?.position ? body.position.toString().trim() : null;
   const bodyweight = body?.bodyweight ? Number(body.bodyweight) : null;
   const gradYear = body?.gradYear ? Number(body.gradYear) : null;
-  const pin = (body?.pin ?? randomPin()).toString();
+  const suppliedPin = body?.pin != null && String(body.pin).trim() !== "" ? String(body.pin).trim() : null;
+  if (suppliedPin) {
+    const weak = weakPinReason(suppliedPin);
+    if (weak) return NextResponse.json({ error: weak }, { status: 400 });
+  }
+  const pin = suppliedPin ?? randomPin();
 
   const username = await uniqueUsername(name);
   const pinHash = await hashPin(pin);

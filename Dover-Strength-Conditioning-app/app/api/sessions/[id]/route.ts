@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSession } from "@/lib/auth";
+import { getApiSession } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { MAX_SESSION_MIN, validDate } from "@/lib/validate";
 
 // Coach-only: correct or remove a session (RPE + duration) entered for any athlete.
 async function requireCoach() {
-  const session = await getSession();
+  const session = await getApiSession();
   if (!session) return { error: NextResponse.json({ error: "Not signed in." }, { status: 401 }) };
   if (session.role !== "COACH") return { error: NextResponse.json({ error: "Coach only." }, { status: 403 }) };
   return { session };
@@ -21,10 +22,10 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   const durationMin = body && "durationMin" in body ? Number(body.durationMin) : existing.durationMin;
   const date = body && "date" in body ? String(body.date) : existing.date;
   const type = body && "type" in body ? String(body.type) : existing.type;
-  if (!(rpe >= 0 && rpe <= 10) || !(durationMin > 0)) {
-    return NextResponse.json({ error: "RPE must be 0-10 and duration must be positive." }, { status: 400 });
+  if (!(rpe >= 0 && rpe <= 10) || !(durationMin > 0 && durationMin <= MAX_SESSION_MIN)) {
+    return NextResponse.json({ error: "RPE must be 0-10 and duration must be 1-600 minutes." }, { status: 400 });
   }
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return NextResponse.json({ error: "Bad date." }, { status: 400 });
+  if (!validDate(date)) return NextResponse.json({ error: "Bad date." }, { status: 400 });
   if (!["lift", "practice", "game"].includes(type)) return NextResponse.json({ error: "Unknown type." }, { status: 400 });
 
   const session = await prisma.sessionEntry.update({

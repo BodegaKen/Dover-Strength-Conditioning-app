@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSession } from "@/lib/auth";
+import { getApiSession } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { getAllTracks } from "@/lib/prescription";
 
@@ -14,14 +14,14 @@ export async function GET() {
 }
 
 export async function PATCH(req: NextRequest) {
-  const session = await getSession();
+  const session = await getApiSession();
   if (!session || session.role !== "COACH") {
     return NextResponse.json({ error: "Coach access only." }, { status: 403 });
   }
   const body = await req.json().catch(() => null);
   const trackKey = (body?.trackKey ?? "").toString();
   const week = Number(body?.week);
-  if (!trackKey || !Number.isFinite(week) || week < 1) {
+  if (!trackKey || !Number.isInteger(week) || week < 1 || week > 60) {
     return NextResponse.json({ error: "Pick a valid track and week." }, { status: 400 });
   }
   const valid = getAllTracks().some((t) => t.key === trackKey);

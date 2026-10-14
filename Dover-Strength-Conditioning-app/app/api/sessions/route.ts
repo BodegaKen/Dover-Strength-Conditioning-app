@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSession } from "@/lib/auth";
+import { getApiSession } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { todayISO } from "@/lib/calc";
+import { SESSION_TYPES, MAX_SESSION_MIN, validDate } from "@/lib/validate";
 
 export async function GET(req: NextRequest) {
-  const session = await getSession();
+  const session = await getApiSession();
   if (!session) return NextResponse.json({ error: "Not signed in." }, { status: 401 });
   // Players only ever see their own sessions; a coach can see everyone's, or
   // one athlete's via ?athleteId=.
@@ -18,7 +19,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const session = await getSession();
+  const session = await getApiSession();
   if (!session) return NextResponse.json({ error: "Not signed in." }, { status: 401 });
 
   const body = await req.json().catch(() => null);
@@ -29,9 +30,11 @@ export async function POST(req: NextRequest) {
   let athleteId = (body?.athleteId ?? session.sub).toString();
   if (session.role !== "COACH") athleteId = session.sub;
 
-  if (!(rpe >= 0 && rpe <= 10) || !(durationMin > 0)) {
-    return NextResponse.json({ error: "RPE must be 0-10 and duration must be positive." }, { status: 400 });
+  if (!(rpe >= 0 && rpe <= 10) || !(durationMin > 0 && durationMin <= MAX_SESSION_MIN)) {
+    return NextResponse.json({ error: "RPE must be 0-10 and duration must be 1-600 minutes." }, { status: 400 });
   }
+  if (!SESSION_TYPES.includes(type)) return NextResponse.json({ error: "Unknown type." }, { status: 400 });
+  if (!validDate(date)) return NextResponse.json({ error: "Bad date." }, { status: 400 });
   const athlete = await prisma.user.findUnique({ where: { id: athleteId } });
   if (!athlete) return NextResponse.json({ error: "Unknown athlete." }, { status: 404 });
 

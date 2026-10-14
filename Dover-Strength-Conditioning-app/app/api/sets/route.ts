@@ -1,16 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSession } from "@/lib/auth";
+import { getApiSession } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { getPeriod } from "@/lib/prescription";
 import { buildPlanDays, dayProgress, BACKOFF_BASE, type TrainingTrack, type PullupMode } from "@/lib/plan";
 import { todayISO } from "@/lib/calc";
+import { validDate } from "@/lib/validate";
 
 // Saves (or clears) the sets an athlete entered for one prescribed day of the
 // team's current week. The plan is rebuilt server-side from ProgramState and
 // the athlete's own track settings - the client only says which day and what
 // numbers - so a stale or tampered page can't log against the wrong week.
 export async function POST(req: NextRequest) {
-  const session = await getSession();
+  const session = await getApiSession();
   if (!session) return NextResponse.json({ error: "Not signed in." }, { status: 401 });
   const body = await req.json().catch(() => null);
 
@@ -22,7 +23,7 @@ export async function POST(req: NextRequest) {
   if (!athlete) return NextResponse.json({ error: "Unknown athlete." }, { status: 404 });
 
   const planDay = String(body?.planDay ?? "");
-  const date = /^\d{4}-\d{2}-\d{2}$/.test(String(body?.date ?? "")) ? String(body.date) : todayISO();
+  const date = validDate(String(body?.date ?? "")) ? String(body.date) : todayISO();
   const entries: unknown = body?.entries;
   if (!planDay || !Array.isArray(entries)) {
     return NextResponse.json({ error: "Missing day or entries." }, { status: 400 });

@@ -1,10 +1,11 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import { randomInt } from "crypto";
 
 const prisma = new PrismaClient();
 
 function randomPin(): string {
-  return String(Math.floor(1000 + Math.random() * 9000));
+  return String(randomInt(1000, 10000));
 }
 
 function slugifyUsername(name: string): string {
@@ -22,7 +23,8 @@ function slugifyUsername(name: string): string {
 async function main() {
   const name = process.env.COACH_NAME ?? "Coach Quinones";
   const username = process.env.COACH_USERNAME ?? slugifyUsername(name);
-  const pin = process.env.COACH_PIN ?? randomPin();
+  const suppliedPin = process.env.COACH_PIN;
+  const pin = suppliedPin ?? randomPin();
 
   const existing = await prisma.user.findFirst({ where: { role: "COACH" } });
   if (existing) {
@@ -39,10 +41,10 @@ async function main() {
       pinHash,
       role: "COACH",
       active: true,
-      // The coach sets their own PIN up front via env vars, so there's no
-      // forced first-login change — flip this to true if you'd rather they
-      // pick their own PIN the first time they log in.
-      mustChangePin: false,
+      // A PIN supplied through COACH_PIN is the coach's own choice, so no forced
+      // change. A generated PIN is printed once below, so it must be changed at
+      // first login.
+      mustChangePin: !suppliedPin,
     },
   });
 
@@ -55,8 +57,13 @@ async function main() {
   console.log("Coach account created:");
   console.log(`  name:     ${coach.name}`);
   console.log(`  username: ${coach.username}`);
-  console.log(`  PIN:      ${pin}`);
-  console.log("\nSave this PIN now — it will not be shown again. Log in at /login.");
+  if (suppliedPin) {
+    console.log("  PIN:      (the COACH_PIN you supplied; not printed)");
+    console.log("\nLog in at /login.");
+  } else {
+    console.log(`  PIN:      ${pin}`);
+    console.log("\nSave this PIN now — it will not be shown again, and you must change it at first login. Log in at /login.");
+  }
 }
 
 main()

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSession, hashPin, slugifyUsername, randomPin } from "@/lib/auth";
+import { getApiSession, hashPin, slugifyUsername, randomPin } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 
 // Pulls a trailing graduation-year token off the end of a string, however
@@ -69,7 +69,7 @@ function parseRosterPaste(text: string): { name: string; position: string; gradY
 }
 
 export async function POST(req: NextRequest) {
-  const session = await getSession();
+  const session = await getApiSession();
   if (!session || session.role !== "COACH") {
     return NextResponse.json({ error: "Coach access only." }, { status: 403 });
   }

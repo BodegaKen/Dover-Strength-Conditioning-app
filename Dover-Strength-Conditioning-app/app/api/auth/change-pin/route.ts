@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSession, hashPin, verifyPin } from "@/lib/auth";
+import { getSession, hashPin, verifyPin, signSession, pinFingerprint, weakPinReason, SESSION_COOKIE } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 
+// Uses getSession() (not getApiSession) on purpose: this is the one endpoint an
+// account with a temporary PIN is allowed to call.
 export async function POST(req: NextRequest) {
   const session = await getSession();
   if (!session) return NextResponse.json({ error: "Not signed in." }, { status: 401 });
@@ -9,8 +11,10 @@ export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => null);
   const currentPin = (body?.currentPin ?? "").toString().trim();
   const newPin = (body?.newPin ?? "").toString().trim();
-  if (!/^\d{4,6}$/.test(newPin)) {
-    return NextResponse.json({ error: "New PIN must be 4-6 digits." }, { status: 400 });
+  const weak = weakPinReason(newPin);
+  if (weak) return NextResponse.json({ error: weak }, { status: 400 });
+  if (newPin === currentPin) {
+    return NextResponse.json({ error: "Pick a PIN different from your current one." }, { status: 400 });
   }
 
   const user = await prisma.user.findUnique({ where: { id: session.sub } });
@@ -24,5 +28,15 @@ export async function POST(req: NextRequest) {
     where: { id: user.id },
     data: { pinHash, mustChangePin: false },
   });
-  return NextResponse.json({ ok: true });
+
+  // The PIN changed, so older cookies stop working; hand this browser a fresh one.
+  const res = NextResponse.json({ ok: true });
+  res.cookies.set(SESSION_COOKIE, await signSession({ sub: user.id, role: user.role, pv: await pinFingerprint(pinHash) }), {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: 60 * 60 * 24 * 30,
+  });
+  return res;
 }
