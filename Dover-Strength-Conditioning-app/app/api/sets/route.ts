@@ -6,6 +6,9 @@ import { buildPlanDays, dayProgress, BACKOFF_BASE, type TrainingTrack, type Pull
 import { todayISO } from "@/lib/calc";
 import { validDate } from "@/lib/validate";
 
+// Generous ceiling on sets in one request (a day is a few dozen at most).
+const MAX_SET_ENTRIES = 100;
+
 // Saves (or clears) the sets an athlete entered for one prescribed day of the
 // team's current week. The plan is rebuilt server-side from ProgramState and
 // the athlete's own track settings - the client only says which day and what
@@ -23,10 +26,16 @@ export async function POST(req: NextRequest) {
   if (!athlete) return NextResponse.json({ error: "Unknown athlete." }, { status: 404 });
 
   const planDay = String(body?.planDay ?? "");
-  const date = validDate(String(body?.date ?? "")) ? String(body.date) : todayISO();
+  if (body?.date != null && body.date !== "" && !validDate(String(body.date))) {
+    return NextResponse.json({ error: "Bad date." }, { status: 400 });
+  }
+  const date = body?.date ? String(body.date) : todayISO();
   const entries: unknown = body?.entries;
   if (!planDay || !Array.isArray(entries)) {
     return NextResponse.json({ error: "Missing day or entries." }, { status: 400 });
+  }
+  if (entries.length > MAX_SET_ENTRIES) {
+    return NextResponse.json({ error: "Too many entries in one request." }, { status: 400 });
   }
 
   const state = await prisma.programState.findUnique({ where: { id: "current" } });

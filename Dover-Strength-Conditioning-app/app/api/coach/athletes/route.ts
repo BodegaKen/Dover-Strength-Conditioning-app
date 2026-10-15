@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getApiSession, hashPin, slugifyUsername, randomPin, weakPinReason } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import type { AthleteRecord } from "@/lib/types";
 
 async function requireCoach() {
   const session = await getApiSession();
@@ -22,24 +21,16 @@ async function uniqueUsername(base: string): Promise<string> {
 export async function GET() {
   const session = await requireCoach();
   if (!session) return NextResponse.json({ error: "Coach access only." }, { status: 403 });
-  const athletes: AthleteRecord[] = await prisma.user.findMany({
+  // Select only what the roster needs; credential fields stay out of this path.
+  const athletes = await prisma.user.findMany({
     where: { role: "PLAYER" },
     orderBy: { name: "asc" },
+    select: {
+      id: true, name: true, username: true, position: true, gradYear: true, bodyweight: true,
+      pullupTrack: true, trainingTrack: true, active: true, mustChangePin: true,
+    },
   });
-  return NextResponse.json({
-    athletes: athletes.map((a: AthleteRecord) => ({
-      id: a.id,
-      name: a.name,
-      username: a.username,
-      position: a.position,
-      gradYear: a.gradYear,
-      bodyweight: a.bodyweight,
-      pullupTrack: a.pullupTrack,
-      trainingTrack: a.trainingTrack,
-      active: a.active,
-      mustChangePin: a.mustChangePin,
-    })),
-  });
+  return NextResponse.json({ athletes });
 }
 
 export async function POST(req: NextRequest) {
@@ -52,6 +43,12 @@ export async function POST(req: NextRequest) {
   const position = body?.position ? body.position.toString().trim() : null;
   const bodyweight = body?.bodyweight ? Number(body.bodyweight) : null;
   const gradYear = body?.gradYear ? Number(body.gradYear) : null;
+  if (bodyweight != null && !(bodyweight >= 50 && bodyweight <= 600)) {
+    return NextResponse.json({ error: "Bodyweight must be 50-600 lb." }, { status: 400 });
+  }
+  if (gradYear != null && !(Number.isInteger(gradYear) && gradYear >= 2020 && gradYear <= 2040)) {
+    return NextResponse.json({ error: "Grad year must be a real year." }, { status: 400 });
+  }
   const suppliedPin = body?.pin != null && String(body.pin).trim() !== "" ? String(body.pin).trim() : null;
   if (suppliedPin) {
     const weak = weakPinReason(suppliedPin);

@@ -22,8 +22,8 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   const durationMin = body && "durationMin" in body ? Number(body.durationMin) : existing.durationMin;
   const date = body && "date" in body ? String(body.date) : existing.date;
   const type = body && "type" in body ? String(body.type) : existing.type;
-  if (!(rpe >= 0 && rpe <= 10) || !(durationMin > 0 && durationMin <= MAX_SESSION_MIN)) {
-    return NextResponse.json({ error: "RPE must be 0-10 and duration must be 1-600 minutes." }, { status: 400 });
+  if (!(Number.isInteger(rpe) && rpe >= 0 && rpe <= 10) || !(durationMin > 0 && durationMin <= MAX_SESSION_MIN)) {
+    return NextResponse.json({ error: "RPE must be a whole number 0-10 and duration must be 1-600 minutes." }, { status: 400 });
   }
   if (!validDate(date)) return NextResponse.json({ error: "Bad date." }, { status: 400 });
   if (!["lift", "practice", "game"].includes(type)) return NextResponse.json({ error: "Unknown type." }, { status: 400 });

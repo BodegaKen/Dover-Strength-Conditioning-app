@@ -4,6 +4,7 @@ import { prisma } from "@/lib/db";
 import { getAllTracks } from "@/lib/prescription";
 
 export async function GET() {
+  if (!(await getApiSession())) return NextResponse.json({ error: "Not signed in." }, { status: 401 });
   const state = await prisma.programState.findUnique({ where: { id: "current" } });
   if (!state) {
     // Default to the very first track/period until a coach sets one.

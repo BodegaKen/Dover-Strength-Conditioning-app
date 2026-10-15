@@ -17,8 +17,14 @@ export async function claimPinAttempt(user: { id: string; lockedUntil: Date | nu
     return { allowed: false, error: `Too many wrong attempts. Try again in about ${mins} minute${mins === 1 ? "" : "s"}.` };
   }
   if (user.lockedUntil && user.lockedUntil <= now) {
-    // Lock expired: clear it and start a fresh set of attempts.
-    await prisma.user.update({ where: { id: user.id }, data: { failedLogins: 0, lockedUntil: null } });
+    // Lock expired: clear it and start a fresh set of attempts. Conditional on the
+    // lock still being expired, so when parallel requests all saw the expired lock
+    // only the first one resets the counter; the rest match no row and leave the
+    // increments other requests already made alone.
+    await prisma.user.updateMany({
+      where: { id: user.id, lockedUntil: { lte: now } },
+      data: { failedLogins: 0, lockedUntil: null },
+    });
   }
   const { failedLogins } = await prisma.user.update({
     where: { id: user.id },

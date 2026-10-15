@@ -30,8 +30,8 @@ export async function POST(req: NextRequest) {
   let athleteId = (body?.athleteId ?? session.sub).toString();
   if (session.role !== "COACH") athleteId = session.sub;
 
-  if (!(rpe >= 0 && rpe <= 10) || !(durationMin > 0 && durationMin <= MAX_SESSION_MIN)) {
-    return NextResponse.json({ error: "RPE must be 0-10 and duration must be 1-600 minutes." }, { status: 400 });
+  if (!(Number.isInteger(rpe) && rpe >= 0 && rpe <= 10) || !(durationMin > 0 && durationMin <= MAX_SESSION_MIN)) {
+    return NextResponse.json({ error: "RPE must be a whole number 0-10 and duration must be 1-600 minutes." }, { status: 400 });
   }
   if (!SESSION_TYPES.includes(type)) return NextResponse.json({ error: "Unknown type." }, { status: 400 });
   if (!validDate(date)) return NextResponse.json({ error: "Bad date." }, { status: 400 });

@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getPeriod, getTrack } from "@/lib/prescription";
+import { getApiSession } from "@/lib/auth";
 
 export async function GET(req: NextRequest) {
+  if (!(await getApiSession())) return NextResponse.json({ error: "Not signed in." }, { status: 401 });
   const trackKey = req.nextUrl.searchParams.get("trackKey") ?? "";
   const week = Number(req.nextUrl.searchParams.get("week") ?? "1");
   const track = getTrack(trackKey);

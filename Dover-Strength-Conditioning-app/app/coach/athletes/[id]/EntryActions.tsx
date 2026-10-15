@@ -95,7 +95,7 @@ export default function EntryActions(props: TestInit | SessionInit) {
           </select>
           <label className="flex items-center gap-1 text-xs text-muted">
             RPE
-            <input type="number" step="any" min={0} max={10} className={`${input} w-16`} value={rpe} onChange={(e) => setRpe(e.target.value)} />
+            <input type="number" step={1} min={0} max={10} className={`${input} w-16`} value={rpe} onChange={(e) => setRpe(e.target.value)} />
           </label>
           <label className="flex items-center gap-1 text-xs text-muted">
             Min
