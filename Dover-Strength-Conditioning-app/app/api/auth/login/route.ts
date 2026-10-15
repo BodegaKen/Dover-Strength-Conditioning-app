@@ -1,13 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { verifyPin, signSession, pinFingerprint, SESSION_COOKIE } from "@/lib/auth";
+import { claimPinAttempt, clearPinFailures } from "@/lib/throttle";
 
-// Wrong-PIN throttling, stored on the user row so it holds across serverless
-// instances. The attempt counter is incremented atomically BEFORE the PIN is
-// checked, so even a burst of parallel guesses gets at most MAX_FAILS real checks
-// per lock cycle. Counter and lock reset on a correct PIN or when a lock expires.
-const MAX_FAILS = 5;
-const LOCK_MINUTES = 15;
+// Wrong-PIN throttling lives in lib/throttle.ts (shared with change-pin).
 const GENERIC_ERROR = "Wrong username or PIN.";
 // Valid bcrypt hash of a throwaway string, compared against when the username is
 // unknown or inactive so those requests cost the same time as a real one.
@@ -27,43 +23,15 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: GENERIC_ERROR }, { status: 401 });
   }
 
-  const now = new Date();
-  if (user.lockedUntil && user.lockedUntil > now) {
-    const mins = Math.max(1, Math.ceil((user.lockedUntil.getTime() - now.getTime()) / 60000));
-    return NextResponse.json(
-      { error: `Too many wrong attempts. Try again in about ${mins} minute${mins === 1 ? "" : "s"}.` },
-      { status: 429 }
-    );
-  }
-  if (user.lockedUntil && user.lockedUntil <= now) {
-    // Lock expired: clear it and start a fresh set of attempts.
-    await prisma.user.update({ where: { id: user.id }, data: { failedLogins: 0, lockedUntil: null } });
-  }
-
-  const { failedLogins } = await prisma.user.update({
-    where: { id: user.id },
-    data: { failedLogins: { increment: 1 } },
-    select: { failedLogins: true },
-  });
-  // The counter only reads above MAX_FAILS after the lock-expiry reset above, so a
-  // fresh cycle allows MAX_FAILS checks. Anything past that is refused unchecked.
-  if (failedLogins > MAX_FAILS) {
-    await prisma.user.update({
-      where: { id: user.id },
-      data: { lockedUntil: new Date(Date.now() + LOCK_MINUTES * 60000) },
-    });
-    return NextResponse.json(
-      { error: `Too many wrong attempts. Try again in about ${LOCK_MINUTES} minutes.` },
-      { status: 429 }
-    );
-  }
+  const gate = await claimPinAttempt(user);
+  if (!gate.allowed) return NextResponse.json({ error: gate.error }, { status: 429 });
 
   const ok = await verifyPin(pin, user.pinHash);
   if (!ok) {
     return NextResponse.json({ error: GENERIC_ERROR }, { status: 401 });
   }
 
-  await prisma.user.update({ where: { id: user.id }, data: { failedLogins: 0, lockedUntil: null } });
+  await clearPinFailures(user.id);
 
   const token = await signSession({ sub: user.id, role: user.role, pv: await pinFingerprint(user.pinHash) });
   const res = NextResponse.json({

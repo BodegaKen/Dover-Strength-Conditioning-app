@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession, hashPin, verifyPin, signSession, pinFingerprint, weakPinReason, SESSION_COOKIE } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { claimPinAttempt } from "@/lib/throttle";
 
 // Uses getSession() (not getApiSession) on purpose: this is the one endpoint an
 // account with a temporary PIN is allowed to call.
@@ -20,13 +21,17 @@ export async function POST(req: NextRequest) {
   const user = await prisma.user.findUnique({ where: { id: session.sub } });
   if (!user) return NextResponse.json({ error: "Account not found." }, { status: 404 });
 
+  // Same wrong-PIN limit as login, so this endpoint can't be used to guess the PIN.
+  const gate = await claimPinAttempt(user);
+  if (!gate.allowed) return NextResponse.json({ error: gate.error }, { status: 429 });
+
   const ok = await verifyPin(currentPin, user.pinHash);
   if (!ok) return NextResponse.json({ error: "Current PIN is wrong." }, { status: 401 });
 
   const pinHash = await hashPin(newPin);
   await prisma.user.update({
     where: { id: user.id },
-    data: { pinHash, mustChangePin: false },
+    data: { pinHash, mustChangePin: false, failedLogins: 0, lockedUntil: null },
   });
 
   // The PIN changed, so older cookies stop working; hand this browser a fresh one.

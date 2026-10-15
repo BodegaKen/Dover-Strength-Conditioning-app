@@ -4,8 +4,24 @@ import { randomInt } from "crypto";
 
 const prisma = new PrismaClient();
 
+// Keep in sync with lib/pinpolicy.ts. Duplicated because ts-node (ESM) cannot
+// resolve the app's extensionless relative imports from this script.
+function weakPinReason(pin: string): string | null {
+  if (!/^\d{4,6}$/.test(pin)) return "PIN must be 4-6 digits.";
+  if (/^(\d)\1+$/.test(pin)) return "Pick a PIN that isn't all the same digit.";
+  const d = pin.split("").map(Number);
+  const step = d[1] - d[0];
+  if ((step === 1 || step === -1) && d.every((x, i) => i === 0 || x - d[i - 1] === step)) {
+    return "Pick a PIN that isn't a straight run like 1234 or 4321.";
+  }
+  return null;
+}
+
 function randomPin(): string {
-  return String(randomInt(1000, 10000));
+  for (;;) {
+    const pin = String(randomInt(100000, 1000000));
+    if (!weakPinReason(pin)) return pin;
+  }
 }
 
 function slugifyUsername(name: string): string {
@@ -24,6 +40,15 @@ async function main() {
   const name = process.env.COACH_NAME ?? "Coach Quinones";
   const username = process.env.COACH_USERNAME ?? slugifyUsername(name);
   const suppliedPin = process.env.COACH_PIN;
+  if (suppliedPin !== undefined) {
+    // Same strength rules as the app. An empty or weak COACH_PIN is rejected rather
+    // than silently accepted (or silently replaced).
+    const weak = weakPinReason(suppliedPin);
+    if (weak) {
+      console.error(`COACH_PIN rejected: ${weak}`);
+      process.exit(1);
+    }
+  }
   const pin = suppliedPin ?? randomPin();
 
   const existing = await prisma.user.findFirst({ where: { role: "COACH" } });

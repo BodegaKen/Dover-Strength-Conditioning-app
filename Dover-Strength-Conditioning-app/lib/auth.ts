@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import { cookies } from "next/headers";
 import { prisma } from "./db";
+import { weakPinReason } from "./pinpolicy";
 import { SESSION_COOKIE, verifySessionToken, pinFingerprint, type SessionPayload } from "./token";
 
 // Token helpers live in ./token (edge-safe, used by the middleware); re-exported so
@@ -55,23 +56,15 @@ export function slugifyUsername(name: string): string {
 
 // PINs that are trivially guessable (all one digit, straight runs) are refused
 // when someone chooses their own, and are never generated.
-export function weakPinReason(pin: string): string | null {
-  if (!/^\d{4,6}$/.test(pin)) return "PIN must be 4-6 digits.";
-  if (/^(\d)\1+$/.test(pin)) return "Pick a PIN that isn't all the same digit.";
-  const d = pin.split("").map(Number);
-  const step = d[1] - d[0];
-  if ((step === 1 || step === -1) && d.every((x, i) => i === 0 || x - d[i - 1] === step)) {
-    return "Pick a PIN that isn't a straight run like 1234 or 4321.";
-  }
-  return null;
-}
+export { weakPinReason };
 
-// 4-digit PIN from a cryptographically secure source (Web Crypto), skipping weak ones.
+// 6-digit PIN from a cryptographically secure source (Web Crypto), skipping weak ones.
+// Generated PINs are temporary, but 6 digits keeps a guessing window small.
 export function randomPin(): string {
   const a = new Uint32Array(1);
   for (;;) {
     crypto.getRandomValues(a);
-    const pin = String(1000 + (a[0] % 9000));
+    const pin = String(100000 + (a[0] % 900000));
     if (!weakPinReason(pin)) return pin;
   }
 }
