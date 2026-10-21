@@ -40,17 +40,6 @@ async function main() {
   const name = process.env.COACH_NAME ?? "Coach Quinones";
   const username = process.env.COACH_USERNAME ?? slugifyUsername(name);
   const suppliedPin = process.env.COACH_PIN;
-  if (suppliedPin !== undefined) {
-    // Same strength rules as the app. An empty or weak COACH_PIN is rejected rather
-    // than silently accepted (or silently replaced).
-    const weak = weakPinReason(suppliedPin);
-    if (weak) {
-      console.error(`COACH_PIN rejected: ${weak}`);
-      process.exit(1);
-    }
-  }
-  const pin = suppliedPin ?? randomPin();
-
   const existing = await prisma.user.findFirst({ where: { role: "COACH" }, orderBy: { createdAt: "asc" } });
   if (existing) {
     // The isAdmin flag was added after the first coach was created. If nobody holds it yet,
@@ -65,6 +54,17 @@ async function main() {
     console.log("To add more coaches, sign in as a full admin and use Coach accounts on the Coach page.");
     return;
   }
+
+  if (suppliedPin !== undefined) {
+    // Same strength rules as the app. An empty or weak COACH_PIN is rejected rather
+    // than silently accepted (or silently replaced).
+    const weak = weakPinReason(suppliedPin);
+    if (weak) {
+      console.error(`COACH_PIN rejected: ${weak}`);
+      process.exit(1);
+    }
+  }
+  const pin = suppliedPin ?? randomPin();
 
   const pinHash = await bcrypt.hash(pin, 10);
   const coach = await prisma.user.create({
