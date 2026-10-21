@@ -9,7 +9,7 @@ import { weekInfo } from "@/lib/schedule";
 import NavBar from "@/components/NavBar";
 import DayCards from "@/components/DayCards";
 import LogForms from "./LogForms";
-import { phase0Week } from "@/lib/phase0";
+import Phase0Days from "@/components/Phase0Days";
 
 const DAY_ORDER = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
@@ -163,17 +163,7 @@ export default async function DashboardPage() {
         </div>
 
         {trackKey === "phase0" ? (
-          <div className="bg-surface border border-line rounded-xl p-4 flex flex-col gap-2">
-            <div className="text-xs uppercase tracking-wide text-muted font-semibold">{phase0Week(week)?.title}</div>
-            <ul className="list-disc pl-5 flex flex-col gap-1.5 text-sm">
-              {(phase0Week(week)?.sessions ?? []).map((line, i) => (
-                <li key={i}>{line}</li>
-              ))}
-            </ul>
-            <p className="text-xs text-muted mt-1">
-              Phase 0 is display-only: nothing to log here. Your coach takes attendance. Sessions are optional.
-            </p>
-          </div>
+          <Phase0Days week={week} />
         ) : testWeek ? (
           <div className="bg-surface border border-line rounded-xl p-4 flex flex-col gap-4">
             {testGroups.map((group) => (

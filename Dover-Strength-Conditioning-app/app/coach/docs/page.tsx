@@ -6,37 +6,53 @@ import Markdown from "@/components/Markdown";
 import docsData from "@/data/coaching-docs.json";
 
 type Doc = { key: string; title: string; markdown: string };
+type Section = { key: string; tab: string; markdown: string };
 
-// Coach-only: Program Design and Rationale first, then the five Coaching Copies (Phases 1-5), a snapshot copied from the program documents.
-// The Research Report and the athlete-facing posters are deliberately not here. Athletes never see
-// this page (middleware and the check below both require a coach).
-export default async function CoachDocsPage({ searchParams }: { searchParams: { d?: string } }) {
+// Coach-only: Program Design and Rationale (sections 1-9; the compliance and open-items sections and the
+// revision notes are left out on purpose), a snapshot copied from the program documents, shown one section
+// per tab so each phase opens on its own. Athletes never see this page (middleware and the check below
+// both require a coach).
+function sectionsOf(markdown: string): Section[] {
+  const parts = markdown.split(/^## /m).slice(1); // drop the title line before the first "## "
+  return parts.map((p, i) => {
+    const heading = p.split("\n")[0].trim();
+    const m = heading.match(/^(\d+)\.\s*(.*)$/);
+    const rest = m ? m[2] : heading;
+    // Tab label: "Phase 3" for phase sections, otherwise the plain section name.
+    const phase = rest.match(/^(Phase \d)/);
+    const tab = phase ? phase[1] : rest.replace(/&.*$/, "").replace(/^Program /, "").trim();
+    return { key: String(i + 1), tab, markdown: "## " + p };
+  });
+}
+
+export default async function CoachDocsPage({ searchParams }: { searchParams: { s?: string } }) {
   const coach = await getCoachPage();
   if (!coach) redirect("/dashboard");
 
-  const docs = (docsData as { docs: Doc[]; updated: string }).docs;
-  const current = docs.find((d) => d.key === searchParams.d) ?? docs[0];
+  const data = docsData as { docs: Doc[]; updated: string };
+  const sections = sectionsOf(data.docs[0].markdown);
+  const current = sections.find((s) => s.key === searchParams.s) ?? sections[0];
 
   return (
     <div>
       <NavBar role="COACH" name={coach.name} />
       <main className="max-w-3xl mx-auto px-4 py-5 flex flex-col gap-4">
         <div className="bg-surface border border-line rounded-xl p-4">
-          <h2 className="text-lg mb-1">Coaching documents</h2>
+          <h2 className="text-lg mb-1">Program Design and Rationale</h2>
           <p className="text-sm text-muted mb-3">
-            Program Design and Rationale, then the five Coaching Copies, as of {(docsData as { updated: string }).updated}. This is a snapshot: if a phase document is
-            revised, the app copy has to be refreshed, so check the date and the Project version when in doubt.
+            What each phase is, why it is built the way it is, and how it is set up, as of {data.updated}. This is a snapshot: if the
+            program is revised, the app copy has to be refreshed, so check the date when in doubt.
           </p>
           <div className="flex flex-wrap gap-2">
-            {docs.map((d) => (
+            {sections.map((s) => (
               <Link
-                key={d.key}
-                href={`/coach/docs?d=${d.key}`}
+                key={s.key}
+                href={`/coach/docs?s=${s.key}`}
                 className={`text-sm rounded-md border px-3 py-1.5 ${
-                  d.key === current.key ? "border-accent bg-accent text-accent-ink font-semibold" : "border-line"
+                  s.key === current.key ? "border-accent bg-accent text-accent-ink font-semibold" : "border-line"
                 }`}
               >
-                {d.title}
+                {s.tab}
               </Link>
             ))}
           </div>
