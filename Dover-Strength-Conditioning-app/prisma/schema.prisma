@@ -39,6 +39,9 @@ model User {
   trainingTrack TrainingTrack @default(FULL)
   active       Boolean   @default(true)
   mustChangePin Boolean  @default(true)
+  // Coaches only. Full admins can also delete athletes, reset PINs, add coaches and read the
+  // audit log; coaches without this flag can do everything else on the coach pages.
+  isAdmin      Boolean   @default(false)
   failedLogins Int       @default(0)   // wrong-PIN counter (see api/auth/login)
   lockedUntil  DateTime?               // set when the counter passes the limit
   createdAt    DateTime  @default(now())
@@ -46,6 +49,7 @@ model User {
   tests        TestEntry[]
   sessions     SessionEntry[]
   setLogs      SetLog[]
+  attendance   Attendance[]
 
   @@index([active])
 }
@@ -56,7 +60,8 @@ model TestEntry {
   athlete    User     @relation(fields: [athleteId], references: [id], onDelete: Cascade)
   lift       String   // "squat" | "bench" | "deadlift" | "ohp" | "pullup"
   fiveRM     Float
-  e1RM       Float
+  e1RM       Float    // for "pullup" this is the TOTAL-LOAD e1RM: (bodyweight + added weight) / 0.87
+  bodyweightAtTest Float? // pull-up tests: bodyweight (lb) used for that total-load e1RM
   date       String   // ISO yyyy-mm-dd
   enteredAt  DateTime @default(now())
 
@@ -114,4 +119,34 @@ model SetLog {
 
   @@unique([athleteId, trackKey, week, planDay, lift, setNumber])
   @@index([athleteId, date])
+}
+
+// Coach roll call: one row per athlete per day, written only when a coach marks someone.
+// A day with no row is "not marked". Combined with the app's own day-complete rule this gives
+// three states in the coach calendar: present and completed, present but incomplete, absent.
+model Attendance {
+  id        String   @id @default(cuid())
+  athleteId String
+  athlete   User     @relation(fields: [athleteId], references: [id], onDelete: Cascade)
+  date      String   // ISO yyyy-mm-dd
+  present   Boolean
+  markedBy  String   // coach's name at the time
+  updatedAt DateTime @updatedAt
+
+  @@unique([athleteId, date])
+  @@index([date])
+}
+
+// Who did what on the coach pages (adding or removing accounts, resetting PINs, editing or
+// deleting entries, changing the team phase). Written by lib/audit.ts; read by admins only.
+model AuditLog {
+  id         String   @id @default(cuid())
+  at         DateTime @default(now())
+  actorId    String
+  actorName  String
+  action     String
+  targetName String?
+  detail     String?
+
+  @@index([at])
 }

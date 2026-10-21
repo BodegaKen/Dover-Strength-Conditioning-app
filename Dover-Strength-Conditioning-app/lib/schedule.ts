@@ -2,6 +2,8 @@
 // and Phase 2 Coaching Copies and the Dover Public Schools 2026-27 district
 // calendar. Display-only: the coach still sets the active week by hand.
 
+import { phase0Week } from "./phase0";
+
 export type WeekInfo = {
   dates: string;
   note?: string; // shown under the week header
@@ -9,7 +11,10 @@ export type WeekInfo = {
 };
 
 const P1: Record<number, WeekInfo> = {
-  1: { dates: "Dec 14-18, 2026", note: "Testing Week. Timed to land before Winter Break (district closure Dec 24 - Jan 1; Dec 21-23 are intentionally left unprogrammed)." },
+  1: {
+    dates: "Dec 14-18, 2026",
+    note: "Testing Week: Mon squat, Tue bench + pull-up, Wed none, Thu deadlift, Fri overhead press + make-ups. Timed to land before Winter Break (district closure Dec 24 - Jan 1; Dec 21-23 are intentionally left unprogrammed). Fewer than 4 Prep sessions attended means no heavy 5RM this week.",
+  },
   2: { dates: "Jan 4-8, 2027", note: "First week back after Winter Break: 3 work sets instead of 4, same prescribed %." },
   3: { dates: "Jan 11-15, 2027" },
   4: {
@@ -33,7 +38,7 @@ const P1: Record<number, WeekInfo> = {
 };
 
 const P2: Record<number, WeekInfo> = {
-  1: { dates: "Mar 1-5, 2027", note: "Testing Week (adds Vertical Jump on Tuesday, which isn't tracked in this app)." },
+  1: { dates: "Mar 1-5, 2027", note: "Testing Week (adds Vertical Jump on Monday, before the squat; it is not tracked in this app)." },
   2: { dates: "Mar 8-12, 2027" },
   3: { dates: "Mar 15-19, 2027" },
   4: {
@@ -66,6 +71,10 @@ const P2: Record<number, WeekInfo> = {
 };
 
 export function weekInfo(trackKey: string, week: number): WeekInfo | null {
+  if (trackKey === "phase0") {
+    const w = phase0Week(week);
+    return w ? { dates: w.dates, note: w.note } : null;
+  }
   if (trackKey === "phase1") return P1[week] ?? null;
   if (trackKey === "phase2") return P2[week] ?? null;
   return null;

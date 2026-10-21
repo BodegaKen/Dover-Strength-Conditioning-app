@@ -1,12 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getApiSession, hashPin, slugifyUsername, randomPin, weakPinReason } from "@/lib/auth";
+import { hashPin, slugifyUsername, randomPin, weakPinReason } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { getCoachApi } from "@/lib/admin";
+import { audit } from "@/lib/audit";
 
-async function requireCoach() {
-  const session = await getApiSession();
-  if (!session || session.role !== "COACH") return null;
-  return session;
-}
+const requireCoach = getCoachApi;
 
 async function uniqueUsername(base: string): Promise<string> {
   let candidate = slugifyUsername(base);
@@ -61,6 +59,7 @@ export async function POST(req: NextRequest) {
   const athlete = await prisma.user.create({
     data: { name, username, position, gradYear, bodyweight, pinHash, role: "PLAYER" },
   });
+  await audit(session, "add athlete", athlete.name);
   return NextResponse.json({
     athlete: { id: athlete.id, name: athlete.name, username: athlete.username },
     pin, // shown once so the coach can hand it to the player

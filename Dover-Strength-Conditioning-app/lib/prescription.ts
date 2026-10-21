@@ -1,5 +1,6 @@
 import programData from "@/data/program-data.json";
 import { round2_5 } from "./calc";
+import { PHASE0_WEEKS } from "./phase0";
 
 export type RawLift = {
   sets?: number | string;
@@ -89,12 +90,21 @@ function buildPhase5Track(p5: any): Track {
   };
 }
 
+// Phase 0 is display-only: periods exist so the coach can select a week, but there are no lifts.
+function buildPhase0Track(): Track {
+  return {
+    key: "phase0",
+    name: "Phase 0 - Transition & Pre-Testing Prep",
+    periods: PHASE0_WEEKS.map((w, i) => ({ index: i + 1, label: w.label, dateHint: w.dates, lifts: {} })),
+  };
+}
+
 export function getAllTracks(): Track[] {
   const tracks: Track[] = [];
   for (const phase of root.phases) tracks.push(buildPhaseTrack(phase));
   // Bridges are inserted where they belong chronologically: after Phase 2, after Phase 4.
   const byKey = Object.fromEntries(tracks.map((t) => [t.key, t]));
-  const ordered: Track[] = [];
+  const ordered: Track[] = [buildPhase0Track()];
   for (const t of tracks) {
     ordered.push(t);
     if (t.key === "phase2") {

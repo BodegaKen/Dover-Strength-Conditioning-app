@@ -11,6 +11,17 @@ export function calcE1RM(fiveRM: number): number {
   return round2_5(fiveRM / 0.87);
 }
 
+// Weighted pull-up: the athlete moves bodyweight PLUS the belt, so the e1RM is taken on that
+// total system load, and a prescribed percentage applies to the total. The belt load for a
+// set is the prescribed total minus the athlete's current bodyweight (never below zero).
+export function pullupSystemE1RM(addedFiveRM: number, bodyweight: number): number {
+  return calcE1RM(bodyweight + addedFiveRM);
+}
+
+export function pullupBeltLoad(systemE1RM: number, pct: number, bodyweight: number): number {
+  return Math.max(0, round2_5((systemE1RM * pct) / 100 - bodyweight));
+}
+
 export function isoDateLocal(d: Date): string {
   const off = d.getTimezoneOffset();
   const local = new Date(d.getTime() - off * 60000);

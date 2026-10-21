@@ -1,7 +1,7 @@
 // Server-side helpers that turn a PlanExercise + the athlete's latest tests
 // into the plain-data ExerciseView the SetLogger client component renders.
 import { computeTargetWeight } from "./prescription";
-import { round2_5 } from "./calc";
+import { round2_5, pullupBeltLoad } from "./calc";
 import type { PlanExercise } from "./plan";
 import type { ExerciseView } from "@/app/dashboard/SetLogger";
 
@@ -30,10 +30,29 @@ function targetOf(e1rm: number | undefined, pct: number | string | null | undefi
   return { text: t.high ? `${t.low}-${t.high}` : `${t.low}`, first: t.low };
 }
 
-export function viewOf(ex: PlanExercise, latest: Record<string, LatestTest | undefined>): ExerciseView {
+// Weighted pull-up: the stored e1RM is the TOTAL-load e1RM (bodyweight + added weight), and
+// the prescribed percentage applies to that total, so the belt load is the percentage of the
+// total minus the athlete's current bodyweight.
+function beltTargetOf(e1rm: number | undefined, pct: number | string | null | undefined, bw: number | null | undefined) {
+  if (e1rm == null || bw == null) return null;
+  const lp = leadingPct(pct);
+  if (lp == null) return null;
+  const parts = typeof lp === "number" ? [lp] : lp.split("-").map(parseFloat);
+  const lows = parts.map((p) => pullupBeltLoad(e1rm, p, bw));
+  const text = lows.length > 1 && lows[1] !== lows[0] ? `${lows[0]}-${lows[1]}` : `${lows[0]}`;
+  return { text, first: lows[0] };
+}
+
+export function viewOf(
+  ex: PlanExercise,
+  latest: Record<string, LatestTest | undefined>,
+  bodyweight?: number | null
+): ExerciseView {
   const src = ex.e1Lift ? latest[ex.e1Lift] : undefined;
   const e1 = src?.e1RM;
-  let target = ex.entry === "weight" ? targetOf(e1, ex.pctE1RM) : null;
+  const isPullup = ex.e1Lift === "pullup";
+  let target =
+    ex.entry === "weight" ? (isPullup ? beltTargetOf(e1, ex.pctE1RM, bodyweight) : targetOf(e1, ex.pctE1RM)) : null;
   if (ex.atTestedWeight && src) target = { text: `${src.fiveRM}`, first: src.fiveRM };
   const bo = ex.backoff ? targetOf(e1, ex.backoff.pctE1RM) : null;
 
@@ -61,7 +80,11 @@ export function viewOf(ex: PlanExercise, latest: Record<string, LatestTest | und
     sets: ex.sets,
     reps: ex.reps,
     unit: ex.unit,
-    pctLabel: ex.atTestedWeight ? "tested added weight" : pctLabel(ex.pctE1RM),
+    pctLabel: ex.atTestedWeight
+      ? "tested added weight"
+      : isPullup && ex.pctE1RM != null
+      ? `${pctLabel(ex.pctE1RM).replace(" e1RM", "")} of total-load e1RM (belt = that minus bodyweight)`
+      : pctLabel(ex.pctE1RM),
     target: target?.text ?? null,
     targetFirst: target?.first ?? null,
     entry: ex.entry,
@@ -72,6 +95,11 @@ export function viewOf(ex: PlanExercise, latest: Record<string, LatestTest | und
     ramp,
     note: ex.note,
     details: ex.details,
-    hint: needsMax && target == null && e1 == null ? "Log a test max to see your target weight." : undefined,
+    hint:
+      needsMax && target == null && e1 == null
+        ? "Log a test max to see your target weight."
+        : needsMax && target == null && isPullup && bodyweight == null
+        ? "Add your bodyweight (coach roster) to see the belt load."
+        : undefined,
   };
 }

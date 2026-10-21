@@ -28,9 +28,18 @@ export async function getCalendarData(athleteId: string): Promise<CalendarData> 
   const rows: SetLogRecord[] = (await prisma.setLog.findMany({ where: { athleteId } })) as any;
   const tests = await prisma.testEntry.findMany({ where: { athleteId } });
   const athlete = await prisma.user.findUnique({ where: { id: athleteId } });
+  return buildCalendarData(athlete, rows as any[], tests);
+}
 
+// Pure builder, also used by the coach attendance page with rows fetched for the whole roster
+// in a few queries instead of three per athlete.
+export function buildCalendarData(
+  athlete: { position?: string | null; pullupTrack?: string | null } | null | undefined,
+  rows: any[],
+  tests: any[]
+): CalendarData {
   const groups = new Map<string, any[]>();
-  for (const r of rows as any[]) {
+  for (const r of rows) {
     const k = `${r.trackKey}|${r.week}|${r.planDay}`;
     if (!groups.has(k)) groups.set(k, []);
     groups.get(k)!.push(r);
@@ -61,12 +70,12 @@ export async function getCalendarData(athleteId: string): Promise<CalendarData> 
   }
   // Max tests follow the same rule as training days: a test day only gets a
   // checkmark once every lift scheduled for it is logged that week. Testing
-  // Week / Retest Week split the lifts Monday (Squat+Bench), Tuesday
-  // (Deadlift+Pull-up) and Friday (Overhead Press). Bodyweight-track
+  // Week / Retest Week (revised Oct 21, 2026) split the lifts Monday (Squat),
+  // Tuesday (Bench + Pull-up), Thursday (Deadlift) and Friday (Overhead Press). Bodyweight-track
   // athletes test pull-up reps, not a weighted 5RM, so pull-up isn't required
   // of them.
   const needsPullup = athlete?.pullupTrack === "WEIGHTED";
-  const TEST_GROUPS: string[][] = [["squat", "bench"], ["deadlift", "pullup"], ["ohp"]];
+  const TEST_GROUPS: string[][] = [["squat"], ["bench", "pullup"], ["deadlift"], ["ohp"]];
   for (const group of TEST_GROUPS) {
     const required = group.filter((l) => l !== "pullup" || needsPullup);
     const byWeek = new Map<string, typeof tests>();
@@ -89,7 +98,11 @@ export async function getCalendarData(athleteId: string): Promise<CalendarData> 
         total: required.length,
         sets: [],
         detail: Array.from(latest.values())
-          .map((t) => `${LIFT_LABEL[t.lift] ?? t.lift} 5RM ${t.fiveRM} \u2192 e1RM ${t.e1RM}`)
+          .map((t) =>
+            t.lift === "pullup"
+              ? `${LIFT_LABEL[t.lift] ?? t.lift} 5RM +${t.fiveRM} added \u2192 total-load e1RM ${t.e1RM}`
+              : `${LIFT_LABEL[t.lift] ?? t.lift} 5RM ${t.fiveRM} \u2192 e1RM ${t.e1RM}`
+          )
           .join("; "),
       });
     }

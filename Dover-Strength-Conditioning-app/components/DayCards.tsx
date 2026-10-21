@@ -13,12 +13,14 @@ export default function DayCards({
   latest,
   dayNotes,
   athleteId,
+  bodyweight,
 }: {
   days: PlanDay[];
   rows: Row[];
   latest: Record<string, LatestTest | undefined>;
   dayNotes?: Record<string, string>;
   athleteId?: string;
+  bodyweight?: number | null;
 }) {
   const today = weekdayOf(todayISO());
   const info = days.map((d) => {
@@ -61,7 +63,7 @@ export default function DayCards({
               )}
               <SetLogger
                 planDay={d.day}
-                exercises={d.exercises.map((e) => viewOf(e, latest))}
+                exercises={d.exercises.map((e) => viewOf(e, latest, bodyweight))}
                 initial={dayRows.map((r) => ({ lift: r.lift, setNumber: r.setNumber, weight: r.weight, reps: r.reps }))}
                 initialDate={latestDate}
                 sectionNotes={d.notes}

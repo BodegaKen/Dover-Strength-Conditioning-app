@@ -1,12 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getApiSession, hashPin, randomPin } from "@/lib/auth";
+import { hashPin, randomPin } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { getCoachApi } from "@/lib/admin";
+import { audit } from "@/lib/audit";
 
-async function requireCoach() {
-  const session = await getApiSession();
-  if (!session || session.role !== "COACH") return null;
-  return session;
-}
+const requireCoach = getCoachApi;
+const ADMIN_ONLY = "Only a full admin coach can do that.";
 
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
   const session = await requireCoach();
@@ -24,19 +23,23 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
 
   if (action === "archive") {
     await prisma.user.update({ where: { id: athlete.id }, data: { active: false } });
+    await audit(session, "archive athlete", athlete.name);
     return NextResponse.json({ ok: true });
   }
   if (action === "restore") {
     await prisma.user.update({ where: { id: athlete.id }, data: { active: true } });
+    await audit(session, "restore athlete", athlete.name);
     return NextResponse.json({ ok: true });
   }
   if (action === "resetPin") {
+    if (!session.isAdmin) return NextResponse.json({ error: ADMIN_ONLY }, { status: 403 });
     const pin = randomPin();
     const pinHash = await hashPin(pin);
     await prisma.user.update({
       where: { id: athlete.id },
       data: { pinHash, mustChangePin: true },
     });
+    await audit(session, "reset athlete PIN", athlete.name);
     return NextResponse.json({ ok: true, pin });
   }
 
@@ -65,16 +68,19 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     data.trainingTrack = body.trainingTrack;
   }
   await prisma.user.update({ where: { id: athlete.id }, data });
+  await audit(session, "edit athlete", athlete.name, Object.keys(data).join(", "));
   return NextResponse.json({ ok: true });
 }
 
 export async function DELETE(_req: NextRequest, { params }: { params: { id: string } }) {
   const session = await requireCoach();
   if (!session) return NextResponse.json({ error: "Coach access only." }, { status: 403 });
-  const target = await prisma.user.findUnique({ where: { id: params.id }, select: { role: true } });
+  if (!session.isAdmin) return NextResponse.json({ error: ADMIN_ONLY }, { status: 403 });
+  const target = await prisma.user.findUnique({ where: { id: params.id }, select: { role: true, name: true } });
   if (target && target.role !== "PLAYER") {
     return NextResponse.json({ error: "Only athlete accounts can be managed here." }, { status: 403 });
   }
   await prisma.user.delete({ where: { id: params.id } }).catch(() => null);
+  if (target) await audit(session, "delete athlete", target.name);
   return NextResponse.json({ ok: true });
 }

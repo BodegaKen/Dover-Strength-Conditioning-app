@@ -2,13 +2,17 @@ import { NextRequest, NextResponse } from "next/server";
 import { getApiSession } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { MAX_SESSION_MIN, validDate } from "@/lib/validate";
+import { getCoachApi } from "@/lib/admin";
+import { audit } from "@/lib/audit";
 
 // Coach-only: correct or remove a session (RPE + duration) entered for any athlete.
 async function requireCoach() {
   const session = await getApiSession();
   if (!session) return { error: NextResponse.json({ error: "Not signed in." }, { status: 401 }) };
   if (session.role !== "COACH") return { error: NextResponse.json({ error: "Coach only." }, { status: 403 }) };
-  return { session };
+  const coach = await getCoachApi();
+  if (!coach) return { error: NextResponse.json({ error: "Coach only." }, { status: 403 }) };
+  return { session, coach };
 }
 
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
@@ -32,6 +36,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     where: { id: params.id },
     data: { rpe, durationMin, date, type, load: rpe * durationMin },
   });
+  await audit(auth.coach, "edit session entry", null, `${existing.type} ${existing.date}`);
   return NextResponse.json({ session });
 }
 
@@ -41,5 +46,6 @@ export async function DELETE(_req: NextRequest, { params }: { params: { id: stri
   const existing = await prisma.sessionEntry.findUnique({ where: { id: params.id } });
   if (!existing) return NextResponse.json({ error: "Entry not found." }, { status: 404 });
   await prisma.sessionEntry.delete({ where: { id: params.id } });
+  await audit(auth.coach, "delete session entry", null, `${existing.type} ${existing.date}`);
   return NextResponse.json({ ok: true });
 }

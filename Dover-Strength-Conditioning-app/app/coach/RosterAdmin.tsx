@@ -16,7 +16,7 @@ type Athlete = {
   active: boolean;
 };
 
-export default function RosterAdmin({ athletes }: { athletes: Athlete[] }) {
+export default function RosterAdmin({ athletes, isAdmin = false }: { athletes: Athlete[]; isAdmin?: boolean }) {
   const router = useRouter();
   const [showArchived, setShowArchived] = useState(false);
   const [name, setName] = useState("");
@@ -122,6 +122,7 @@ export default function RosterAdmin({ athletes }: { athletes: Athlete[] }) {
         When a player graduates or leaves, <strong>Archive</strong> them &mdash; they drop off the active
         roster and today&rsquo;s numbers but keep their tests on the all-time Leaderboard forever.{" "}
         <strong>Delete</strong> is only for fixing a mistake; it removes them everywhere, leaderboard included.
+        {!isAdmin && " Delete and Reset PIN are limited to full admin coaches; ask one of them."}
       </p>
 
       <form onSubmit={addAthlete} className="flex flex-wrap gap-3 items-end">
@@ -269,15 +270,17 @@ export default function RosterAdmin({ athletes }: { athletes: Athlete[] }) {
               )}
             </div>
             <div className="flex gap-1.5 flex-shrink-0">
-              {!showArchived && (
+              {!showArchived && isAdmin && (
                 <SmallBtn onClick={() => act(a.id, "resetPin")}>Reset PIN</SmallBtn>
               )}
               <SmallBtn onClick={() => act(a.id, showArchived ? "restore" : "archive")}>
                 {showArchived ? "Restore" : "Archive"}
               </SmallBtn>
-              <SmallBtn danger onClick={() => del(a.id)}>
-                {pendingDelete === a.id ? "Tap again" : "Delete"}
-              </SmallBtn>
+              {isAdmin && (
+                <SmallBtn danger onClick={() => del(a.id)}>
+                  {pendingDelete === a.id ? "Tap again" : "Delete"}
+                </SmallBtn>
+              )}
             </div>
           </div>
         ))}

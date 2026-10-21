@@ -24,6 +24,7 @@ export type AthleteRecord = {
   trainingTrack: TrainingTrack;
   active: boolean;
   mustChangePin: boolean;
+  isAdmin?: boolean;
   createdAt: Date;
 };
 
@@ -33,6 +34,7 @@ export type TestEntryRecord = {
   lift: string;
   fiveRM: number;
   e1RM: number;
+  bodyweightAtTest?: number | null;
   date: string;
   enteredAt: Date;
 };

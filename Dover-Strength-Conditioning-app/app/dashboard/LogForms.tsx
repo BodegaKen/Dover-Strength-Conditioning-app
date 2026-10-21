@@ -2,14 +2,16 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { LIFTS, RPE_DESC, calcE1RM, todayISO, LiftKey } from "@/lib/calc";
+import { LIFTS, RPE_DESC, calcE1RM, pullupSystemE1RM, todayISO, LiftKey } from "@/lib/calc";
 
 export default function LogForms({
   currentE1RMs,
   athleteId,
+  bodyweight,
 }: {
   currentE1RMs: Record<string, number | null>;
   athleteId?: string; // coach logging on a player's behalf
+  bodyweight?: number | null; // the athlete's current bodyweight, prefilled for weighted pull-up tests
 }) {
   const [mode, setMode] = useState<"test" | "session" | null>(null);
 
@@ -25,7 +27,7 @@ export default function LogForms({
           <span className="text-muted text-xs">RPE + duration &rarr; auto load</span>
         </ModeButton>
       </div>
-      {mode === "test" && <TestForm currentE1RMs={currentE1RMs} athleteId={athleteId} />}
+      {mode === "test" && <TestForm currentE1RMs={currentE1RMs} athleteId={athleteId} bodyweight={bodyweight} />}
       {mode === "session" && <SessionForm athleteId={athleteId} />}
     </div>
   );
@@ -65,16 +67,33 @@ function Feedback({ message, isError }: { message: string; isError?: boolean }) 
   );
 }
 
-function TestForm({ currentE1RMs, athleteId }: { currentE1RMs: Record<string, number | null>; athleteId?: string }) {
+function TestForm({
+  currentE1RMs,
+  athleteId,
+  bodyweight,
+}: {
+  currentE1RMs: Record<string, number | null>;
+  athleteId?: string;
+  bodyweight?: number | null;
+}) {
   const router = useRouter();
   const [lift, setLift] = useState<LiftKey>(LIFTS[0].key);
   const [fiveRM, setFiveRM] = useState("");
+  const [bw, setBw] = useState(bodyweight != null ? String(bodyweight) : "");
   const [date, setDate] = useState(todayISO());
   const [feedback, setFeedback] = useState<{ msg: string; err?: boolean } | null>(null);
   const [loading, setLoading] = useState(false);
 
   const parsed = parseFloat(fiveRM);
-  const preview = parsed > 0 ? calcE1RM(parsed) : null;
+  const bwNum = parseFloat(bw);
+  const preview =
+    parsed > 0
+      ? lift === "pullup"
+        ? bwNum >= 50
+          ? pullupSystemE1RM(parsed, bwNum)
+          : null
+        : calcE1RM(parsed)
+      : null;
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -85,14 +104,19 @@ function TestForm({ currentE1RMs, athleteId }: { currentE1RMs: Record<string, nu
       const res = await fetch("/api/tests", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ lift, fiveRM: parsed, date, athleteId }),
+        body: JSON.stringify({ lift, fiveRM: parsed, date, athleteId, ...(lift === "pullup" ? { bodyweight: bwNum } : {}) }),
       });
       const data = await res.json();
       if (!res.ok) {
         setFeedback({ msg: data.error ?? "Couldn't save that test.", err: true });
         return;
       }
-      setFeedback({ msg: `${LIFTS.find((l) => l.key === lift)?.label} 5RM ${parsed} lb → e1RM ${data.test.e1RM} lb logged.` });
+      setFeedback({
+        msg:
+          lift === "pullup"
+            ? `Weighted pull-up 5RM +${parsed} lb added at ${bwNum} lb bodyweight → total-load e1RM ${data.test.e1RM} lb logged.`
+            : `${LIFTS.find((l) => l.key === lift)?.label} 5RM ${parsed} lb → e1RM ${data.test.e1RM} lb logged.`,
+      });
       setFiveRM("");
       router.refresh();
     } finally {
@@ -142,7 +166,26 @@ function TestForm({ currentE1RMs, athleteId }: { currentE1RMs: Record<string, nu
           />
         </div>
       </div>
-      {preview != null && <div className="text-sm text-muted">e1RM: {preview} lb</div>}
+      {lift === "pullup" && (
+        <div className="max-w-xs">
+          <label className="block text-xs font-semibold uppercase tracking-wide text-muted mb-1">Bodyweight today (lb)</label>
+          <input
+            type="number"
+            min={50}
+            max={600}
+            step="any"
+            className="w-full bg-bg border border-line rounded-md px-3 py-2.5"
+            value={bw}
+            onChange={(e) => setBw(e.target.value)}
+            required
+          />
+        </div>
+      )}
+      {preview != null && (
+        <div className="text-sm text-muted">
+          {lift === "pullup" ? `Total-load e1RM (bodyweight + added weight) / 0.87: ${preview} lb` : `e1RM: ${preview} lb`}
+        </div>
+      )}
       {feedback && <Feedback message={feedback.msg} isError={feedback.err} />}
       <button
         type="submit"

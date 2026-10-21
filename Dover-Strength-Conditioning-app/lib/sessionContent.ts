@@ -51,30 +51,24 @@ const info = (lift: string, label: string, section: PlanSection, extra: Partial<
 
 // ---------------------------------------------------------------- NMT warm-up
 
-const PART1 = [
-  "Jog the width of the field/gym, easy pace",
-  "High knees, one length",
-  "Butt kicks, one length",
-  "Carioca (both directions)",
-  "Lateral shuffle (both directions)",
-  "Backpedal, one length",
-];
-
+// Trimmed NMT warm-up for the lift-only phases (decided Oct 21, 2026): Part 2 every
+// session plus two build-up sprints. Part 1 (activation jog/shuffle) and the rest of
+// Part 3 (bounding, plant-and-cut) come back in Phases 3-4, which are not encoded here.
+// A coaching decision to shorten the protocol, not an evidence-tested one.
 const PART3 = [
-  "Build-up sprints (jog to stride to near-top speed over ~20 yards), 2-3 reps",
-  "Bounding, one length",
-  "Plant-and-cut (decelerate, cut 45-90 degrees, reaccelerate), 3-4 reps each direction",
+  "Build-up sprints, 2 reps: jog to stride to ~85-90% effort over ~20 yards on a clear lane. Never all-out.",
 ];
 
+// Nordic hamstring lower: 2 sets, twice a week (Day B and Day D, after the lift).
+// Reps per set: 4-6 (Phase 1 weeks 1-3), 6-8 (weeks 4-6), 8-10 (week 7 on, and all of Phase 2).
 export function nordicReps(phase: 1 | 2, week: number): string {
-  if (phase === 2) return "10-12";
-  if (week <= 3) return "6-8";
-  if (week <= 6) return "8-10";
-  return "10-12";
+  if (phase === 2) return "8-10";
+  if (week <= 3) return "4-6";
+  if (week <= 6) return "6-8";
+  return "8-10";
 }
 
 function warmup(ctx: SessionCtx): PlanExercise[] {
-  const nordicPre = ctx.dayId === "C";
   // Phase 1 only: Day C/D keep the lateral bound in the warm-up; Day A/B and both
   // Multi-Sport days move it after lifting. Phase 2 has no lateral bound.
   const lateralPre = ctx.phase === 1 && (ctx.dayId === "C" || ctx.dayId === "D");
@@ -90,25 +84,10 @@ function warmup(ctx: SessionCtx): PlanExercise[] {
   // Phase 1 Day C/D: the lateral bound sits in the warm-up (after Part 2, before Part 3).
   if (lateralPre) part2.push("Lateral bound, stick the landing, 6-8 per side");
 
-  const out: PlanExercise[] = [
-    info("wu_part1", "NMT Part 1 - Activation (3-4 min)", "warmup", { details: PART1 }),
-    info("wu_part2", "NMT Part 2 - Strength, balance & neck (5-6 min)", "warmup", { details: part2 }),
+  return [
+    info("wu_part2", "NMT Part 2 - Core, neck, balance & landing (about 4 min)", "warmup", { details: part2 }),
+    info("wu_part3", "NMT Part 3 - Build-up sprints (about 1 min)", "warmup", { details: PART3 }),
   ];
-  if (nordicPre) {
-    out.push(
-      mk({
-        lift: "nordic",
-        label: "Nordic hamstring lower",
-        section: "warmup",
-        entry: "reps",
-        sets: 1,
-        reps: nordicReps(ctx.phase, ctx.week),
-        note: "Partner holds ankles; lower slowly to the ground. Regress to a shorter range if you aren't ready for full range.",
-      })
-    );
-  }
-  out.push(info("wu_part3", "NMT Part 3 - Sport-specific movement (2-3 min)", "warmup", { details: PART3 }));
-  return out;
 }
 
 // ------------------------------------------------------------ finisher blocks
@@ -163,7 +142,8 @@ function finisher(ctx: SessionCtx): PlanExercise[] {
     );
   }
 
-  const nordicPost = ctx.dayId !== "C";
+  // Twice a week only: Day B and Day D (Multi-Sport: the hinge day, Track Day 2).
+  const nordicPost = ctx.dayId === "B" || ctx.dayId === "D" || ctx.dayId === "MS2";
   if (nordicPost) {
     out.push(
       mk({
@@ -171,9 +151,9 @@ function finisher(ctx: SessionCtx): PlanExercise[] {
         label: "Nordic hamstring lower",
         section: "finisher",
         entry: "reps",
-        sets: 1,
+        sets: 2,
         reps: nordicReps(ctx.phase, ctx.week),
-        note: "Partner holds ankles; lower slowly to the ground. Regress to a shorter range if you aren't ready for full range.",
+        note: "2 sets, after the lift. Partner holds ankles; lower slowly to the ground. Regress to a shorter range if you aren't ready for full range. Skip it and tell the athletic trainer if you have more than mild next-day hamstring soreness, tightness while sprinting, or notice you are slower.",
       })
     );
   }
@@ -270,7 +250,7 @@ export function buildSessionExtras(ctx: SessionCtx): SessionExtras {
     accessory: accessories(ctx),
     finisher: finisher(ctx),
     notes: {
-      warmup: "NMT warm-up (~10 min, every session), usually run together as a team. Nothing to check off here - it is on the page so you know it is part of the day.",
+      warmup: "Trimmed NMT warm-up (about 5 min, every session): Part 2 plus two build-up sprints, usually run together as a team. Nothing to check off here - it is on the page so you know it is part of the day.",
       accessory: accessoryNote(ctx),
     },
   };
@@ -278,7 +258,7 @@ export function buildSessionExtras(ctx: SessionCtx): SessionExtras {
 
 // Human labels for every storage key, so the calendar can show what was logged.
 export const ITEM_LABEL: Record<string, string> = {
-  wu_part1: "NMT Part 1",
+  wu_part1: "NMT Part 1 (retired Oct 21, 2026)",
   wu_part2: "NMT Part 2",
   wu_part3: "NMT Part 3",
   nordic: "Nordic hamstring lower",

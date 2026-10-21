@@ -29,7 +29,7 @@
                 "pctE1RM": null,
                 "mode": "test",
                 "note": "Work up to a heavy 5RM. Same e1RM conversion as squat.",
-                "day": "Monday"
+                "day": "Tuesday"
               },
               "deadlift": {
                 "sets": 1,
@@ -37,7 +37,7 @@
                 "pctE1RM": null,
                 "mode": "test",
                 "note": "Work up to a heavy 5RM. Same e1RM conversion as squat.",
-                "day": "Tuesday"
+                "day": "Thursday"
               },
               "ohp": {
                 "sets": 1,
@@ -345,7 +345,7 @@
                 "pctE1RM": null,
                 "mode": "retest",
                 "note": "Re-establish 5RM; convert to new e1RM.",
-                "day": "Monday"
+                "day": "Tuesday"
               },
               "deadlift": {
                 "sets": 1,
@@ -353,7 +353,7 @@
                 "pctE1RM": null,
                 "mode": "retest",
                 "note": "Re-establish 5RM; convert to new e1RM.",
-                "day": "Tuesday"
+                "day": "Thursday"
               },
               "ohp": {
                 "sets": 1,
@@ -605,15 +605,15 @@
                 "pctE1RM": null,
                 "mode": "test",
                 "note": "Work up to a heavy 5RM.",
-                "day": "Monday"
+                "day": "Tuesday"
               },
               "deadlift": {
                 "sets": 1,
                 "reps": 5,
                 "pctE1RM": null,
                 "mode": "test",
-                "note": "Work up to a heavy 5RM. Vertical Jump (power marker) is tested same day, before this lift.",
-                "day": "Tuesday"
+                "note": "Work up to a heavy 5RM. (Vertical Jump, the power marker, is tested Monday before the squat.)",
+                "day": "Thursday"
               },
               "ohp": {
                 "sets": 1,
@@ -954,7 +954,7 @@
                 "pctE1RM": null,
                 "mode": "retest",
                 "note": "Re-establish 5RM; convert to new e1RM. Vertical Jump also re-tested.",
-                "day": "Monday"
+                "day": "Tuesday"
               },
               "deadlift": {
                 "sets": 1,
@@ -962,7 +962,7 @@
                 "pctE1RM": null,
                 "mode": "retest",
                 "note": "Re-establish 5RM; convert to new e1RM.",
-                "day": "Tuesday"
+                "day": "Thursday"
               },
               "ohp": {
                 "sets": 1,
@@ -1312,12 +1312,12 @@
               },
               "pullup": {
                 "mode": "weighted|bodyweight",
-                "scheme": "Weighted: 3x5 at tested added weight. Bodyweight: 3x5 with 2-3 reps in reserve (same technique-gating standard as Phase 1).",
+                "scheme": "Weighted: 3x5 at ~80% of total-load e1RM (bodyweight + added weight; belt load = that minus bodyweight). Bodyweight: 3x5 with 2-3 reps in reserve (same technique-gating standard as Phase 1).",
                 "note": "Flat dose, unchanged Weeks 2-3.",
                 "weightedPlan": {
                   "sets": 3,
                   "reps": "5",
-                  "atTestedWeight": true
+                  "pctE1RM": 80
                 },
                 "bodyweightPlan": {
                   "sets": 3,
@@ -1365,13 +1365,13 @@
               },
               "pullup": {
                 "mode": "weighted|bodyweight",
-                "scheme": "Same as Week 2 - flat dose.",
+                "scheme": "Same as Week 2 - flat dose. Weighted load: ~80% of total-load e1RM (bodyweight + added weight); belt load = that minus bodyweight.",
                 "note": null,
                 "day": "Wednesday",
                 "weightedPlan": {
                   "sets": 3,
                   "reps": "5",
-                  "atTestedWeight": true
+                  "pctE1RM": 80
                 },
                 "bodyweightPlan": {
                   "sets": 3,
@@ -1467,12 +1467,12 @@
               },
               "pullup": {
                 "mode": "weighted|bodyweight",
-                "scheme": "Weighted: 3x5 at tested added weight. Bodyweight: 3x5 with 2-3 reps in reserve.",
+                "scheme": "Weighted: 3x5 at ~80% of total-load e1RM (bodyweight + added weight; belt load = that minus bodyweight). Bodyweight: 3x5 with 2-3 reps in reserve.",
                 "note": "Unchanged from Phase 3's dose.",
                 "weightedPlan": {
                   "sets": 3,
                   "reps": "5",
-                  "atTestedWeight": true
+                  "pctE1RM": 80
                 },
                 "bodyweightPlan": {
                   "sets": 3,
@@ -1520,12 +1520,12 @@
               },
               "pullup": {
                 "mode": "weighted|bodyweight",
-                "scheme": "Weighted: 2x5 at tested added weight (down from Week 1's 3x5). Bodyweight: 2x5 with 2-3 reps in reserve.",
+                "scheme": "Weighted: 2x5 at ~75% of total-load e1RM (bodyweight + added weight; belt load = that minus bodyweight) (down from Week 1's 3x5). Bodyweight: 2x5 with 2-3 reps in reserve.",
                 "note": "Taper cut from Week 1.",
                 "weightedPlan": {
                   "sets": 2,
                   "reps": "5",
-                  "atTestedWeight": true
+                  "pctE1RM": 75
                 },
                 "bodyweightPlan": {
                   "sets": 2,
@@ -1967,12 +1967,12 @@
               },
               "pullup": {
                 "mode": "weighted|bodyweight",
-                "scheme": "Weighted: 2x5 at tested added weight. Bodyweight: 2x5 with 2-3 reps in reserve, no added weight.",
+                "scheme": "Weighted: 2x5 at ~75% of total-load e1RM (bodyweight + added weight; belt load = that minus bodyweight). Bodyweight: 2x5 with 2-3 reps in reserve, no added weight.",
                 "note": "Scheduled into whichever of that day's two practice sessions (or that week's single-practice day) leaves the most practical window - camp's daily schedule is the football staff's to set.",
                 "weightedPlan": {
                   "sets": 2,
                   "reps": "5",
-                  "atTestedWeight": true
+                  "pctE1RM": 75
                 },
                 "bodyweightPlan": {
                   "sets": 2,
@@ -2026,13 +2026,14 @@
             "weightedPlan": {
               "sets": 3,
               "reps": "3-5",
-              "atTestedWeight": true
+              "pctE1RM": 80
             },
             "bodyweightPlan": {
               "sets": 3,
               "reps": "3-5"
             },
-            "mode": "weighted|bodyweight"
+            "mode": "weighted|bodyweight",
+            "scheme": " Weighted load: ~80% of total-load e1RM (bodyweight + added weight); belt load = that minus bodyweight."
           }
         },
         {
@@ -2064,13 +2065,14 @@
             "weightedPlan": {
               "sets": 3,
               "reps": "3-5",
-              "atTestedWeight": true
+              "pctE1RM": 80
             },
             "bodyweightPlan": {
               "sets": 3,
               "reps": "3-5"
             },
-            "mode": "weighted|bodyweight"
+            "mode": "weighted|bodyweight",
+            "scheme": " Weighted load: ~80% of total-load e1RM (bodyweight + added weight); belt load = that minus bodyweight."
           }
         },
         {
@@ -2126,11 +2128,11 @@
         "pullup": {
           "day": "GD-2 (Lift Day 2)",
           "mode": "weighted|bodyweight",
-          "note": "Weighted: 3 sets x 3-5 reps at tested added weight. Bodyweight: 3x3-5 with 2-3 reps in reserve. Same Heavy Maintenance intensity standard, full prescription from Week 1 (never went dormant off-season).",
+          "note": "Weighted: 3 sets x 3-5 reps at ~80% of total-load e1RM (bodyweight + added weight; belt load = that minus bodyweight). Bodyweight: 3x3-5 with 2-3 reps in reserve. Same Heavy Maintenance intensity standard, full prescription from Week 1 (never went dormant off-season).",
           "weightedPlan": {
             "sets": 3,
             "reps": "3-5",
-            "atTestedWeight": true
+            "pctE1RM": 80
           },
           "bodyweightPlan": {
             "sets": 3,

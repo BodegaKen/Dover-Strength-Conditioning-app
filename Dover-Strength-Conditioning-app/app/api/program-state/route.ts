@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { getApiSession } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { getAllTracks } from "@/lib/prescription";
+import { getCoachApi } from "@/lib/admin";
+import { audit } from "@/lib/audit";
 
 export async function GET() {
   if (!(await getApiSession())) return NextResponse.json({ error: "Not signed in." }, { status: 401 });
@@ -9,14 +11,14 @@ export async function GET() {
   if (!state) {
     // Default to the very first track/period until a coach sets one.
     const tracks = getAllTracks();
-    return NextResponse.json({ trackKey: tracks[0].key, week: 1, isDefault: true });
+    return NextResponse.json({ trackKey: tracks.find((t) => t.key === "phase1")?.key ?? tracks[0].key, week: 1, isDefault: true });
   }
   return NextResponse.json({ trackKey: state.trackKey, week: state.week, isDefault: false });
 }
 
 export async function PATCH(req: NextRequest) {
-  const session = await getApiSession();
-  if (!session || session.role !== "COACH") {
+  const session = await getCoachApi();
+  if (!session) {
     return NextResponse.json({ error: "Coach access only." }, { status: 403 });
   }
   const body = await req.json().catch(() => null);
@@ -33,5 +35,6 @@ export async function PATCH(req: NextRequest) {
     create: { id: "current", trackKey, week },
     update: { trackKey, week },
   });
+  await audit(session, "set team phase/week", null, `${state.trackKey} week ${state.week}`);
   return NextResponse.json({ trackKey: state.trackKey, week: state.week });
 }

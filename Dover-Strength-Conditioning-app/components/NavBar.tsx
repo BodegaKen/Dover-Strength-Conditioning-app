@@ -11,6 +11,8 @@ export default function NavBar({ role, name }: { role: "PLAYER" | "COACH"; name:
     role === "COACH"
       ? [
           { href: "/coach", label: "Coach" },
+          { href: "/coach/attendance", label: "Attendance" },
+          { href: "/coach/docs", label: "Docs" },
           { href: "/leaderboard", label: "Leaderboard" },
         ]
       : [

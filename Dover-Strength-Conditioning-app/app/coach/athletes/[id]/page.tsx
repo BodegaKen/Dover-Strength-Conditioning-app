@@ -211,6 +211,7 @@ export default async function AthleteDetailPage({
             <LogForms
               athleteId={athlete.id}
               currentE1RMs={Object.fromEntries(LIFTS.map((l) => [l.key, latestByLift[l.key] ?? null]))}
+              bodyweight={athlete.bodyweight}
             />
           </div>
         </details>
@@ -232,6 +233,7 @@ export default async function AthleteDetailPage({
                 latest={latestFull}
                 dayNotes={winfo?.dayNotes}
                 athleteId={athlete.id}
+                bodyweight={athlete.bodyweight}
               />
             </div>
           </details>
@@ -287,7 +289,9 @@ export default async function AthleteDetailPage({
                           <>
                             <td className="py-2 pr-3 whitespace-nowrap">{LIFT_LABEL[r.lift] ?? r.lift} test</td>
                             <td className="py-2 pr-3 num whitespace-nowrap">
-                              5RM {r.fiveRM} &rarr; e1RM {r.e1RM}
+                              {r.lift === "pullup"
+                                ? `5RM +${r.fiveRM} added \u2192 total-load e1RM ${r.e1RM}`
+                                : `5RM ${r.fiveRM} \u2192 e1RM ${r.e1RM}`}
                             </td>
                           </>
                         )}

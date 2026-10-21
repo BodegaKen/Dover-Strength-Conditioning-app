@@ -9,6 +9,7 @@ import { weekInfo } from "@/lib/schedule";
 import NavBar from "@/components/NavBar";
 import DayCards from "@/components/DayCards";
 import LogForms from "./LogForms";
+import { phase0Week } from "@/lib/phase0";
 
 const DAY_ORDER = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
@@ -116,8 +117,8 @@ export default async function DashboardPage() {
           {trackLabel && <div className="text-sm text-muted mt-1">{trackLabel}</div>}
           {(trackKey === "phase1" || trackKey === "phase2") && !testWeek && (
             <p className="text-xs text-muted mt-2">
-              Load bias: linemen train at the upper end of the +/-2.5% band around the prescribed %, skill positions at the
-              lower end. Your coach will tell you which you are.
+              Load bias: linemen train at the upper end of the +/-2.5 percentage-point band around the prescribed %, skill
+              positions at the lower end (never above 87% of your e1RM in the peak weeks). Your coach will tell you which you are.
             </p>
           )}
           {(trackKey === "phase1" || trackKey === "phase2") && !testWeek && laneFor(user.position, period?.index ?? 1).mixed && (
@@ -161,7 +162,19 @@ export default async function DashboardPage() {
           )}
         </div>
 
-        {testWeek ? (
+        {trackKey === "phase0" ? (
+          <div className="bg-surface border border-line rounded-xl p-4 flex flex-col gap-2">
+            <div className="text-xs uppercase tracking-wide text-muted font-semibold">{phase0Week(week)?.title}</div>
+            <ul className="list-disc pl-5 flex flex-col gap-1.5 text-sm">
+              {(phase0Week(week)?.sessions ?? []).map((line, i) => (
+                <li key={i}>{line}</li>
+              ))}
+            </ul>
+            <p className="text-xs text-muted mt-1">
+              Phase 0 is display-only: nothing to log here. Your coach takes attendance. Sessions are optional.
+            </p>
+          </div>
+        ) : testWeek ? (
           <div className="bg-surface border border-line rounded-xl p-4 flex flex-col gap-4">
             {testGroups.map((group) => (
               <div key={group.day}>
@@ -174,8 +187,10 @@ export default async function DashboardPage() {
               </div>
             ))}
             <p className="text-sm text-muted">
-              No test is scheduled Thursday &mdash; it&rsquo;s open for rest, or to make up a missed Monday/Tuesday test.
-              Log each max with &ldquo;Log a test max&rdquo; below. Start every test day with the NMT warm-up.
+              No test is scheduled Wednesday. Friday is for the overhead press and any make-ups (a missed squat or deadlift
+              only if the other lower-body test was at least 48 hours earlier; otherwise it moves to Week 2). Log each max with
+              &ldquo;Log a test max&rdquo; below. Start every test day with the NMT warm-up, and warm up to the top set with
+              an empty-bar set and 2-3 ascending sets.
             </p>
           </div>
         ) : planDays.length === 0 ? (
@@ -188,12 +203,16 @@ export default async function DashboardPage() {
             rows={setRows}
             latest={latestByLift}
             dayNotes={info?.dayNotes}
+            bodyweight={user.bodyweight}
           />
         )}
 
-        <LogForms
-          currentE1RMs={Object.fromEntries(LIFTS.map((l) => [l.key, latestByLift[l.key]?.e1RM ?? null]))}
-        />
+        {trackKey !== "phase0" && (
+          <LogForms
+            currentE1RMs={Object.fromEntries(LIFTS.map((l) => [l.key, latestByLift[l.key]?.e1RM ?? null]))}
+            bodyweight={user.bodyweight}
+          />
+        )}
       </main>
     </div>
   );

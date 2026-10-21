@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { getSession } from "@/lib/auth";
+import { getCoachPage } from "@/lib/admin";
 import { prisma } from "@/lib/db";
 import { getAllTracks } from "@/lib/prescription";
 import { LIFTS, computeLoadStats, acwrStatus } from "@/lib/calc";
@@ -7,14 +7,20 @@ import type { AthleteRecord, TestEntryRecord, SessionEntryRecord } from "@/lib/t
 import Link from "next/link";
 import NavBar from "@/components/NavBar";
 import RosterAdmin from "./RosterAdmin";
+import CoachesAdmin from "./CoachesAdmin";
 import PhaseWeekSetter from "./PhaseWeekSetter";
 import ExportCsvButton from "./ExportCsvButton";
 
 export default async function CoachPage() {
-  const session = await getSession();
-  if (!session) redirect("/login");
-  const coach = await prisma.user.findUnique({ where: { id: session.sub } });
-  if (!coach || coach.role !== "COACH") redirect("/dashboard");
+  const coach = await getCoachPage();
+  if (!coach) redirect("/dashboard");
+  const coachRows = coach.isAdmin
+    ? await prisma.user.findMany({
+        where: { role: "COACH" },
+        orderBy: { name: "asc" },
+        select: { id: true, name: true, username: true, isAdmin: true, active: true, mustChangePin: true },
+      })
+    : [];
 
   const athletes: AthleteRecord[] = await prisma.user.findMany({
     where: { role: "PLAYER" },
@@ -52,10 +58,20 @@ export default async function CoachPage() {
       <main className="max-w-3xl mx-auto px-4 py-5 flex flex-col gap-5">
         <PhaseWeekSetter
           tracks={tracks}
-          current={{ trackKey: state?.trackKey ?? tracks[0].key, week: state?.week ?? 1 }}
+          current={{ trackKey: state?.trackKey ?? "phase1", week: state?.week ?? 1 }}
         />
 
+        {coach.isAdmin && <CoachesAdmin coaches={coachRows} meId={coach.id} />}
+        {coach.isAdmin && (
+          <div className="text-sm">
+            <Link href="/coach/audit" className="text-accent hover:underline">
+              View the coach audit log &rarr;
+            </Link>
+          </div>
+        )}
+
         <RosterAdmin
+          isAdmin={coach.isAdmin}
           athletes={athletes.map((a) => ({
             id: a.id,
             name: a.name,

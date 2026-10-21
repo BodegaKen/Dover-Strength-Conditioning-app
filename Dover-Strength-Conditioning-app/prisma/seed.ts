@@ -51,10 +51,18 @@ async function main() {
   }
   const pin = suppliedPin ?? randomPin();
 
-  const existing = await prisma.user.findFirst({ where: { role: "COACH" } });
+  const existing = await prisma.user.findFirst({ where: { role: "COACH" }, orderBy: { createdAt: "asc" } });
   if (existing) {
-    console.log(`A coach account already exists (@${existing.username}) — skipping seed.`);
-    console.log("To add another coach, use the Roster Admin inside the app, or delete the existing coach row first.");
+    // The isAdmin flag was added after the first coach was created. If nobody holds it yet,
+    // the oldest coach account becomes the first full admin (safe to re-run).
+    const admins = await prisma.user.count({ where: { role: "COACH", isAdmin: true } });
+    if (admins === 0) {
+      await prisma.user.update({ where: { id: existing.id }, data: { isAdmin: true } });
+      console.log(`@${existing.username} is now a full admin coach.`);
+    } else {
+      console.log(`A coach account already exists (@${existing.username}) — nothing to seed.`);
+    }
+    console.log("To add more coaches, sign in as a full admin and use Coach accounts on the Coach page.");
     return;
   }
 
@@ -65,6 +73,7 @@ async function main() {
       username,
       pinHash,
       role: "COACH",
+      isAdmin: true,
       active: true,
       // A PIN supplied through COACH_PIN is the coach's own choice, so no forced
       // change. A generated PIN is printed once below, so it must be changed at
