@@ -11,12 +11,15 @@ export type RosterRow = {
   appState: "complete" | "partial" | "none"; // from the athlete's own logging that day
 };
 
+// Credit rule: a coach's Absent mark always stands; otherwise an athlete is credited as present if a
+// coach marked them present OR they completed the day in the app (self-reported, e.g. lifting at
+// another gym).
 function stateOf(r: RosterRow): { label: string; tone: string } {
-  if (r.present === false) return { label: "✗ Absent", tone: "border-danger bg-danger-bg text-danger" };
+  if (r.present === false) return { label: "✗ Absent (coach)", tone: "border-danger bg-danger-bg text-danger" };
   if (r.present === true && r.appState === "complete") return { label: "✓ Present, completed", tone: "border-good bg-good-bg text-good" };
-  if (r.present === true) return { label: r.appState === "partial" ? "Present, incomplete" : "Present, nothing logged", tone: "border-warning bg-warning-bg text-warning" };
-  if (r.appState === "complete") return { label: "Completed in app (not marked)", tone: "border-line text-muted" };
-  if (r.appState === "partial") return { label: "Partly logged (not marked)", tone: "border-line text-muted" };
+  if (r.present === true) return { label: r.appState === "partial" ? "✓ Present, incomplete" : "✓ Present, nothing logged", tone: "border-good bg-good-bg text-good" };
+  if (r.appState === "complete") return { label: "✓ Credited: completed in app", tone: "border-good bg-good-bg text-good" };
+  if (r.appState === "partial") return { label: "Partly logged (not credited)", tone: "border-warning bg-warning-bg text-warning" };
   return { label: "Not marked", tone: "border-line text-muted" };
 }
 
@@ -45,14 +48,15 @@ export default function AttendanceRoster({ date, rows }: { date: string; rows: R
     }
   }
 
-  const present = rows.filter((r) => r.present === true).length;
+  const credited = (r: RosterRow) => r.present === true || (r.present !== false && r.appState === "complete");
+  const present = rows.filter(credited).length;
   const absent = rows.filter((r) => r.present === false).length;
 
   return (
     <div className="flex flex-col gap-3">
       <div className="flex flex-wrap items-center gap-2 text-sm">
         <span className="text-muted">
-          {present} present &middot; {absent} absent &middot; {rows.length - present - absent} not marked
+          {present} credited present &middot; {absent} absent &middot; {rows.length - present - absent} not credited
         </span>
         <span className="flex-1" />
         <button type="button" disabled={busy} onClick={() => send({ bulk: "present" })} className="text-xs uppercase tracking-wide rounded-md px-2.5 py-1.5 border border-line disabled:opacity-50">

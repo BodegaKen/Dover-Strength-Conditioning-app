@@ -9,9 +9,8 @@ import NavBar from "@/components/NavBar";
 import AttendanceRoster, { type RosterRow } from "./AttendanceRoster";
 
 // Coach attendance: pick a day, mark the roster present or absent, and see for each athlete whether
-// they also completed the day in the app (three states: present and completed, present but
-// incomplete, absent). The month tally counts only days on which a coach marked anyone, so the
-// denominator is "roll-call days", not an assumed schedule.
+// they also completed the day in the app. Credit = coach-marked present OR completed in the app (a coach's
+// Absent mark overrides). The month tally measures credited days against counted days, not an assumed schedule.
 export default async function AttendancePage({ searchParams }: { searchParams: { d?: string } }) {
   const coach = await getCoachPage();
   if (!coach) redirect("/dashboard");
@@ -70,14 +69,29 @@ export default async function AttendancePage({ searchParams }: { searchParams: {
     appState: appStateByDay.get(date)?.get(a.id) ?? "none",
   }));
 
-  // Month tally.
-  const rollCallDays = Array.from(new Set((marks ?? []).map((m) => m.date))).sort();
+  // Month tally. Credit rule: a coach's Absent mark always stands; otherwise a day counts for an athlete
+  // if a coach marked them present OR they completed the day in the app (self-reported, e.g. lifting at
+  // another gym). Credited days are measured against "counted days": days a coach marked anyone, or
+  // any athlete completed the day.
+  const markByAthleteDay = new Map<string, boolean>(); // `${athleteId}|${date}` -> present
+  for (const m of marks ?? []) markByAthleteDay.set(`${m.athleteId}|${m.date}`, m.present);
+  const countedSet = new Set<string>((marks ?? []).map((m) => m.date));
+  for (const [d, m] of Array.from(appStateByDay.entries())) {
+    for (const st of Array.from(m.values())) if (st === "complete") countedSet.add(d);
+  }
+  const rollCallDays = Array.from(countedSet).sort();
   const tally = athletes.map((a) => {
-    const mine = (marks ?? []).filter((m) => m.athleteId === a.id);
-    const presentDays = mine.filter((m) => m.present).length;
-    let completedDays = 0;
-    for (const d of rollCallDays) if (appStateByDay.get(d)?.get(a.id) === "complete") completedDays++;
-    return { id: a.id, name: a.name, presentDays, markedDays: mine.length, completedDays };
+    let creditedDays = 0;
+    let roomDays = 0;
+    let appOnlyDays = 0;
+    for (const d of rollCallDays) {
+      const mark = markByAthleteDay.get(`${a.id}|${d}`);
+      const done = appStateByDay.get(d)?.get(a.id) === "complete";
+      if (mark === false) continue;
+      if (mark === true) { creditedDays++; roomDays++; }
+      else if (done) { creditedDays++; appOnlyDays++; }
+    }
+    return { id: a.id, name: a.name, creditedDays, roomDays, appOnlyDays };
   });
 
   const label = new Date(date + "T12:00:00Z").toLocaleDateString("en-US", { timeZone: "UTC", weekday: "long", month: "long", day: "numeric", year: "numeric" });
@@ -107,25 +121,27 @@ export default async function AttendancePage({ searchParams }: { searchParams: {
           ) : null}
           <AttendanceRoster date={date} rows={rows} />
           <p className="text-xs text-muted">
-            &ldquo;Completed&rdquo; comes from the athlete&rsquo;s own logging in the app (every required item for the day), which they can
-            enter after the fact, so it is not proof they attended. Your Present/Absent tap is the record of who was in the room.
-            Out-of-season sessions are voluntary under the program&rsquo;s own rules; confirm with the AD that keeping attendance for them is fine.
+            An athlete is credited as present if you tap Present <em>or</em> they finish the day in the app (every required item), so
+            athletes training at another gym still get credit. App completion is self-reported and can be entered after the fact, so you
+            can tap Absent to override it. Out-of-season sessions are voluntary under the program&rsquo;s own rules; confirm with the AD that
+            keeping attendance for them is fine.
           </p>
         </div>
 
         <div className="bg-surface border border-line rounded-xl p-4">
           <h3 className="text-base mb-1">{monthLabel} tally</h3>
           <p className="text-sm text-muted mb-3">
-            {rollCallDays.length} roll-call day{rollCallDays.length === 1 ? "" : "s"} this month (days on which a coach marked anyone).
-            &ldquo;Present&rdquo; counts the days an athlete was marked present; &ldquo;completed in app&rdquo; counts roll-call days they also finished.
+            {rollCallDays.length} counted day{rollCallDays.length === 1 ? "" : "s"} this month (days a coach marked anyone, or any athlete
+            finished the day in the app). &ldquo;Credited&rdquo; = marked present by a coach, or finished in the app.
           </p>
           <div className="overflow-x-auto -mx-4 px-4">
             <table className="w-full text-sm border-collapse">
               <thead>
                 <tr className="text-left text-muted uppercase text-xs tracking-wide">
                   <th className="py-1.5 pr-3">Athlete</th>
-                  <th className="py-1.5 pr-3">Present</th>
-                  <th className="py-1.5 pr-3">Completed in app</th>
+                  <th className="py-1.5 pr-3">Credited</th>
+                  <th className="py-1.5 pr-3">In the room</th>
+                  <th className="py-1.5 pr-3">App only</th>
                 </tr>
               </thead>
               <tbody>
@@ -134,8 +150,9 @@ export default async function AttendancePage({ searchParams }: { searchParams: {
                     <td className="py-1.5 pr-3 font-semibold whitespace-nowrap">
                       <Link href={`/coach/athletes/${t.id}`} className="hover:text-accent hover:underline">{t.name}</Link>
                     </td>
-                    <td className="py-1.5 pr-3 num whitespace-nowrap">{t.presentDays} of {rollCallDays.length}</td>
-                    <td className="py-1.5 pr-3 num whitespace-nowrap">{t.completedDays} of {rollCallDays.length}</td>
+                    <td className="py-1.5 pr-3 num whitespace-nowrap">{t.creditedDays} of {rollCallDays.length}</td>
+                    <td className="py-1.5 pr-3 num whitespace-nowrap">{t.roomDays}</td>
+                    <td className="py-1.5 pr-3 num whitespace-nowrap">{t.appOnlyDays}</td>
                   </tr>
                 ))}
               </tbody>

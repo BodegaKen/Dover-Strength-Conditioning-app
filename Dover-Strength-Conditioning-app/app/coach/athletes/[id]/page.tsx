@@ -11,6 +11,7 @@ import { getCalendarData } from "@/lib/calendar";
 import { getPeriod, getTrack } from "@/lib/prescription";
 import { buildPlanDays, isTestPeriod, type TrainingTrack, type PullupMode } from "@/lib/plan";
 import { weekInfo } from "@/lib/schedule";
+import { phase0Week } from "@/lib/phase0";
 import { LIFTS, LIFT_LABEL, computeLoadStats, acwrStatus, addDaysISO, todayISO } from "@/lib/calc";
 import type { AthleteRecord, TestEntryRecord, SessionEntryRecord } from "@/lib/types";
 
@@ -215,6 +216,24 @@ export default async function AthleteDetailPage({
             />
           </div>
         </details>
+
+        {trackKey === "phase0" && (
+          <div className="bg-surface border border-line rounded-xl p-4 flex flex-col gap-2">
+            <div className="text-xs uppercase tracking-wide text-muted font-semibold">
+              Phase 0 &middot; {phase0Week(week)?.label} &middot; {phase0Week(week)?.title}
+            </div>
+            <p className="text-xs text-muted">
+              {phase0Week(week)?.dates}. This is what {athlete.name} sees. Phase 0 is display-only: nothing is logged here, and
+              attendance is taken on the Attendance page.
+            </p>
+            {phase0Week(week)?.note && <p className="text-sm">{phase0Week(week)?.note}</p>}
+            <ul className="list-disc pl-5 flex flex-col gap-1.5 text-sm">
+              {(phase0Week(week)?.sessions ?? []).map((line, i) => (
+                <li key={i}>{line}</li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         {!isTestPeriod(period) && planDays.length > 0 && (
           <details className="bg-surface border border-line rounded-xl">

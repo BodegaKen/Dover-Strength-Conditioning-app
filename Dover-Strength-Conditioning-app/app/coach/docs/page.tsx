@@ -7,7 +7,7 @@ import docsData from "@/data/coaching-docs.json";
 
 type Doc = { key: string; title: string; markdown: string };
 
-// Coach-only: the five Coaching Copies (Phases 1-5), a snapshot copied from the program documents.
+// Coach-only: Program Design and Rationale first, then the five Coaching Copies (Phases 1-5), a snapshot copied from the program documents.
 // The Research Report and the athlete-facing posters are deliberately not here. Athletes never see
 // this page (middleware and the check below both require a coach).
 export default async function CoachDocsPage({ searchParams }: { searchParams: { d?: string } }) {
@@ -24,7 +24,7 @@ export default async function CoachDocsPage({ searchParams }: { searchParams: { 
         <div className="bg-surface border border-line rounded-xl p-4">
           <h2 className="text-lg mb-1">Coaching documents</h2>
           <p className="text-sm text-muted mb-3">
-            The five Coaching Copies, as of {(docsData as { updated: string }).updated}. This is a snapshot: if a phase document is
+            Program Design and Rationale, then the five Coaching Copies, as of {(docsData as { updated: string }).updated}. This is a snapshot: if a phase document is
             revised, the app copy has to be refreshed, so check the date and the Project version when in doubt.
           </p>
           <div className="flex flex-wrap gap-2">
