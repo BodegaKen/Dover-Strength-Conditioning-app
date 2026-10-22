@@ -1,0 +1,232 @@
+{
+ "updated": "2026-10-22",
+ "tabs": [
+  {
+   "key": "weight",
+   "title": "Weight room",
+   "intro": "Use these when a station's equipment is taken by another pod, broken, or missing. Phase 1 and 2 swaps also apply to the barbell lifts in Phases 3-5.",
+   "groups": [
+    {
+     "heading": "Main lifts",
+     "note": "Check with your coach first. A different implement changes the load, so the percentage of your max doesn't carry over: pick a found weight (hard, form holds, 2-3 reps in reserve) and do the week's sets and reps.",
+     "rows": [
+      {
+       "item": "Back Squat",
+       "primary": "Barbell + rack",
+       "swap": "Goblet Squat or Front Squat, dumbbells racked at the shoulders",
+       "mainLift": true
+      },
+      {
+       "item": "Deadlift",
+       "primary": "Barbell",
+       "swap": "Trap Bar Deadlift, or Dumbbell Romanian Deadlift if no bar at all",
+       "mainLift": true
+      },
+      {
+       "item": "Romanian Deadlift",
+       "primary": "Barbell",
+       "swap": "Dumbbell Romanian Deadlift",
+       "mainLift": true
+      },
+      {
+       "item": "Bench Press",
+       "primary": "Barbell + bench",
+       "swap": "Dumbbell Bench Press",
+       "mainLift": true
+      },
+      {
+       "item": "Overhead Press (barbell)",
+       "primary": "Barbell",
+       "swap": "Dumbbell Overhead Press - since this station is normally tied to a tested OHP e1RM, treat this one session as found-weight instead (pick a weight for the week's prescribed sets and reps - 3x5, or 3x4 in Weeks 5 and 9 - with 2-3 reps in reserve) rather than trying to convert the percentage",
+       "mainLift": true
+      },
+      {
+       "item": "Pull-up / Weighted Pull-up",
+       "primary": "Pull-up bar",
+       "swap": "Band-Assisted Pull-up if the bar's occupied but full reps still fit the moment; for added weight with no belt/vest available, hold a dumbbell between the feet or wear a loaded backpack. If the pull-up bar area itself is unavailable: Inverted Row, using a barbell racked at hip height in a squat rack - body underneath, chest to bar - same pulling pattern, different setup",
+       "mainLift": true
+      }
+     ]
+    },
+    {
+     "heading": "Accessories and finishers",
+     "rows": [
+      {
+       "item": "Dumbbell Bench Press (accessory)",
+       "primary": "Dumbbells",
+       "swap": "Push-ups, same rep count",
+       "mainLift": false
+      },
+      {
+       "item": "Cable Row",
+       "primary": "Cable machine",
+       "swap": "Dumbbell Row or Band Row",
+       "mainLift": false
+      },
+      {
+       "item": "Calf Raise",
+       "primary": "Dumbbells (optional)",
+       "swap": "Bodyweight Calf Raise, paused at the top",
+       "mainLift": false
+      },
+      {
+       "item": "Overhead Press, dumbbell (accessory)",
+       "primary": "Dumbbells",
+       "swap": "Band Overhead Press",
+       "mainLift": false
+      },
+      {
+       "item": "Leg Press",
+       "primary": "Leg press machine",
+       "swap": "Goblet Squat or Walking Lunge",
+       "mainLift": false
+      },
+      {
+       "item": "Band Pallof Press",
+       "primary": "Resistance band + anchor",
+       "swap": "Suitcase Carry (one dumbbell, walk a set distance each side) - not identical, but hits the same anti-rotation demand",
+       "mainLift": false
+      },
+      {
+       "item": "Front Squat / Goblet Squat",
+       "primary": "Barbell or dumbbell",
+       "swap": "Bodyweight Squat, paused at the bottom",
+       "mainLift": false
+      },
+      {
+       "item": "Dumbbell Row",
+       "primary": "Dumbbells",
+       "swap": "Cable Row (if the machine's free) or Band Row",
+       "mainLift": false
+      },
+      {
+       "item": "Hanging Knee Raise",
+       "primary": "Pull-up bar",
+       "swap": "Reverse Crunch on the floor",
+       "mainLift": false
+      },
+      {
+       "item": "Single-leg Romanian Deadlift",
+       "primary": "Dumbbell (optional)",
+       "swap": "Bodyweight single-leg RDL",
+       "mainLift": false
+      },
+      {
+       "item": "Step-up",
+       "primary": "Plyo box or bench",
+       "swap": "Bottom bleacher step, or any stable platform roughly 12-18 inches",
+       "mainLift": false
+      },
+      {
+       "item": "Cable Woodchopper",
+       "primary": "Cable machine",
+       "swap": "Band Woodchopper, band anchored to a rack",
+       "mainLift": false
+      },
+      {
+       "item": "Box Jump",
+       "primary": "Plyo box",
+       "swap": "Hop Series",
+       "mainLift": false
+      },
+      {
+       "item": "Cones (warm-up touches, Hop Series markers)",
+       "primary": "Cones",
+       "swap": "Any small marker - water bottle, shoe, folded towel",
+       "mainLift": false
+      }
+     ]
+    },
+    {
+     "heading": "Power work and hamstrings (Phase 2)",
+     "rows": [
+      {
+       "item": "Trap Bar Jump Squat",
+       "primary": "Trap bar + platform",
+       "swap": "Dumbbell Jump Squat (hold dumbbells at the sides) or Kettlebell Jump Squat - same triple-extension pattern, no trap bar needed",
+       "mainLift": false
+      },
+      {
+       "item": "Trap Bar Jump Shrug",
+       "primary": "Trap bar + platform",
+       "swap": "Dumbbell Jump Shrug (hold dumbbells at the sides, same hip-hinge-to-shrug pattern) or Kettlebell Jump Shrug - no trap bar needed",
+       "mainLift": false
+      },
+      {
+       "item": "Landmine Rotational Press",
+       "primary": "Landmine attachment (or a barbell wedged in a corner)",
+       "swap": "Single-arm Medicine Ball Rotational Throw against a wall - same rotational power pattern",
+       "mainLift": false
+      },
+      {
+       "item": "Medicine Ball Rotational Throw",
+       "primary": "Medicine ball + solid wall",
+       "swap": "Landmine Rotational Press if a landmine setup exists; band-resisted rotational throw (anchor a band at chest height) if neither is available",
+       "mainLift": false
+      },
+      {
+       "item": "Nordic Hamstring Curl",
+       "primary": "Partner to hold ankles, or a Nordic bench/GHD",
+       "swap": "Anchor feet under a loaded barbell in a rack, or under the bottom of a squat rack's safety pins - same eccentric hamstring pattern",
+       "mainLift": false
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "field",
+   "title": "Field",
+   "intro": "Use these when field or conditioning equipment is unavailable.",
+   "groups": [
+    {
+     "heading": "Field and conditioning (Phases 3-5)",
+     "rows": [
+      {
+       "item": "Weighted sled",
+       "primary": "Sled (Phase 3 uses 2 units, Phase 4 uses 1)",
+       "swap": "Partner-resisted sprints (a training partner holds a resistance band/harness from behind) or, if no sled or band is available, unresisted sprints at the same distances. Do not substitute a weighted vest to approximate these %BW sled loads - a vest is not a safe stand-in at these loads.",
+       "mainLift": false
+      },
+      {
+       "item": "Stopwatch / timer",
+       "primary": "Stopwatch (two for split timing in Phase 3)",
+       "swap": "Single-timer protocol: time the full 20m only, average 3 attempts, and use that average to estimate the 10m split proportionally rather than measuring it directly. In Phase 4 any phone or watch stopwatch is fine: no squad-wide split-timed testing.",
+       "mainLift": false
+      },
+      {
+       "item": "Marked outdoor track",
+       "primary": "Track",
+       "swap": "Any flat, safe grass or turf field surface, with distances measured and marked by cones or field paint.",
+       "mainLift": false
+      },
+      {
+       "item": "Footwork/agility ladder",
+       "primary": "Ladder",
+       "swap": "Cone-only pattern drills covering the same footwork sequence.",
+       "mainLift": false
+      },
+      {
+       "item": "Ice machine for the hydration station",
+       "primary": "Ice machine",
+       "swap": "Coolers with bagged ice and cups. Water-break frequency and the heat-day protocol stay the same regardless of ice source.",
+       "mainLift": false
+      },
+      {
+       "item": "Deadlift platform",
+       "primary": "Platform",
+       "swap": "A cleared, flat section of weight-room floor with bumper plates works if a dedicated platform isn't available.",
+       "mainLift": false
+      },
+      {
+       "item": "Timer for session length (Phase 5)",
+       "primary": "Timer",
+       "swap": "Any phone or watch timer. It is needed for the session-load (sRPE) calculation, not for testing.",
+       "mainLift": false
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}
