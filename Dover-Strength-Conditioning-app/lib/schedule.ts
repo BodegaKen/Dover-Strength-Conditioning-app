@@ -19,20 +19,29 @@ const P1: Record<number, WeekInfo> = {
   3: { dates: "Jan 11-15, 2027" },
   4: {
     dates: "Jan 18-22, 2027",
-    note: "MLK Day (Mon Jan 18) is a district closure. It lands on a scheduled volume-dip week (3 x 5), so the missed day needs no special handling.",
-    dayNotes: { Monday: "Mon Jan 18 is MLK Day (no school). Day A is skipped this week - don't double up." },
+    note: "MLK Day (Mon Jan 18) is a district closure and a scheduled 3-set week. No session is dropped: Day A (Back Squat) moves to Tuesday, Jan 19 and Day B (Hinge) to Wednesday, Jan 20. Day C and D stay Thursday and Friday.",
+    dayNotes: {
+      Monday: "No school Mon Jan 18 (MLK Day). Do this day (Day A, Back Squat) on Tuesday, Jan 19.",
+      Tuesday: "Do this day (Day B, Hinge) on Wednesday, Jan 20, after Tuesday's squat.",
+    },
   },
   5: { dates: "Jan 25-29, 2027" },
   6: { dates: "Feb 1-5, 2027", note: "Retest week." },
   7: {
     dates: "Feb 8-12, 2027",
-    note: "Staff In-Service, no school for students on Mon Feb 8.",
-    dayNotes: { Monday: "No school Mon Feb 8. Do Day A (Back Squat) on Wednesday, Feb 10 this week only." },
+    note: "Staff In-Service, no school for students on Mon Feb 8. Day A (Back Squat) moves to Tuesday, Feb 9 and Day B (Hinge) to Wednesday, Feb 10. Day C and D stay Thursday and Friday.",
+    dayNotes: {
+      Monday: "No school Mon Feb 8. Do this day (Day A, Back Squat) on Tuesday, Feb 9.",
+      Tuesday: "Do this day (Day B, Hinge) on Wednesday, Feb 10, after Tuesday's squat.",
+    },
   },
   8: {
     dates: "Feb 15-19, 2027",
-    note: "Presidents' Day (Mon Feb 15) is a district closure, on a scheduled volume-dip week.",
-    dayNotes: { Monday: "Mon Feb 15 is Presidents' Day (no school). Day A is skipped this week - don't double up." },
+    note: "Presidents' Day (Mon Feb 15) is a district closure and a scheduled 3-set week. Day A (Back Squat) moves to Tuesday, Feb 16 and Day B (Hinge) to Wednesday, Feb 17. Day C and D stay Thursday and Friday.",
+    dayNotes: {
+      Monday: "No school Mon Feb 15 (Presidents' Day). Do this day (Day A, Back Squat) on Tuesday, Feb 16.",
+      Tuesday: "Do this day (Day B, Hinge) on Wednesday, Feb 17, after Tuesday's squat.",
+    },
   },
   9: { dates: "Feb 22-26, 2027", note: "Closes Phase 1. These e1RMs carry into Phase 2." },
 };
