@@ -37,7 +37,15 @@ export default function NavBar({ role, name }: { role: "PLAYER" | "COACH"; name:
           Dover Tigers Football &middot; Strength &amp; Conditioning
         </div>
         <div className="flex items-center justify-between gap-3 mt-1">
-          <h1 className="text-xl sm:text-2xl">{name}</h1>
+          <h1 className="text-xl sm:text-2xl">
+            {role === "COACH" ? (
+              <Link href="/coach/profile" title="Edit your name" className="hover:text-accent">
+                {name} <span className="text-[0.65rem] align-middle uppercase tracking-wide text-muted">Edit name</span>
+              </Link>
+            ) : (
+              name
+            )}
+          </h1>
           <button
             onClick={logout}
             className="text-xs uppercase tracking-wide border border-line rounded-md px-3 py-1.5 text-fg/80 hover:border-accent"
