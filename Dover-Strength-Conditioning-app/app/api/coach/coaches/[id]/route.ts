@@ -3,8 +3,10 @@ import { hashPin, randomPin } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { getCoachApi } from "@/lib/admin";
 import { audit } from "@/lib/audit";
+import { nameProblem, usernameProblem } from "@/lib/validate";
 
-// Full admins only. Actions: resetPin | archive | restore | setAdmin ({ isAdmin: boolean }).
+// Full admins only. Actions: resetPin | archive | restore | setAdmin ({ isAdmin: boolean }) |
+// edit ({ name?, username? }: fixes a typo or shortens the sign-in username; the PIN is untouched).
 // A coach can't archive or demote their own account, and the last active admin can't be
 // archived or demoted, so the team can't lock itself out.
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
@@ -16,6 +18,38 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   const action = (body?.action ?? "").toString();
   const target = await prisma.user.findUnique({ where: { id: params.id } });
   if (!target || target.role !== "COACH") return NextResponse.json({ error: "Coach not found." }, { status: 404 });
+
+  if (action === "edit") {
+    const data: { name?: string; username?: string } = {};
+    const changes: string[] = [];
+    if (body?.name !== undefined) {
+      const name = body.name.toString().replace(/\s+/g, " ").trim();
+      const problem = nameProblem(name);
+      if (problem) return NextResponse.json({ error: problem }, { status: 400 });
+      if (name !== target.name) {
+        data.name = name;
+        changes.push(`name ${target.name} -> ${name}`);
+      }
+    }
+    if (body?.username !== undefined) {
+      const username = body.username.toString().trim().toLowerCase();
+      // An unchanged username is left alone (older auto-made usernames may be longer than the new limit).
+      if (username !== target.username) {
+        const problem = usernameProblem(username);
+        if (problem) return NextResponse.json({ error: problem }, { status: 400 });
+        if (await prisma.user.findUnique({ where: { username } })) {
+          return NextResponse.json({ error: "That username is already taken." }, { status: 409 });
+        }
+        data.username = username;
+        changes.push(`username ${target.username} -> ${username}`);
+      }
+    }
+    if (changes.length === 0) return NextResponse.json({ ok: true });
+    const updated = await prisma.user.update({ where: { id: target.id }, data }).catch(() => null);
+    if (!updated) return NextResponse.json({ error: "That username is already taken." }, { status: 409 });
+    await audit(me, "edited coach", updated.name, changes.join("; "));
+    return NextResponse.json({ ok: true });
+  }
 
   if (action === "resetPin") {
     const pin = randomPin();

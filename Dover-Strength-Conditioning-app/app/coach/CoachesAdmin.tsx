@@ -13,6 +13,10 @@ export default function CoachesAdmin({ coaches, meId }: { coaches: CoachRow[]; m
   const [isAdmin, setIsAdmin] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [username, setUsername] = useState("");
+  const [editId, setEditId] = useState<string | null>(null);
+  const [eName, setEName] = useState("");
+  const [eUser, setEUser] = useState("");
 
   async function add(e: React.FormEvent) {
     e.preventDefault();
@@ -22,7 +26,7 @@ export default function CoachesAdmin({ coaches, meId }: { coaches: CoachRow[]; m
     const res = await fetch("/api/coach/coaches", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, isAdmin }),
+      body: JSON.stringify({ name, isAdmin, username }),
     });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) {
@@ -33,6 +37,7 @@ export default function CoachesAdmin({ coaches, meId }: { coaches: CoachRow[]; m
       `Added ${data.coach.name} (${data.coach.isAdmin ? "full admin" : "limited coach"}). Username "${data.coach.username}", temporary PIN ${data.pin}. Give it to them now; it only shows once, and they must choose their own PIN at first sign-in.`
     );
     setName("");
+    setUsername("");
     setIsAdmin(false);
     router.refresh();
   }
@@ -51,7 +56,19 @@ export default function CoachesAdmin({ coaches, meId }: { coaches: CoachRow[]; m
       return;
     }
     if (body.action === "resetPin") setNotice(`New temporary PIN: ${data.pin}. They'll be asked to choose their own at next sign-in.`);
+    if (body.action === "edit") {
+      setEditId(null);
+      setNotice("Saved. If the username changed, tell that coach the new one; their PIN is unchanged.");
+    }
     router.refresh();
+  }
+
+  function startEdit(c: CoachRow) {
+    setEditId(c.id);
+    setEName(c.name);
+    setEUser(c.username);
+    setError(null);
+    setNotice(null);
   }
 
   return (
@@ -73,6 +90,17 @@ export default function CoachesAdmin({ coaches, meId }: { coaches: CoachRow[]; m
               placeholder="e.g. Bill Goble"
             />
           </div>
+          <div className="min-w-[160px]">
+            <label className="block text-xs font-semibold uppercase tracking-wide text-muted mb-1">Username (optional)</label>
+            <input
+              className="w-full bg-bg border border-line rounded-md px-3 py-2.5"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="e.g. cgonzalez"
+              autoCapitalize="none"
+              autoCorrect="off"
+            />
+          </div>
           <label className="flex items-center gap-2 text-sm pb-2.5">
             <input type="checkbox" checked={isAdmin} onChange={(e) => setIsAdmin(e.target.checked)} />
             Full admin
@@ -84,30 +112,56 @@ export default function CoachesAdmin({ coaches, meId }: { coaches: CoachRow[]; m
         {notice && <div className="text-sm rounded-md border border-good bg-good-bg px-3 py-2">{notice}</div>}
         {error && <div className="text-sm rounded-md border border-danger bg-danger-bg px-3 py-2">{error}</div>}
         <div className="flex flex-col divide-y divide-line">
-          {coaches.map((c) => (
-            <div key={c.id} className="py-2.5 flex flex-wrap items-center justify-between gap-2">
-              <div>
-                <span className="font-semibold">{c.name}</span>{" "}
-                <span className="text-muted text-sm">
-                  {c.username} &middot; {c.isAdmin ? "full admin" : "limited"}
-                  {!c.active ? " · inactive" : ""}
-                  {c.mustChangePin ? " · has not set own PIN yet" : ""}
-                  {c.id === meId ? " · you" : ""}
-                </span>
-              </div>
-              {c.id !== meId && (
-                <div className="flex gap-1.5">
-                  <Btn onClick={() => act(c.id, { action: "resetPin" })}>Reset PIN</Btn>
-                  <Btn onClick={() => act(c.id, { action: "setAdmin", isAdmin: !c.isAdmin })}>
-                    {c.isAdmin ? "Make limited" : "Make full admin"}
-                  </Btn>
-                  <Btn onClick={() => act(c.id, { action: c.active ? "archive" : "restore" })}>
-                    {c.active ? "Deactivate" : "Restore"}
-                  </Btn>
+          {coaches.map((c) =>
+            editId === c.id ? (
+              <div key={c.id} className="py-2.5 flex flex-wrap items-end gap-2">
+                <div className="flex-1 min-w-[150px]">
+                  <label className="block text-xs font-semibold uppercase tracking-wide text-muted mb-1">Name</label>
+                  <input className="w-full bg-bg border border-line rounded-md px-3 py-2" value={eName} onChange={(e) => setEName(e.target.value)} />
                 </div>
-              )}
-            </div>
-          ))}
+                <div className="flex-1 min-w-[150px]">
+                  <label className="block text-xs font-semibold uppercase tracking-wide text-muted mb-1">Sign-in username</label>
+                  <input
+                    className="w-full bg-bg border border-line rounded-md px-3 py-2"
+                    value={eUser}
+                    onChange={(e) => setEUser(e.target.value)}
+                    autoCapitalize="none"
+                    autoCorrect="off"
+                  />
+                </div>
+                <div className="flex gap-1.5 pb-0.5">
+                  <Btn onClick={() => act(c.id, { action: "edit", name: eName, username: eUser })}>Save</Btn>
+                  <Btn onClick={() => setEditId(null)}>Cancel</Btn>
+                </div>
+              </div>
+            ) : (
+              <div key={c.id} className="py-2.5 flex flex-wrap items-center justify-between gap-2">
+                <div>
+                  <span className="font-semibold">{c.name}</span>{" "}
+                  <span className="text-muted text-sm">
+                    {c.username} &middot; {c.isAdmin ? "full admin" : "limited"}
+                    {!c.active ? " · inactive" : ""}
+                    {c.mustChangePin ? " · has not set own PIN yet" : ""}
+                    {c.id === meId ? " · you" : ""}
+                  </span>
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  <Btn onClick={() => startEdit(c)}>Edit</Btn>
+                  {c.id !== meId && (
+                    <>
+                      <Btn onClick={() => act(c.id, { action: "resetPin" })}>Reset PIN</Btn>
+                      <Btn onClick={() => act(c.id, { action: "setAdmin", isAdmin: !c.isAdmin })}>
+                        {c.isAdmin ? "Make limited" : "Make full admin"}
+                      </Btn>
+                      <Btn onClick={() => act(c.id, { action: c.active ? "archive" : "restore" })}>
+                        {c.active ? "Deactivate" : "Restore"}
+                      </Btn>
+                    </>
+                  )}
+                </div>
+              </div>
+            )
+          )}
         </div>
       </div>
     </details>

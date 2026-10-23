@@ -11,3 +11,19 @@ export function validDate(s: string): boolean {
   const d = new Date(s + "T00:00:00Z");
   return !isNaN(d.getTime()) && d.toISOString().slice(0, 10) === s;
 }
+
+// Display names for coach accounts: whitespace collapsed, 2-80 characters, no control characters or angle brackets.
+export function nameProblem(name: string): string | null {
+  if (name.length < 2) return "Enter a name (at least 2 characters).";
+  if (name.length > 80) return "Keep the name to 80 characters or fewer.";
+  if (/[\u0000-\u001f<>]/.test(name)) return "That name has characters that aren't allowed.";
+  return null;
+}
+
+// Sign-in usernames: lowercase letters, numbers and hyphens, 3-40 characters, no leading or trailing hyphen.
+export function usernameProblem(username: string): string | null {
+  if (!/^[a-z0-9](?:[a-z0-9-]{1,38})[a-z0-9]$/.test(username)) {
+    return "Usernames are 3-40 characters: lowercase letters, numbers and hyphens, not starting or ending with a hyphen.";
+  }
+  return null;
+}
