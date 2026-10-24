@@ -533,6 +533,149 @@
      ]
     }
    ]
+  },
+  "Phase 2–3 Bridge": {
+   "name": "Phase 2–3 Bridge",
+   "dates": "Tue May 25 - Tue Jun 15, 2027",
+   "dateNote": "Tuesday and Friday. Five confirmed dates: May 25, Jun 4, Jun 8, Jun 11, Jun 15. May 28 and Jun 1 are bonus dates that only happen if the district uses its emergency school days. Testing Window opens Mon Jun 21, six days after the last session.",
+   "facts": [
+    {
+     "label": "Length",
+     "value": "3 weeks, 5 confirmed sessions (7 if both bonus dates run)"
+    },
+    {
+     "label": "Sessions",
+     "value": "2 a week: Tuesday (Track Day 1) and Friday (Track Day 2), about 55-65 min each"
+    },
+    {
+     "label": "Who",
+     "value": "Voluntary and coach-judged, same as the Multi-Sport Maintenance Track. Spring-sport athletes already on the track simply keep going."
+    },
+    {
+     "label": "Goal",
+     "value": "Close the 4.5-week gap so nobody goes cold into Testing Window sprinting. A cold-start safety measure, not a strength builder."
+    }
+   ],
+   "keyDates": [
+    "Memorial Day (Mon May 31) and graduation (Thu Jun 17) are why it runs Tuesday/Friday instead of Monday/Thursday.",
+    "Loads are held at Phase 2 Week 11's level. Jun 4 runs at 78% e1RM because it comes 10 days after May 25."
+   ],
+   "weeksTitle": "The weekly pattern",
+   "weeks": [
+    {
+     "label": "Weekly pattern",
+     "days": [
+      {
+       "day": "Mon",
+       "kind": "rest",
+       "title": "Open",
+       "lines": []
+      },
+      {
+       "day": "Tue",
+       "kind": "lift",
+       "title": "Track Day 1 - Squat + Push",
+       "lines": [
+        "NMT warm-up (trimmed)",
+        "Back Squat, then Trap Bar Jump Squat 5 x 3",
+        "Bench Press, then CAT Bench Press 5 x 3",
+        "Finisher: shoulder health, light DB overhead press 2 x 10-12, Nordic"
+       ]
+      },
+      {
+       "day": "Wed",
+       "kind": "rest",
+       "title": "Open",
+       "lines": []
+      },
+      {
+       "day": "Thu",
+       "kind": "rest",
+       "title": "Open",
+       "lines": []
+      },
+      {
+       "day": "Fri",
+       "kind": "lift",
+       "title": "Track Day 2 - Hinge + Pull",
+       "lines": [
+        "NMT warm-up (trimmed)",
+        "Deadlift or Romanian Deadlift, then Trap Bar Jump Shrug 5 x 3",
+        "Pull-up (weighted or bodyweight track)",
+        "Finisher: shoulder health, Nordic"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "Camp Bridge": {
+   "name": "Camp Bridge",
+   "dates": "About Aug 2 to the season opener, early September 2027",
+   "dateNote": "All dates are estimates. Phase 4 ends Thu Jul 29. Blackout week is estimated Aug 2-8, with NJSIAA's first practice about Aug 9 and then a 14-day heat-acclimatization ramp. The football staff runs camp; this program only covers the lifting and conditioning below.",
+   "facts": [
+    {
+     "label": "Length",
+     "value": "3+ weeks: blackout week, then camp through the season opener"
+    },
+    {
+     "label": "Sessions",
+     "value": "One short maintenance lift a week once two-a-days begin. Conditioning is built into practice."
+    },
+    {
+     "label": "Goal",
+     "value": "Keep strength alive through blackout week and camp so the season opener is not a cold start"
+    }
+   ],
+   "keyDates": [
+    "No lifting in the first 5 days of the heat ramp: single practice a day, capped at 3 hours, helmets only the first two days.",
+    "Phase 5 then opens with a re-entry ramp on Squat and Deadlift: 70%, then 78% of e1RM in season Weeks 1-2."
+   ],
+   "weeksTitle": "How the stretch runs",
+   "weeks": [
+    {
+     "label": "Timeline",
+     "days": [
+      {
+       "day": "Aug 2-8",
+       "kind": "rest",
+       "title": "Blackout week",
+       "lines": [
+        "No coach-led training, no contact"
+       ]
+      },
+      {
+       "day": "Days 1-5",
+       "kind": "rest",
+       "title": "Camp, heat ramp",
+       "lines": [
+        "No lifting. Camp practice only."
+       ]
+      },
+      {
+       "day": "Day 6 on",
+       "kind": "lift",
+       "title": "Weekly maintenance lift",
+       "lines": [
+        "Once a week, in whichever session leaves the most room",
+        "Bench, pull-up, overhead press: 2 x 5 at about 75%",
+        "Squat and deadlift: 2 x 5 at about 60%",
+        "Bodyweight pull-up track: 2 x 5, 2-3 reps in reserve"
+       ]
+      },
+      {
+       "day": "Daily",
+       "kind": "hard",
+       "title": "End-of-practice conditioning",
+       "lines": [
+        "Phase 3's SIT format: 20m out-and-back shuttles, 2 sets of 4-5 reps, 30 sec between reps, about 3 min between sets",
+        "Linemen get 25% more recovery; the rest is never shortened to fit more volume",
+        "On an Orange or Red WBGT day this segment is cut first"
+       ]
+      }
+     ]
+    }
+   ]
   }
  }
 }

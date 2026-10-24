@@ -20,8 +20,8 @@ function sectionsOf(markdown: string): Section[] {
     const heading = p.split("\n")[0].trim();
     const m = heading.match(/^(\d+)\.\s*(.*)$/);
     const rest = m ? m[2] : heading;
-    // Tab label: "Phase 3" for phase sections, otherwise the plain section name.
-    const phase = rest.match(/^(Phase \d)/);
+    // Tab label: "Phase 3" for phase sections, otherwise the plain section name ("Camp Bridge", "Phase 2–3 Bridge").
+    const phase = rest.match(/^(Phase \d)\s+—/);
     const tab = phase ? phase[1] : rest.replace(/&.*$/, "").replace(/^Program /, "").trim();
     return { key: String(i + 1), tab, markdown: "## " + p };
   });
@@ -34,9 +34,10 @@ export default async function CoachDocsPage({ searchParams }: { searchParams: { 
   const data = docsData as { docs: Doc[]; updated: string };
   const sections = sectionsOf(data.docs[0].markdown);
   const current = sections.find((s) => s.key === searchParams.s) ?? sections[0];
-  // Phase tabs ("Phase 3") get a dates + typical-week card above the section text.
-  const phaseNum = current.tab.match(/^Phase (\d)$/)?.[1];
-  const overview = phaseNum ? (overviewData as { phases: Record<string, PhaseOverview> }).phases[phaseNum] : undefined;
+  // Phase and bridge tabs get a dates + typical-week card above the section text. Phase tabs are keyed by
+  // number ("3"), the bridges by their tab name.
+  const overviewKey = current.tab.match(/^Phase (\d)$/)?.[1] ?? current.tab;
+  const overview = (overviewData as { phases: Record<string, PhaseOverview> }).phases[overviewKey];
 
   return (
     <div>
