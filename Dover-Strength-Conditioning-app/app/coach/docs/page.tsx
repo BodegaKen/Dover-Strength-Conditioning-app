@@ -3,7 +3,9 @@ import Link from "next/link";
 import { getCoachPage } from "@/lib/admin";
 import NavBar from "@/components/NavBar";
 import Markdown from "@/components/Markdown";
+import PhaseGlance, { type PhaseOverview } from "@/components/PhaseGlance";
 import docsData from "@/data/coaching-docs.json";
+import overviewData from "@/data/phase-overview.json";
 
 type Doc = { key: string; title: string; markdown: string };
 type Section = { key: string; tab: string; markdown: string };
@@ -32,6 +34,9 @@ export default async function CoachDocsPage({ searchParams }: { searchParams: { 
   const data = docsData as { docs: Doc[]; updated: string };
   const sections = sectionsOf(data.docs[0].markdown);
   const current = sections.find((s) => s.key === searchParams.s) ?? sections[0];
+  // Phase tabs ("Phase 3") get a dates + typical-week card above the section text.
+  const phaseNum = current.tab.match(/^Phase (\d)$/)?.[1];
+  const overview = phaseNum ? (overviewData as { phases: Record<string, PhaseOverview> }).phases[phaseNum] : undefined;
 
   return (
     <div>
@@ -56,6 +61,7 @@ export default async function CoachDocsPage({ searchParams }: { searchParams: { 
             ))}
           </div>
         </div>
+        {overview && <PhaseGlance o={overview} />}
         <div className="bg-surface border border-line rounded-xl p-4">
           <Markdown source={current.markdown} />
         </div>

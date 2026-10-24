@@ -1,0 +1,538 @@
+{
+ "updated": "2026-10-24",
+ "note": "Phase dates and a typical week for each phase, shown at the top of each phase tab on the coach Docs page.",
+ "phases": {
+  "0": {
+   "name": "Phase 0 - Transition & Pre-Testing Prep",
+   "dates": "Mon Oct 26 - Sun Dec 13, 2026",
+   "dateNote": "If a consolation game moves the final game a week later, Phase 0 starts Mon Nov 2 and the recovery block shrinks to one week.",
+   "facts": [
+    {
+     "label": "Length",
+     "value": "6-7 weeks: 1-2 recovery weeks, then 5 weeks of optional prep sessions"
+    },
+    {
+     "label": "Sessions",
+     "value": "Prep sessions Tue and Thu, about 30-35 min, coach-run, attendance optional"
+    },
+    {
+     "label": "Goal",
+     "value": "Recover, then ramp back into training so athletes arrive at Testing Week able to produce a real 5RM"
+    }
+   ],
+   "keyDates": [
+    "Prep sessions run Nov 10 - Dec 10 (nine sessions); Thanksgiving Break (Nov 26-27) cuts Thursday of Prep Week 3.",
+    "Testing Week opens Mon Dec 14. Fewer than four Prep sessions attended means no heavy 5RM in Testing Week."
+   ],
+   "weeksTitle": "A typical prep week",
+   "weeks": [
+    {
+     "label": "Prep week (Weeks 3-7)",
+     "days": [
+      {
+       "day": "Mon",
+       "kind": "rest",
+       "title": "Open",
+       "lines": []
+      },
+      {
+       "day": "Tue",
+       "kind": "light",
+       "title": "Prep session",
+       "lines": [
+        "NMT warm-up",
+        "Bodyweight circuit: squat, push-up, row, RDL reach, plank",
+        "Weeks 2-5 add a light barbell touch (RPE 6 or below)"
+       ]
+      },
+      {
+       "day": "Wed",
+       "kind": "rest",
+       "title": "Open",
+       "lines": []
+      },
+      {
+       "day": "Thu",
+       "kind": "light",
+       "title": "Prep session",
+       "lines": [
+        "Same format as Tuesday",
+        "Weeks 4-5 rotate which lifts get the barbell touch"
+       ]
+      },
+      {
+       "day": "Fri",
+       "kind": "rest",
+       "title": "Open",
+       "lines": []
+      }
+     ]
+    }
+   ],
+   "progression": [
+    "Weeks 1-2 (recovery): no training, nothing expected. If something hurts, tell the athletic trainer.",
+    "Prep Week 1: bodyweight only, plus 10-12 min easy conditioning.",
+    "Prep Week 2: empty bar for squat and bench, technique only.",
+    "Prep Week 3: short week, one session, bodyweight only.",
+    "Prep Week 4: light barbell touches on all four lifts, RPE 5-6.",
+    "Prep Week 5: movement screen only. Arrive fresh for Testing Week."
+   ]
+  },
+  "1": {
+   "name": "Phase 1 - Winter",
+   "dates": "Mon Dec 14, 2026 - Fri Feb 26, 2027",
+   "dateNote": "Testing Week Dec 14-18. Winter Break (no training) Dec 21 - Jan 3. Training Weeks 2-9 run Jan 4 - Feb 26.",
+   "facts": [
+    {
+     "label": "Length",
+     "value": "9 weeks: Testing Week, then 8 training weeks"
+    },
+    {
+     "label": "Sessions",
+     "value": "4 lifts a week (Mon, Tue, Thu, Fri), about 55 min each (estimate)"
+    },
+    {
+     "label": "Goal",
+     "value": "Max strength and hypertrophy: build the base"
+    }
+   ],
+   "keyDates": [
+    "Week 6 (Feb 1-5) is the retest week. Weeks 5 and 9 are the peak weeks.",
+    "Weeks 2, 4 and 8 are lighter 3-set weeks.",
+    "Mon Jan 18, Mon Feb 8 and Mon Feb 15 have no school: Day A moves to Tuesday and Day B to Wednesday that week."
+   ],
+   "weeksTitle": "A typical week (Weeks 2-9)",
+   "weeks": [
+    {
+     "label": "Typical week",
+     "days": [
+      {
+       "day": "Mon",
+       "kind": "lift",
+       "title": "Day A - Squat",
+       "lines": [
+        "Back Squat, 4 x 5 at the week's % of e1RM",
+        "Accessory circuit: DB bench, cable row, core, calf raise",
+        "Finisher: shoulder health, lateral bound"
+       ]
+      },
+      {
+       "day": "Tue",
+       "kind": "lift",
+       "title": "Day B - Hinge",
+       "lines": [
+        "Deadlift (even weeks) or Romanian Deadlift (odd weeks), 4 x 5",
+        "Circuit: DB overhead press, pull-up, leg press, Pallof press",
+        "Finisher: shoulder health, lateral bound, Nordic"
+       ]
+      },
+      {
+       "day": "Wed",
+       "kind": "rest",
+       "title": "Open",
+       "lines": []
+      },
+      {
+       "day": "Thu",
+       "kind": "lift",
+       "title": "Day C - Push",
+       "lines": [
+        "Bench Press, 4 x 5, plus one back-off set of 10-12",
+        "Circuit: front or goblet squat, DB row, lunge, hanging knee raise",
+        "Finisher: shoulder health"
+       ]
+      },
+      {
+       "day": "Fri",
+       "kind": "lift",
+       "title": "Day D - Pull",
+       "lines": [
+        "Pull-up (weighted or bodyweight track), 4 x 5",
+        "Barbell overhead press, 3 x 5",
+        "Circuit: single-leg RDL, step-up, woodchopper",
+        "Finisher: shoulder health, Nordic"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "2": {
+   "name": "Phase 2 - Spring",
+   "dates": "Mon Mar 1 - Fri May 21, 2027",
+   "dateNote": "Testing Week Mar 1-5. Spring Break (no training) Mar 26 - Apr 2. Phase 2-3 Bridge (Tue/Fri maintenance sessions) May 25 - Jun 15.",
+   "facts": [
+    {
+     "label": "Length",
+     "value": "11 weeks: Testing Week, then 10 training weeks"
+    },
+    {
+     "label": "Sessions",
+     "value": "4 lifts a week (Mon, Tue, Thu, Fri), each with a Strength Lane and a Power Lane"
+    },
+    {
+     "label": "Goal",
+     "value": "Strength-speed and power: turn the winter base into fast, football-specific force"
+    }
+   ],
+   "keyDates": [
+    "Week 5 (Apr 5-9), the first week back from Spring Break, runs a lighter 78% x 3 Strength Lane.",
+    "Week 7 (Apr 19-23) is the retest week: test days only, no power work.",
+    "Fri Apr 9 is a single-session school day; Day D still runs at a time the coach sets."
+   ],
+   "weeksTitle": "A typical week (Weeks 2-11)",
+   "weeks": [
+    {
+     "label": "Typical week",
+     "days": [
+      {
+       "day": "Mon",
+       "kind": "lift",
+       "title": "Day A - Squat",
+       "lines": [
+        "Strength Lane: Back Squat, 3 work sets",
+        "Power Lane: Trap Bar Jump Squat, 5 x 3 light and fast",
+        "Circuit: split squat, core, calf raise",
+        "Finisher: shoulder health"
+       ]
+      },
+      {
+       "day": "Tue",
+       "kind": "lift",
+       "title": "Day B - Hinge",
+       "lines": [
+        "Strength Lane: Deadlift or Romanian Deadlift, 3 work sets",
+        "Power Lane: Trap Bar Jump Shrug, 5 x 3",
+        "Circuit: DB overhead press, pull-up, lateral lunge, Pallof press",
+        "Finisher: shoulder health, Nordic"
+       ]
+      },
+      {
+       "day": "Wed",
+       "kind": "rest",
+       "title": "Open",
+       "lines": []
+      },
+      {
+       "day": "Thu",
+       "kind": "lift",
+       "title": "Day C - Push",
+       "lines": [
+        "Strength Lane: Bench Press, 3 work sets",
+        "Power Lane: CAT Bench Press, 5 x 3 at 50-70%, max bar speed",
+        "Circuit: front or goblet squat, DB row, lunge, hanging knee raise",
+        "Finisher: shoulder health"
+       ]
+      },
+      {
+       "day": "Fri",
+       "kind": "lift",
+       "title": "Day D - Pull / Rotational",
+       "lines": [
+        "Strength Lane: Pull-up (weighted or bodyweight track)",
+        "Power Lane: landmine rotational press or med ball throw, 4 x 5 per side",
+        "Circuit: barbell overhead press, single-leg RDL, step-up, side plank",
+        "Finisher: shoulder health, Nordic"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "3": {
+   "name": "Phase 3 - Early Summer",
+   "dates": "Mon Jun 21 - Thu Jul 15, 2027",
+   "dateNote": "Testing Window Mon-Tue Jun 21-22. Training Weeks 2-4 run Jun 28 - Jul 15. Fridays are open.",
+   "facts": [
+    {
+     "label": "Length",
+     "value": "4 weeks: Testing Window, two training weeks, retest week"
+    },
+    {
+     "label": "Sessions",
+     "value": "4 a week (Mon-Thu), then a football practice segment (about 45 min) right after each one"
+    },
+    {
+     "label": "Goal",
+     "value": "Speed and conditioning once school is out and full days are free"
+    }
+   ],
+   "keyDates": [
+    "Week 4 (Jul 12-15) is the retest week: speed Monday, conditioning Thursday, no sled or SIT work.",
+    "Heat: an on-site WBGT reading is taken before every outdoor session, including Wednesday's outdoor practice."
+   ],
+   "weeksTitle": "A typical week (Weeks 2-3)",
+   "weeks": [
+    {
+     "label": "Typical week",
+     "days": [
+      {
+       "day": "Mon",
+       "kind": "hard",
+       "title": "Day A - Acceleration & Sled",
+       "lines": [
+        "NMT warm-up (10-13 min), acceleration mechanics",
+        "Sled pulls, then unresisted sprints",
+        "Skill positions add flying sprints",
+        "Finisher: shoulder health, Nordic",
+        "Then offense install (about 45 min)"
+       ]
+      },
+      {
+       "day": "Tue",
+       "kind": "light",
+       "title": "Day B - Tempo & Skills",
+       "lines": [
+        "NMT warm-up",
+        "Tempo runs, 6-8 x 100m at 70-75%",
+        "Skills circuit: 4 change-of-direction stations",
+        "Then 7v7 (about 45 min)"
+       ]
+      },
+      {
+       "day": "Wed",
+       "kind": "lift",
+       "title": "Day D - Maintenance Lift (indoors)",
+       "lines": [
+        "NMT warm-up",
+        "Bench, pull-up, overhead press: 3 x 5 at about 80%",
+        "Squat and deadlift: 2 x 5 at about 60% (returning athletes)",
+        "Finisher: shoulder health",
+        "Then 7v7 outdoors (about 45 min)"
+       ]
+      },
+      {
+       "day": "Thu",
+       "kind": "hard",
+       "title": "Day C - Plyometrics & SIT",
+       "lines": [
+        "NMT warm-up",
+        "Plyo circuit: box jump, broad jump, bounds",
+        "SIT conditioning: repeated max shuttle sprints",
+        "Finisher: shoulder health, Nordic",
+        "Then offense install (about 45 min)"
+       ]
+      },
+      {
+       "day": "Fri",
+       "kind": "rest",
+       "title": "Open",
+       "lines": []
+      }
+     ]
+    }
+   ]
+  },
+  "4": {
+   "name": "Phase 4 - Pre-Camp Taper",
+   "dates": "Mon Jul 19 - Thu Jul 29, 2027",
+   "dateNote": "Then a no-contact blackout week (estimated starting about Aug 2) and camp (NJSIAA first practice estimated about Aug 9).",
+   "facts": [
+    {
+     "label": "Length",
+     "value": "2 weeks: quality week, then deep taper"
+    },
+    {
+     "label": "Sessions",
+     "value": "4 a week (Mon-Thu), same days as Phase 3, with a practice segment after each"
+    },
+    {
+     "label": "Goal",
+     "value": "Arrive at camp fresh, not fried"
+    }
+   ],
+   "keyDates": [
+    "Week 1 holds one heavy sled touch and the last real lift. Week 2 drops the sled, the conditioning and most of the volume.",
+    "First-time athletes test Squat and Deadlift in Week 1, Day D."
+   ],
+   "weeksTitle": "Both weeks",
+   "weeks": [
+    {
+     "label": "Week 1 (Jul 19-22) - quality",
+     "days": [
+      {
+       "day": "Mon",
+       "kind": "hard",
+       "title": "Day A - Heavy sled & speed",
+       "lines": [
+        "Reduced acceleration mechanics",
+        "One sled touch: 3 x 10m",
+        "2 unresisted sprints, 10-20m"
+       ]
+      },
+      {
+       "day": "Tue",
+       "kind": "light",
+       "title": "Day B - Tempo & skills",
+       "lines": [
+        "Tempo runs, 4-5 x 100m",
+        "Skills circuit, 2 reps per station"
+       ]
+      },
+      {
+       "day": "Wed",
+       "kind": "lift",
+       "title": "Day D - Maintenance lift",
+       "lines": [
+        "Bench, pull-up, overhead press: 3 x 5 at about 80%",
+        "Squat and deadlift: 2 x 5 at about 60%"
+       ]
+      },
+      {
+       "day": "Thu",
+       "kind": "hard",
+       "title": "Day C - Plyos & conditioning",
+       "lines": [
+        "Plyo circuit, near Phase 3 volume",
+        "SIT conditioning cut to 1 set of 4"
+       ]
+      },
+      {
+       "day": "Fri",
+       "kind": "rest",
+       "title": "Open",
+       "lines": []
+      }
+     ]
+    },
+    {
+     "label": "Week 2 (Jul 26-29) - deep taper",
+     "days": [
+      {
+       "day": "Mon",
+       "kind": "light",
+       "title": "Day A - Speed touch (no sled)",
+       "lines": [
+        "Light acceleration mechanics",
+        "2 sprints, 10-15m"
+       ]
+      },
+      {
+       "day": "Tue",
+       "kind": "light",
+       "title": "Day B - Tempo & skills (light)",
+       "lines": [
+        "Tempo runs, 3 x 100m",
+        "Skills circuit at walkthrough pace"
+       ]
+      },
+      {
+       "day": "Wed",
+       "kind": "lift",
+       "title": "Day D - Taper lift",
+       "lines": [
+        "Bench, pull-up, overhead press: 2 x 5 at about 75%",
+        "Squat and deadlift: 2 x 5 at about 60%"
+       ]
+      },
+      {
+       "day": "Thu",
+       "kind": "light",
+       "title": "Day C - Plyos (low volume)",
+       "lines": [
+        "Plyo circuit, fewer reps, full quality",
+        "No conditioning"
+       ]
+      },
+      {
+       "day": "Fri",
+       "kind": "rest",
+       "title": "Open",
+       "lines": []
+      }
+     ]
+    }
+   ]
+  },
+  "5": {
+   "name": "Phase 5 - In-Season",
+   "dates": "Early September - late October 2027 (about 8 games)",
+   "dateNote": "Placeholder until Dover's 2027 schedule is published. Camp Bridge covers the stretch from Phase 4's last session to the season opener: blackout week (estimated about Aug 2-8), then camp (NJSIAA first practice estimated about Aug 9).",
+   "facts": [
+    {
+     "label": "Length",
+     "value": "The regular season, about 8 weeks"
+    },
+    {
+     "label": "Sessions",
+     "value": "2 short lifts a week (about 30-40 min), plus a trimmed NMT warm-up before every practice"
+    },
+    {
+     "label": "Goal",
+     "value": "Maintain strength and power while managing total weekly load"
+    }
+   ],
+   "keyDates": [
+    "Weeks 1-2 of the season run a lower re-entry ramp on Squat and Deadlift (70%, then 78% of e1RM).",
+    "For a Thursday game, shift the whole pattern back one day. A missed lift is not made up in season.",
+    "During camp, once two-a-days begin, one weekly maintenance lift resumes (see Camp Bridge)."
+   ],
+   "weeksTitle": "A typical game week (Friday game)",
+   "weeks": [
+    {
+     "label": "Typical week",
+     "days": [
+      {
+       "day": "Mon",
+       "kind": "lift",
+       "title": "GD-4 - Lift Day 1",
+       "lines": [
+        "Squat and Bench Press, 3 x 3-5 at about 80-85%",
+        "Finisher: shoulder health, Nordic"
+       ]
+      },
+      {
+       "day": "Tue",
+       "kind": "light",
+       "title": "GD-3 - Practice only",
+       "lines": [
+        "Trimmed NMT warm-up before practice",
+        "No barbell work"
+       ]
+      },
+      {
+       "day": "Wed",
+       "kind": "lift",
+       "title": "GD-2 - Lift Day 2",
+       "lines": [
+        "Deadlift and Pull-up, 3 x 3-5 at about 80-85%",
+        "Finisher: shoulder health, Nordic"
+       ]
+      },
+      {
+       "day": "Thu",
+       "kind": "light",
+       "title": "GD-1 - Walkthrough",
+       "lines": [
+        "Trimmed NMT warm-up",
+        "No barbell work, no added conditioning"
+       ]
+      },
+      {
+       "day": "Fri",
+       "kind": "game",
+       "title": "Game day",
+       "lines": [
+        "No S&C session. NMT is the team's own pregame routine."
+       ]
+      },
+      {
+       "day": "Sat",
+       "kind": "rest",
+       "title": "Day after",
+       "lines": [
+        "Full rest, or optional light mobility"
+       ]
+      },
+      {
+       "day": "Sun",
+       "kind": "rest",
+       "title": "Off",
+       "lines": []
+      }
+     ]
+    }
+   ]
+  }
+ }
+}
