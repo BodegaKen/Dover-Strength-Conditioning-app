@@ -231,8 +231,8 @@ export default function RosterAdmin({ athletes, isAdmin = false }: { athletes: A
           <p className="text-sm text-muted py-2">{showArchived ? "No archived athletes." : "No athletes yet."}</p>
         )}
         {list.map((a) => (
-          <div key={a.id} className="flex items-center justify-between gap-3 py-2">
-            <div>
+          <div key={a.id} className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 py-2">
+            <div className="min-w-0 flex-1 basis-56">
               <Link href={`/coach/athletes/${a.id}`} className="font-semibold text-sm hover:text-accent hover:underline">
                 {a.name}
               </Link>
@@ -269,7 +269,7 @@ export default function RosterAdmin({ athletes, isAdmin = false }: { athletes: A
                 </div>
               )}
             </div>
-            <div className="flex gap-1.5 flex-shrink-0">
+            <div className="flex flex-wrap gap-1.5">
               {!showArchived && isAdmin && (
                 <SmallBtn onClick={() => act(a.id, "resetPin")}>Reset PIN</SmallBtn>
               )}

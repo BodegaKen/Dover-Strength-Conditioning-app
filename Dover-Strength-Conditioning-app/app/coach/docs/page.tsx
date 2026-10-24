@@ -40,8 +40,7 @@ export default async function CoachDocsPage({ searchParams }: { searchParams: { 
         <div className="bg-surface border border-line rounded-xl p-4">
           <h2 className="text-lg mb-1">Program Design and Rationale</h2>
           <p className="text-sm text-muted mb-3">
-            What each phase is, why it is built the way it is, and how it is set up, as of {data.updated}. This is a snapshot: if the
-            program is revised, the app copy has to be refreshed, so check the date when in doubt.
+            What each phase is, why it is built the way it is, and how it is set up.
           </p>
           <div className="flex flex-wrap gap-2">
             {sections.map((s) => (
