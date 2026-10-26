@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-24",
+ "updated": "2026-10-26",
  "note": "Phase dates and a typical week for each phase, shown at the top of each phase tab on the coach Docs page.",
  "phases": {
   "0": {
@@ -326,7 +326,7 @@
   "4": {
    "name": "Phase 4 - Pre-Camp Taper",
    "dates": "Mon Jul 19 - Thu Jul 29, 2027",
-   "dateNote": "Then a no-contact blackout week (estimated starting about Aug 2) and camp (NJSIAA first practice estimated about Aug 9).",
+   "dateNote": "Then a no-contact blackout week (estimated starting about Aug 2) and camp (NJSIAA's chart lists Aug 9 as the tentative first practice).",
    "facts": [
     {
      "label": "Length",
@@ -343,7 +343,8 @@
    ],
    "keyDates": [
     "Week 1 holds one heavy sled touch and the last real lift. Week 2 drops the sled, the conditioning and most of the volume.",
-    "First-time athletes test Squat and Deadlift in Week 1, Day D."
+    "First-time athletes test Squat in Week 1's Day D and Deadlift in Week 2's Day D, a week apart, never in one session.",
+    "Week 2's Friday (Jul 30) takes no makeups: a missed Week 2 session is simply missed."
    ],
    "weeksTitle": "Both weeks",
    "weeks": [
@@ -357,7 +358,8 @@
        "lines": [
         "Reduced acceleration mechanics",
         "One sled touch: 3 x 10m",
-        "2 unresisted sprints, 10-20m"
+        "2 unresisted sprints, 10-20m",
+        "Finish: shoulder health, then Nordic 2 x 8-10"
        ]
       },
       {
@@ -375,7 +377,8 @@
        "title": "Day D - Maintenance lift",
        "lines": [
         "Bench, pull-up, overhead press: 3 x 5 at about 80%",
-        "Squat and deadlift: 2 x 5 at about 60%"
+        "Squat and deadlift: 2 x 5 at about 60%",
+        "First-timers: Squat 5RM test goes first today"
        ]
       },
       {
@@ -384,7 +387,8 @@
        "title": "Day C - Plyos & conditioning",
        "lines": [
         "Plyo circuit, near Phase 3 volume",
-        "SIT conditioning cut to 1 set of 4"
+        "SIT conditioning cut to 1 set of 4",
+        "Finish: shoulder health, then Nordic 2 x 8-10"
        ]
       },
       {
@@ -422,7 +426,8 @@
        "title": "Day D - Taper lift",
        "lines": [
         "Bench, pull-up, overhead press: 2 x 5 at about 75%",
-        "Squat and deadlift: 2 x 5 at about 60%"
+        "Squat and deadlift: 2 x 5 at about 60%",
+        "First-timers: Deadlift 5RM test goes first today"
        ]
       },
       {
@@ -431,7 +436,8 @@
        "title": "Day C - Plyos (low volume)",
        "lines": [
         "Plyo circuit, fewer reps, full quality",
-        "No conditioning"
+        "No conditioning",
+        "Finish: shoulder health, then Nordic 2 x 8-10"
        ]
       },
       {
@@ -447,7 +453,7 @@
   "5": {
    "name": "Phase 5 - In-Season",
    "dates": "Early September - late October 2027 (about 8 games)",
-   "dateNote": "Placeholder until Dover's 2027 schedule is published. Camp Bridge covers the stretch from Phase 4's last session to the season opener: blackout week (estimated about Aug 2-8), then camp (NJSIAA first practice estimated about Aug 9).",
+   "dateNote": "Placeholder until Dover's 2027 schedule is published. Camp Bridge covers the stretch from Phase 4's last session to the season opener: blackout week (estimated about Aug 2-8), then camp (NJSIAA's tentative first practice, Aug 9).",
    "facts": [
     {
      "label": "Length",
@@ -464,7 +470,8 @@
    ],
    "keyDates": [
     "Weeks 1-2 of the season run a lower re-entry ramp on Squat and Deadlift (70%, then 78% of e1RM).",
-    "For a Thursday game, shift the whole pattern back one day. A missed lift is not made up in season.",
+    "Saturday game: lifts move to Tuesday and Thursday (Monday is practice only). Thursday game: no Sunday session, so only one lift day runs (Squat + Bench on Monday); the Deadlift/Pull-up day is skipped, not made up.",
+    "A missed lift is not made up in season. First-time athletes load each lift off its own test: Bench and Pull-up from Phase 3, Squat and Deadlift from Phase 4.",
     "During camp, once two-a-days begin, one weekly maintenance lift resumes (see Camp Bridge)."
    ],
    "weeksTitle": "A typical game week (Friday game)",
@@ -612,7 +619,7 @@
   "Camp Bridge": {
    "name": "Camp Bridge",
    "dates": "About Aug 2 to the season opener, early September 2027",
-   "dateNote": "All dates are estimates. Phase 4 ends Thu Jul 29. Blackout week is estimated Aug 2-8, with NJSIAA's first practice about Aug 9 and then a 14-day heat-acclimatization ramp. The football staff runs camp; this program only covers the lifting and conditioning below.",
+   "dateNote": "All dates are estimates. Phase 4 ends Thu Jul 29. Blackout week is estimated Aug 2-8, with NJSIAA's first practice tentatively Aug 9 and then a 14-day heat-acclimatization ramp. The football staff runs camp; this program only covers the lifting and conditioning below.",
    "facts": [
     {
      "label": "Length",
@@ -649,7 +656,8 @@
        "kind": "rest",
        "title": "Camp, heat ramp",
        "lines": [
-        "No lifting. Camp practice only."
+        "No lifting. Camp practice only.",
+        "Conditioning ramps: 1 set of 4 on Days 1-2, 2 sets of 4 on Days 3-5"
        ]
       },
       {
@@ -668,8 +676,8 @@
        "kind": "hard",
        "title": "End-of-practice conditioning",
        "lines": [
-        "Phase 3's SIT format: 20m out-and-back shuttles, 2 sets of 4-5 reps, 30 sec between reps, about 3 min between sets",
-        "Linemen get 25% more recovery; the rest is never shortened to fit more volume",
+        "Phase 3's SIT format: 20m out-and-back shuttles. Volume follows the ramp day: 1 x 4 (Days 1-2), 2 x 4 (Days 3-5), 2 x 5 from Day 6",
+        "30 sec between reps, about 3 min between sets; linemen get 25% more recovery. Rest is never shortened to fit more volume",
         "On an Orange or Red WBGT day this segment is cut first"
        ]
       }
