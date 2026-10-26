@@ -344,6 +344,7 @@
    "keyDates": [
     "Week 1 holds one heavy sled touch and the last real lift. Week 2 drops the sled, the conditioning and most of the volume.",
     "First-time athletes test Squat in Week 1's Day D and Deadlift in Week 2's Day D, a week apart, never in one session.",
+    "Each first-timer test opens with 5 clean empty-bar reps, or no test that day. The day after a Squat test, plyos drop to Week 2 volumes and the SIT touch is skipped.",
     "Week 2's Friday (Jul 30) takes no makeups: a missed Week 2 session is simply missed."
    ],
    "weeksTitle": "Both weeks",
@@ -469,9 +470,9 @@
     }
    ],
    "keyDates": [
-    "Weeks 1-2 of the season run a lower re-entry ramp on Squat and Deadlift (70%, then 78% of e1RM).",
+    "Each lift's first two completed sessions run a lower re-entry ramp on Squat and Deadlift (70%, then 78% of e1RM). A missed session does not advance it, and Monday autoregulation can only hold or lower it.",
     "Saturday game: lifts move to Tuesday and Thursday (Monday is practice only). Thursday game: no Sunday session, so only one lift day runs (Squat + Bench on Monday); the Deadlift/Pull-up day is skipped, not made up.",
-    "A missed lift is not made up in season. First-time athletes load each lift off its own test: Bench and Pull-up from Phase 3, Squat and Deadlift from Phase 4.",
+    "A missed lift is not made up in season. Bye week: lifts stay on Monday and Wednesday (Tuesday and Thursday after a Saturday game). First-time athletes load each lift off its own test: Bench and Pull-up from Phase 3, Squat and Deadlift from Phase 4.",
     "During camp, once two-a-days begin, one weekly maintenance lift resumes (see Camp Bridge)."
    ],
    "weeksTitle": "A typical game week (Friday game)",
@@ -665,7 +666,7 @@
        "kind": "lift",
        "title": "Weekly maintenance lift",
        "lines": [
-        "Once a week, in whichever session leaves the most room",
+        "Once a week, in whichever session leaves the most room. Each lift follows its own status: percentage if it has a tested e1RM, RPE technique work if not",
         "Bench, pull-up, overhead press: 2 x 5 at about 75%",
         "Squat and deadlift: 2 x 5 at about 60%",
         "Bodyweight pull-up track: 2 x 5, 2-3 reps in reserve"
@@ -678,7 +679,7 @@
        "lines": [
         "Phase 3's SIT format: 20m out-and-back shuttles. Volume follows the ramp day: 1 x 4 (Days 1-2), 2 x 4 (Days 3-5), 2 x 5 from Day 6",
         "30 sec between reps, about 3 min between sets; linemen get 25% more recovery. Rest is never shortened to fit more volume",
-        "On an Orange or Red WBGT day this segment is cut first"
+        "Orange WBGT day: this segment is shortened or cut first. Red: no conditioning of any kind"
        ]
       }
      ]
