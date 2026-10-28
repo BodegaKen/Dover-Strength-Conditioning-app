@@ -1,6 +1,6 @@
 // Shared math: the same formulas used throughout the written program
 // (e1RM = tested 5RM / 0.87) and the same ACWR methodology from the
-// Phase 5 doc / Program Design and Rationale (acute = trailing 7-day
+// Phase 4 (In-Season) doc / Program Design and Rationale (acute = trailing 7-day
 // session-load sum, chronic = trailing 28-day average weekly load).
 
 export function round2_5(n: number): number {

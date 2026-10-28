@@ -4,7 +4,7 @@
   {
    "key": "weight",
    "title": "Weight room",
-   "intro": "Use these when a station's equipment is taken by another pod, broken, or missing. Phase 1 and 2 swaps also apply to the barbell lifts in Phases 3-5.",
+   "intro": "Use these when a station's equipment is taken by another pod, broken, or missing. Phase 1 and 2 swaps also apply to the barbell lifts in Phases 3-4.",
    "groups": [
     {
      "heading": "Main lifts",
@@ -184,14 +184,14 @@
      "rows": [
       {
        "item": "Weighted sled",
-       "primary": "Sled (Phase 3 uses 2 units, Phase 4 uses 1)",
+       "primary": "Sled (Phase 3 uses 2 units; none in the Retest Week)",
        "swap": "Partner-resisted sprints (a training partner holds a resistance band/harness from behind) or, if no sled or band is available, unresisted sprints at the same distances. Do not substitute a weighted vest to approximate these %BW sled loads - a vest is not a safe stand-in at these loads.",
        "mainLift": false
       },
       {
        "item": "Stopwatch / timer",
-       "primary": "Stopwatch (two for split timing in Phase 3)",
-       "swap": "Single-timer protocol: time the full 20m only, average 3 attempts, and use that average to estimate the 10m split proportionally rather than measuring it directly. In Phase 4 any phone or watch stopwatch is fine: no squad-wide split-timed testing.",
+       "primary": "Stopwatch (two for split timing in Phase 3, including the Retest Week)",
+       "swap": "Single-timer protocol: time the full 20m only (3 attempts, best time) and group athletes on that measured 20m time; the 10m split is not recorded and is not estimated. Use the same protocol for that athlete at the Retest Week, so a 20m-only time is never compared with a split time. In Phase 4 (In-Season) any phone or watch stopwatch is fine: no squad-wide split-timed testing.",
        "mainLift": false
       },
       {
@@ -219,7 +219,7 @@
        "mainLift": false
       },
       {
-       "item": "Timer for session length (Phase 5)",
+       "item": "Timer for session length (Phase 4)",
        "primary": "Timer",
        "swap": "Any phone or watch timer. It is needed for the session-load (sRPE) calculation, not for testing.",
        "mainLift": false

@@ -29,7 +29,7 @@ export type Track = {
   name: string;
   periods: Period[];
   notEncoded?: string[];
-  trailingNote?: string; // e.g. phase5's Monday auto-regulation note, shown on every period
+  trailingNote?: string; // e.g. the in-season track's (key phase5, shown as Phase 4) Monday auto-regulation note, shown on every period
 };
 
 const root = (programData as any).liftPrescriptionProgram;
@@ -102,7 +102,7 @@ function buildPhase0Track(): Track {
 export function getAllTracks(): Track[] {
   const tracks: Track[] = [];
   for (const phase of root.phases) tracks.push(buildPhaseTrack(phase));
-  // Bridges are inserted where they belong chronologically: after Phase 2, after Phase 4.
+  // Bridges are inserted where they belong chronologically: after Phase 2, after Phase 3 (the Retest Week is its last period).
   const byKey = Object.fromEntries(tracks.map((t) => [t.key, t]));
   const ordered: Track[] = [buildPhase0Track()];
   for (const t of tracks) {
@@ -111,7 +111,7 @@ export function getAllTracks(): Track[] {
       const b = root.bridges.find((b: any) => b.key === "bridge_2_3");
       if (b) ordered.push(buildBridgeTrack(b));
     }
-    if (t.key === "phase4") {
+    if (t.key === "phase3") {
       const b = root.bridges.find((b: any) => b.key === "camp_bridge");
       if (b) ordered.push(buildBridgeTrack(b));
     }
@@ -127,7 +127,7 @@ export function getTrack(key: string): Track | undefined {
 export function getPeriod(trackKey: string, index: number): Period | undefined {
   const track = getTrack(trackKey);
   if (!track) return undefined;
-  // Phase 5 periods beyond the last one (steady state) all resolve to the last period.
+  // In-season (key phase5, shown as Phase 4) periods beyond the last one (steady state) all resolve to the last period.
   if (trackKey === "phase5" && index > track.periods.length) {
     return track.periods[track.periods.length - 1];
   }

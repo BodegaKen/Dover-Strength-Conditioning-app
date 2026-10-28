@@ -46,7 +46,7 @@ export type PlanExercise = {
   allowBodyweight?: boolean; // weight entry where reps alone also counts (bodyweight allowed)
   optional?: boolean; // never blocks day completion
   ramp: boolean; // show the 50/65/75% ramp sets
-  rampCapped?: boolean; // Phase 5: drop ramp steps at or above the work-set percentage
+  rampCapped?: boolean; // Phase 4 (In-Season, key phase5): drop ramp steps at or above the work-set percentage
   backoff: { sets: number; reps: string; pctE1RM: number | string | null } | null;
   note?: string;
   details?: string[]; // checklist contents for warm-up parts

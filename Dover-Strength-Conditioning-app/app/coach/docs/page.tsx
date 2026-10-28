@@ -10,7 +10,7 @@ import overviewData from "@/data/phase-overview.json";
 type Doc = { key: string; title: string; markdown: string };
 type Section = { key: string; tab: string; markdown: string };
 
-// Coach-only: Program Design and Rationale (sections 1-9; the compliance and open-items sections and the
+// Coach-only: Program Design and Rationale (sections 1-8; the compliance and open-items sections and the
 // revision notes are left out on purpose), a snapshot copied from the program documents, shown one section
 // per tab so each phase opens on its own. Athletes never see this page (middleware and the check below
 // both require a coach).

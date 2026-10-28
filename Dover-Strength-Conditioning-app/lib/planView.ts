@@ -58,7 +58,7 @@ export function viewOf(
 
   let ramp: string | undefined;
   if (ex.ramp) {
-    // Phase 5 skips any ramp step at or above the work-set percentage (Week 1 re-entry runs 70%).
+    // Phase 4 (In-Season) skips any ramp step at or above the work-set percentage (Week 1 re-entry runs 70%).
     const work = ex.rampCapped ? leadingPct(ex.pctE1RM) : null;
     const workLow = typeof work === "number" ? work : typeof work === "string" ? parseFloat(work) : null;
     const steps = [

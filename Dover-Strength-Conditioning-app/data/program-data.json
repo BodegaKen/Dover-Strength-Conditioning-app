@@ -1230,47 +1230,64 @@
         "key": "phase3",
         "name": "Phase 3 - Early Summer Program",
         "notEncoded": [
-          "First-time-athlete tracks: Bench/Pull-up/OHP RPE 6-7 technique track (Weeks 2-3, test at Week 3) and Squat/Deadlift's longer 3-session Goblet Squat/DB RDL technique track (Weeks 2, 3, 4; actual 5RM test deferred to Phase 4 Week 1) - coach judgment / written program, no e1RM on file to compute",
-          "Staggered and Late Arrivals catch-up protocols - coach judgment / written program",
-          "Auto-regulation (sled technique breakdown -> drop load 5-10%; same for Day D barbell work) - runtime rule, not fixed program data"
+          "First-time-athlete tracks: Bench/Pull-up/OHP RPE 6-7 technique track (Test Week, Week 2; ramped 5RM test at Week 3) and Squat/Deadlift's longer 3-session Goblet Squat/DB RDL technique track (Test Week, Weeks 2, 3; Squat 5RM test Week 4, Deadlift 5RM test Week 5) - coach judgment / written program, no e1RM on file to compute",
+          "Experienced-lifter fast lane (coach discretion, upper-body three only) - coach judgment / written program",
+          "Staggered and Late Arrivals catch-up protocols and the hard three-session floor for Squat/Deadlift - coach judgment / written program",
+          "Sled load by week, SIT volume, Day A/B/C content (non-barbell sessions) - written program, not in the app",
+          "Auto-regulation (sled technique breakdown -> drop load 5-10%; same for Day D barbell work) - runtime rule, not fixed program data",
+          "Retest Week battery (Monday speed: bodyweight, 10m/20m, 40-yard; Tuesday 300-yard shuttle; Thursday makeups) - written program, not in the app",
+          "Late-arriving first-time athletes' standalone Retest Week on-ramp (capped-load sled work, technique content in place of the Retest Week lift; tests fall to Phase 4) - coach judgment / written program",
+          "No Nordic hamstring curl and no sled, plyometric or SIT work in the Retest Week - written program"
         ],
         "weeks": [
           {
             "week": 1,
-            "label": "Testing Window (Day T1/T2)",
+            "label": "Test Week (Day D - Wed, upper body only)",
             "lifts": {
               "squat": {
                 "sets": null,
                 "reps": null,
                 "pctE1RM": null,
-                "mode": "not_tested",
-                "note": "Squat is NOT tested in Phase 3 for anyone. Returning athletes carry forward Phase 2 Week 7 e1RM (used later at Day D's maintenance touch). First-time athletes get an unloaded movement-screen only here; their own technique track and eventual test are out of this document's scope (see Phase 4)."
-              },
-              "bench": {
-                "sets": null,
-                "reps": null,
-                "pctE1RM": null,
-                "mode": "not_tested",
-                "note": "Not tested at Testing Window. Returning athletes carry forward Phase 2 Week 7 e1RM for Day D. First-time athletes get an unloaded movement-screen only here (own RPE-based track out of scope)."
+                "mode": "no_session",
+                "note": "No Squat this week for returning athletes: the legs have just done maximal sprints (Monday) and the 300-yard shuttle (Tuesday). The light Squat touch starts in Week 2. First-time athletes run technique session 1 (Goblet Squat, RPE 6) instead - written program, no e1RM to compute."
               },
               "deadlift": {
                 "sets": null,
                 "reps": null,
                 "pctE1RM": null,
-                "mode": "not_tested",
-                "note": "Not tested in Phase 3 for anyone - same as squat."
+                "mode": "no_session",
+                "note": "No Deadlift this week for returning athletes - same reasoning as Squat. First-time athletes run technique session 1 (DB Romanian Deadlift, RPE 6)."
+              },
+              "bench": {
+                "sets": 3,
+                "reps": 5,
+                "pctE1RM": 80,
+                "mode": "load",
+                "note": "Upper-body-only Day D, off the most recently tested (Phase 2 Week 7) e1RM. 2-3 min rest. First-time athletes run technique session 1 (DB bench, RPE 6-7); an experienced lifter cleared by the coach may run a coach-watched ramp to a 5RM here (fast lane).",
+                "day": "Wednesday"
               },
               "ohp": {
-                "sets": null,
-                "reps": null,
-                "pctE1RM": null,
-                "mode": "not_tested",
-                "note": "Not tested at Testing Window. Returning athletes carry forward Phase 2 Week 7 e1RM for Day D."
+                "sets": 3,
+                "reps": 5,
+                "pctE1RM": 80,
+                "mode": "load",
+                "note": "Same dosing as Bench. First-time athletes: DB overhead press technique session 1, RPE 6-7.",
+                "day": "Wednesday"
               },
               "pullup": {
-                "mode": "not_tested",
-                "scheme": "Not tested at Testing Window; Phase 2's Week 7 retest track carries forward for returning athletes.",
-                "note": null
+                "mode": "weighted|bodyweight",
+                "scheme": "Weighted: 3x5 at ~80% of total-load e1RM (bodyweight + added weight; belt load = that minus bodyweight). Bodyweight: 3x5 with 2-3 reps in reserve (same technique-gating standard as Phase 1).",
+                "note": "Test Week upper-body Day D, same dose as Weeks 2-5. First-time athletes: inverted or band row technique, RPE 6-7.",
+                "weightedPlan": {
+                  "sets": 3,
+                  "reps": "5",
+                  "pctE1RM": 80
+                },
+                "bodyweightPlan": {
+                  "sets": 3,
+                  "reps": "5"
+                },
+                "day": "Wednesday"
               }
             }
           },
@@ -1283,7 +1300,113 @@
                 "reps": 5,
                 "pctE1RM": 60,
                 "mode": "maintenance",
-                "note": "Returning athletes only - light motor-pattern maintenance touch (not a strength stimulus), off Phase 2 Week 7 e1RM. 90 sec rest. First-time athletes skip this and instead run a separate RPE 6-7 Goblet Squat/DB RDL technique track (out of scope).",
+                "note": "Returning athletes only - light motor-pattern maintenance touch (not a strength stimulus), off Phase 2 Week 7 e1RM. 90 sec rest. First-time athletes skip this and run Goblet Squat/DB RDL technique session 2 (RPE 7).",
+                "day": "Wednesday"
+              },
+              "bench": {
+                "sets": 3,
+                "reps": 5,
+                "pctE1RM": 80,
+                "mode": "load",
+                "note": "Upper-body maintenance lift, off most recently tested (Phase 2 Week 7) e1RM. 2-3 min rest.",
+                "day": "Wednesday"
+              },
+              "deadlift": {
+                "sets": 2,
+                "reps": 5,
+                "pctE1RM": 60,
+                "mode": "maintenance",
+                "note": "Returning athletes only - same light maintenance touch and reasoning as Squat above.",
+                "day": "Wednesday"
+              },
+              "ohp": {
+                "sets": 3,
+                "reps": 5,
+                "pctE1RM": 80,
+                "mode": "load",
+                "note": "Same maintenance-lift dosing as Bench.",
+                "day": "Wednesday"
+              },
+              "pullup": {
+                "mode": "weighted|bodyweight",
+                "scheme": "Weighted: 3x5 at ~80% of total-load e1RM (bodyweight + added weight; belt load = that minus bodyweight). Bodyweight: 3x5 with 2-3 reps in reserve (same technique-gating standard as Phase 1).",
+                "note": "Flat dose, unchanged Weeks 2-5.",
+                "weightedPlan": {
+                  "sets": 3,
+                  "reps": "5",
+                  "pctE1RM": 80
+                },
+                "bodyweightPlan": {
+                  "sets": 3,
+                  "reps": "5"
+                },
+                "day": "Wednesday"
+              }
+            }
+          },
+          {
+            "week": 3,
+            "label": "Week 3 (Day D - Wed)",
+            "lifts": {
+              "squat": {
+                "sets": 2,
+                "reps": 5,
+                "pctE1RM": 60,
+                "mode": "maintenance",
+                "note": "Same as Week 2 - flat dose. First-time athletes run technique session 3 of 3 (Goblet Squat, RPE 7) - Squat and Deadlift are never tested on this day.",
+                "day": "Wednesday"
+              },
+              "bench": {
+                "sets": 3,
+                "reps": 5,
+                "pctE1RM": 80,
+                "mode": "load",
+                "note": "Same as Week 2 - flat dose. First-time athletes who look clean in the screen and two technique sessions test a ramped, coach-watched 5RM here (stop at the first technique breakdown).",
+                "day": "Wednesday"
+              },
+              "deadlift": {
+                "sets": 2,
+                "reps": 5,
+                "pctE1RM": 60,
+                "mode": "maintenance",
+                "note": "Returning athletes only - same light maintenance touch and reasoning as Squat above.",
+                "day": "Wednesday"
+              },
+              "ohp": {
+                "sets": 3,
+                "reps": 5,
+                "pctE1RM": 80,
+                "mode": "load",
+                "note": "Same as Week 2 - flat dose. First-time athletes: ramped 5RM test if clean, same rules as Bench.",
+                "day": "Wednesday"
+              },
+              "pullup": {
+                "mode": "weighted|bodyweight",
+                "scheme": "Weighted: 3x5 at ~80% of total-load e1RM (bodyweight + added weight; belt load = that minus bodyweight). Bodyweight: 3x5 with 2-3 reps in reserve (same technique-gating standard as Phase 1).",
+                "note": "Same as Week 2 - flat dose. First-time athletes: ramped 5RM (or bodyweight/assisted branch) if clean.",
+                "weightedPlan": {
+                  "sets": 3,
+                  "reps": "5",
+                  "pctE1RM": 80
+                },
+                "bodyweightPlan": {
+                  "sets": 3,
+                  "reps": "5"
+                },
+                "day": "Wednesday"
+              }
+            }
+          },
+          {
+            "week": 4,
+            "label": "Week 4 (Day D - Wed)",
+            "lifts": {
+              "squat": {
+                "sets": 2,
+                "reps": 5,
+                "pctE1RM": 60,
+                "mode": "maintenance",
+                "note": "Same as Week 2 - flat dose. First-time athletes who banked three technique sessions run their Squat 5RM TEST here (July 14), in place of this maintenance touch: empty-bar gate first, ramp, stop at first breakdown, DB RDL 2x5 RPE 6 as the light touch on the other lift. Upper-body fallback test slot if no lower-body test is due.",
                 "day": "Wednesday"
               },
               "bench": {
@@ -1328,15 +1451,15 @@
             }
           },
           {
-            "week": 3,
-            "label": "Week 3 (Day D - Wed)",
+            "week": 5,
+            "label": "Week 5 (Day D - Wed)",
             "lifts": {
               "squat": {
                 "sets": 2,
                 "reps": 5,
                 "pctE1RM": 60,
                 "mode": "maintenance",
-                "note": "Same as Week 2 - flat dose.",
+                "note": "Returning athletes only - light motor-pattern maintenance touch (not a strength stimulus), off Phase 2 Week 7 e1RM. 90 sec rest. First-time athletes skip this and instead run a separate RPE 6-7 Goblet Squat/DB RDL technique track (out of scope).",
                 "day": "Wednesday"
               },
               "bench": {
@@ -1344,7 +1467,7 @@
                 "reps": 5,
                 "pctE1RM": 80,
                 "mode": "load",
-                "note": "Same as Week 2 - flat dose.",
+                "note": "Upper-body maintenance lift, off most recently tested (Phase 2 Week 7) e1RM. 2-3 min rest.",
                 "day": "Wednesday"
               },
               "deadlift": {
@@ -1352,7 +1475,7 @@
                 "reps": 5,
                 "pctE1RM": 60,
                 "mode": "maintenance",
-                "note": "Same as Week 2 - flat dose.",
+                "note": "Same as Week 2 - flat dose. First-time athletes who banked three technique sessions run their Deadlift 5RM TEST here (July 21), in place of this maintenance touch: empty-bar gate first, ramp, stop at first breakdown, Goblet Squat 2x5 as the light touch on the other lift. Last Squat/Deadlift touch for returning athletes.",
                 "day": "Wednesday"
               },
               "ohp": {
@@ -1360,115 +1483,13 @@
                 "reps": 5,
                 "pctE1RM": 80,
                 "mode": "load",
-                "note": "Same as Week 2 - flat dose.",
+                "note": "Same maintenance-lift dosing as Bench.",
                 "day": "Wednesday"
               },
               "pullup": {
                 "mode": "weighted|bodyweight",
-                "scheme": "Same as Week 2 - flat dose. Weighted load: ~80% of total-load e1RM (bodyweight + added weight); belt load = that minus bodyweight.",
-                "note": null,
-                "day": "Wednesday",
-                "weightedPlan": {
-                  "sets": 3,
-                  "reps": "5",
-                  "pctE1RM": 80
-                },
-                "bodyweightPlan": {
-                  "sets": 3,
-                  "reps": "5"
-                }
-              }
-            }
-          },
-          {
-            "week": 4,
-            "label": "Retest Week (speed/conditioning only)",
-            "lifts": {
-              "squat": {
-                "sets": null,
-                "reps": null,
-                "pctE1RM": null,
-                "mode": "no_session",
-                "note": "No Day D this week - Wednesday stays open/rest between the Monday speed retest and Thursday conditioning retest. Squat/Deadlift/Bench/OHP/Pull-up are NOT retested here (Phase 3's retest is bodyweight + 10m/20m + 40-yard + 300-yard shuttle only)."
-              },
-              "bench": {
-                "sets": null,
-                "reps": null,
-                "pctE1RM": null,
-                "mode": "no_session",
-                "note": "No Day D this week - see squat note."
-              },
-              "deadlift": {
-                "sets": null,
-                "reps": null,
-                "pctE1RM": null,
-                "mode": "no_session",
-                "note": "No Day D this week - see squat note."
-              },
-              "ohp": {
-                "sets": null,
-                "reps": null,
-                "pctE1RM": null,
-                "mode": "no_session",
-                "note": "No Day D this week - see squat note."
-              },
-              "pullup": {
-                "mode": "no_session",
-                "scheme": "No Day D this week - see squat note.",
-                "note": null
-              }
-            }
-          }
-        ]
-      },
-      {
-        "key": "phase4",
-        "name": "Phase 4 - Pre-Camp Taper",
-        "notEncoded": [
-          "Late-arriving first-time athletes' standalone on-ramp (capped-load sled work, Phase 3 technique content in place of the taper lift) - coach judgment / written program",
-          "Auto-regulation (sled/technique breakdown -> drop load; 'less volume not more effort' in Week 2) - runtime rule, not fixed program data"
-        ],
-        "weeks": [
-          {
-            "week": 1,
-            "label": "Week 1 (Day D - Wed)",
-            "lifts": {
-              "squat": {
-                "sets": 2,
-                "reps": 5,
-                "pctE1RM": 60,
-                "mode": "maintenance",
-                "note": "Returning athletes only - light maintenance touch, off Phase 2 Week 7 e1RM, unaffected by this week's taper trim (already light). First-time athletes who banked Phase 3's 3-session technique floor instead run their Squat/Deadlift 5RM TEST here (in place of this maintenance touch) - this is their designed test session, out of this document's returning-athlete standard-track scope.",
-                "day": "Wednesday"
-              },
-              "bench": {
-                "sets": 3,
-                "reps": 5,
-                "pctE1RM": 80,
-                "mode": "load",
-                "note": "Unchanged from Phase 3's dose: 3x5 @ ~80% of most recently tested e1RM.",
-                "day": "Wednesday"
-              },
-              "deadlift": {
-                "sets": 2,
-                "reps": 5,
-                "pctE1RM": 60,
-                "mode": "maintenance",
-                "note": "Returning athletes only - same maintenance touch as Squat above.",
-                "day": "Wednesday"
-              },
-              "ohp": {
-                "sets": 3,
-                "reps": 5,
-                "pctE1RM": 80,
-                "mode": "load",
-                "note": "Unchanged from Phase 3's dose.",
-                "day": "Wednesday"
-              },
-              "pullup": {
-                "mode": "weighted|bodyweight",
-                "scheme": "Weighted: 3x5 at ~80% of total-load e1RM (bodyweight + added weight; belt load = that minus bodyweight). Bodyweight: 3x5 with 2-3 reps in reserve.",
-                "note": "Unchanged from Phase 3's dose.",
+                "scheme": "Weighted: 3x5 at ~80% of total-load e1RM (bodyweight + added weight; belt load = that minus bodyweight). Bodyweight: 3x5 with 2-3 reps in reserve (same technique-gating standard as Phase 1).",
+                "note": "Flat dose, unchanged Weeks 2-3.",
                 "weightedPlan": {
                   "sets": 3,
                   "reps": "5",
@@ -1483,45 +1504,43 @@
             }
           },
           {
-            "week": 2,
-            "label": "Week 2 (Day D - Wed) - Taper Lift",
+            "week": 6,
+            "label": "Retest Week (Day D - Wed, upper body only)",
             "lifts": {
               "squat": {
-                "sets": 2,
-                "reps": 5,
-                "pctE1RM": 60,
-                "mode": "maintenance",
-                "note": "Unchanged from Week 1 - already light enough that the taper's volume/intensity trim doesn't apply to it. Returning athletes only. (First-timers who tested in Week 1 instead run a second light Goblet Squat/DB RDL touch, 2x5 @ RPE 6, here.)",
-                "day": "Wednesday"
+                "sets": null,
+                "reps": null,
+                "pctE1RM": null,
+                "mode": "no_session",
+                "note": "No Squat in the retest week: the legs have just done the maximal sprint retest and the 300-yard shuttle, and no 5RM test belongs in the deload. Returning athletes' last Squat touch was Phase 3 Week 5 (July 21). Late-arriving first-timers' tests fall to Phase 4."
               },
               "bench": {
                 "sets": 2,
                 "reps": 5,
                 "pctE1RM": 75,
                 "mode": "load",
-                "note": "Taper cut: down from Week 1's 3x5 @ ~80% to 2x5 @ ~75%.",
+                "note": "Upper-body-only Day D after Tuesday's shuttle retest: 2x5 @ ~75% of most recent e1RM (sets cut before load).",
                 "day": "Wednesday"
               },
               "deadlift": {
-                "sets": 2,
-                "reps": 5,
-                "pctE1RM": 60,
-                "mode": "maintenance",
-                "note": "Unchanged from Week 1 - same reasoning as Squat above.",
-                "day": "Wednesday"
+                "sets": null,
+                "reps": null,
+                "pctE1RM": null,
+                "mode": "no_session",
+                "note": "No Deadlift in the retest week - same reasoning as Squat. Returning athletes' last Deadlift touch was Phase 3 Week 5 (July 21)."
               },
               "ohp": {
                 "sets": 2,
                 "reps": 5,
                 "pctE1RM": 75,
                 "mode": "load",
-                "note": "Taper cut: down from Week 1's 3x5 @ ~80% to 2x5 @ ~75%.",
+                "note": "Same dose as Bench: 2x5 @ ~75%.",
                 "day": "Wednesday"
               },
               "pullup": {
                 "mode": "weighted|bodyweight",
-                "scheme": "Weighted: 2x5 at ~75% of total-load e1RM (bodyweight + added weight; belt load = that minus bodyweight) (down from Week 1's 3x5). Bodyweight: 2x5 with 2-3 reps in reserve.",
-                "note": "Taper cut from Week 1.",
+                "scheme": "Weighted: 2x5 at ~75% of total-load e1RM (bodyweight + added weight; belt load = that minus bodyweight). Bodyweight: 2x5 with 2-3 reps in reserve.",
+                "note": "Retest-week dose.",
                 "weightedPlan": {
                   "sets": 2,
                   "reps": "5",
@@ -1542,7 +1561,7 @@
       {
         "key": "bridge_2_3",
         "name": "Phase 2 to 3 Bridge (Multi-Sport Maintenance Track continuation, May 25 - June 15)",
-        "description": "Continues Phase 2's Multi-Sport Maintenance Track unchanged (2 days/week: Track Day 1 Squat+Bench, Track Day 2 Deadlift+Pull-up), at Week 11's load, with one re-entry dip on June 4. Closes the ~6-day gap before Phase 3's Testing Window (down from 4.5 weeks unbridged).",
+        "description": "Continues Phase 2's Multi-Sport Maintenance Track unchanged (2 days/week: Track Day 1 Squat+Bench, Track Day 2 Deadlift+Pull-up), at Week 11's load, with one re-entry dip on June 4. Closes the ~6-day gap before Phase 3's Test Week (down from 4.5 weeks unbridged).",
         "sessions": [
           {
             "date": "May 25",
@@ -1930,8 +1949,8 @@
       },
       {
         "key": "camp_bridge",
-        "name": "Camp Bridge (Phase 4 to 5, once two-a-days begin)",
-        "description": "No lifting in the first 5 days of NJSIAA's 14-day heat-acclimatization ramp. Once two-a-day sessions begin (Day 6 onward), this once-a-week session (Phase 4 Week 2's taper-lift dose) continues through the rest of camp to the season opener.",
+        "name": "Camp Bridge (Phase 3 to 4, once two-a-days begin)",
+        "description": "No lifting in the first 5 days of NJSIAA's 14-day heat-acclimatization ramp. Once two-a-day sessions begin (Day 6 onward), this once-a-week session (Phase 3's Retest Week lift dose) continues through the rest of camp to the season opener.",
         "weeks": [
           {
             "week": "once-weekly, Day 6 of acclimatization ramp onward",
@@ -1942,14 +1961,14 @@
                 "reps": 5,
                 "pctE1RM": 60,
                 "mode": "maintenance",
-                "note": "Light maintenance touch, continues unchanged from Phase 3/4's Day D. Closes the gap where Squat/Deadlift would otherwise go fully dormant from Phase 2's close through camp."
+                "note": "Light maintenance touch, continues from Phase 3's Day D (paused for Phase 3's Retest Week and the blackout week). Closes the gap where Squat/Deadlift would otherwise go fully dormant from Phase 2's close through camp."
               },
               "bench": {
                 "sets": 2,
                 "reps": 5,
                 "pctE1RM": 75,
                 "mode": "load",
-                "note": "Continues Phase 4 Week 2's taper-lift dose unchanged."
+                "note": "Continues Phase 3's Retest Week lift dose unchanged."
               },
               "deadlift": {
                 "sets": 2,
@@ -1963,7 +1982,7 @@
                 "reps": 5,
                 "pctE1RM": 75,
                 "mode": "load",
-                "note": "Continues Phase 4 Week 2's taper-lift dose unchanged."
+                "note": "Continues Phase 3's Retest Week lift dose unchanged."
               },
               "pullup": {
                 "mode": "weighted|bodyweight",
@@ -1990,7 +2009,7 @@
     ],
     "phase5": {
       "key": "phase5",
-      "name": "Phase 5 - In-Season",
+      "name": "Phase 4 - In-Season",
       "structure": "Ongoing weekly, keyed to game day (GD-4 / GD-2 labels, not fixed weekdays), not a fixed week count. Flat at 80-85% e1RM ('Heavy Maintenance' pace) once fully ramped in, with a Week 1-2 re-entry ramp for Squat/Deadlift only.",
       "reentryRamp": [
         {
@@ -2018,7 +2037,7 @@
           },
           "ohp": {
             "pctE1RM": null,
-            "note": "Not part of Phase 5's rotation at all - see steadyState.ohp."
+            "note": "Not part of Phase 4's rotation at all - see steadyState.ohp."
           },
           "pullup": {
             "note": "No ramp - starts at full prescription (same as Bench).",
@@ -2123,7 +2142,7 @@
         "ohp": {
           "pctE1RM": null,
           "mode": "not_applicable",
-          "note": "Overhead Press is explicitly NOT part of Phase 5's rotation - Bench Press already covers the push pattern on the phase's two lift days, and a 2-lift-per-day maintenance phase has no room for a fifth exercise. Not tested or prescribed again until a later program cycle."
+          "note": "Overhead Press is explicitly NOT part of Phase 4's rotation - Bench Press already covers the push pattern on the phase's two lift days, and a 2-lift-per-day maintenance phase has no room for a fifth exercise. Not tested or prescribed again until a later program cycle."
         },
         "pullup": {
           "day": "GD-2 (Lift Day 2)",
