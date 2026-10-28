@@ -270,6 +270,12 @@ export default function RosterAdmin({ athletes, isAdmin = false }: { athletes: A
               )}
             </div>
             <div className="flex flex-wrap gap-1.5">
+              <Link
+                href={`/coach/athletes/${a.id}?edit=1#profile`}
+                className="text-xs uppercase tracking-wide rounded-md px-2.5 py-1.5 border border-line"
+              >
+                Edit
+              </Link>
               {!showArchived && isAdmin && (
                 <SmallBtn onClick={() => act(a.id, "resetPin")}>Reset PIN</SmallBtn>
               )}

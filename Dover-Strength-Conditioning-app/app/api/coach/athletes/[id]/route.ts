@@ -45,8 +45,17 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
 
   // action === "update"
   const data: Record<string, unknown> = {};
-  if (typeof body?.name === "string" && body.name.trim()) data.name = body.name.trim();
-  if ("position" in (body ?? {})) data.position = body.position ? String(body.position).trim() : null;
+  if (typeof body?.name === "string") {
+    const n = body.name.trim();
+    if (!n) return NextResponse.json({ error: "Name can't be blank." }, { status: 400 });
+    if (n.length > 60) return NextResponse.json({ error: "Name is too long (60 characters max)." }, { status: 400 });
+    data.name = n;
+  }
+  if ("position" in (body ?? {})) {
+    const p = body.position ? String(body.position).trim() : "";
+    if (p.length > 30) return NextResponse.json({ error: "Position is too long (30 characters max)." }, { status: 400 });
+    data.position = p || null;
+  }
   if ("gradYear" in (body ?? {})) {
     const g = body.gradYear ? Number(body.gradYear) : null;
     if (g != null && !(Number.isInteger(g) && g >= 2020 && g <= 2040)) {
@@ -67,9 +76,26 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   if (body?.trainingTrack === "FULL" || body?.trainingTrack === "MULTI_SPORT") {
     data.trainingTrack = body.trainingTrack;
   }
+
+  // Log what actually changed, old -> new, so a position or weight change can be traced later.
+  const LABEL: Record<string, string> = {
+    name: "name",
+    position: "position",
+    gradYear: "grad year",
+    bodyweight: "weight",
+    pullupTrack: "pull-up track",
+    trainingTrack: "track",
+  };
+  const current = athlete as unknown as Record<string, unknown>;
+  const show = (v: unknown) => (v == null || v === "" ? "blank" : String(v));
+  const changes = Object.entries(data)
+    .filter(([k, v]) => current[k] !== v)
+    .map(([k, v]) => `${LABEL[k] ?? k}: ${show(current[k])} -> ${show(v)}`);
+  if (changes.length === 0) return NextResponse.json({ ok: true, changed: false });
+
   await prisma.user.update({ where: { id: athlete.id }, data });
-  await audit(session, "edit athlete", athlete.name, Object.keys(data).join(", "));
-  return NextResponse.json({ ok: true });
+  await audit(session, "edit athlete", athlete.name, changes.join("; "));
+  return NextResponse.json({ ok: true, changed: true });
 }
 
 export async function DELETE(_req: NextRequest, { params }: { params: { id: string } }) {

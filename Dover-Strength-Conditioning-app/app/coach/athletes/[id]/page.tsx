@@ -7,6 +7,7 @@ import MonthCalendar from "@/components/MonthCalendar";
 import DayCards from "@/components/DayCards";
 import LogForms from "@/app/dashboard/LogForms";
 import EntryActions from "./EntryActions";
+import ProfileEditor from "./ProfileEditor";
 import { getCalendarData } from "@/lib/calendar";
 import { getPeriod, getTrack } from "@/lib/prescription";
 import { buildPlanDays, isTestPeriod, type TrainingTrack, type PullupMode } from "@/lib/plan";
@@ -40,7 +41,7 @@ export default async function AthleteDetailPage({
   searchParams,
 }: {
   params: { id: string };
-  searchParams: { m?: string };
+  searchParams: { m?: string; edit?: string };
 }) {
   const session = await getSession();
   if (!session) redirect("/login");
@@ -181,6 +182,15 @@ export default async function AthleteDetailPage({
             </span>
           </div>
         </div>
+
+        <ProfileEditor
+          athleteId={athlete.id}
+          name={athlete.name}
+          position={athlete.position}
+          gradYear={athlete.gradYear}
+          bodyweight={athlete.bodyweight}
+          defaultOpen={searchParams?.edit === "1"}
+        />
 
         <div className="bg-surface border border-line rounded-xl p-4">
           <h3 className="text-base mb-3">Current numbers</h3>

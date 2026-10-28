@@ -15,10 +15,12 @@ import type { Period, RawLift } from "./prescription";
 import { getPeriod } from "./prescription";
 import { LIFTS, type LiftKey } from "./calc";
 import { buildSessionExtras, ITEM_LABEL, type DayId } from "./sessionContent";
+import { positionGroup, type PositionGroup } from "./position";
+export { positionGroup };
+export type { PositionGroup };
 
 export type TrainingTrack = "FULL" | "MULTI_SPORT";
 export type PullupMode = "BODYWEIGHT" | "WEIGHTED";
-export type PositionGroup = "LINE" | "SKILL" | "MIXED" | "UNKNOWN";
 export type EntryKind = "weight" | "reps" | "time" | "check" | "info";
 export type PlanSection = "warmup" | "main" | "accessory" | "finisher";
 
@@ -67,33 +69,7 @@ export type LoggedSet = {
 const DAY_ORDER = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 const WEEKDAY_TO_DAYID: Record<string, DayId> = { Monday: "A", Tuesday: "B", Thursday: "C", Friday: "D" };
 
-// Linemen are the only group the written program singles out by name
-// (everyone else is "skill positions"). Free-text positions are matched
-// loosely; blank / unrecognised means UNKNOWN and gets the standard station.
-// A two-way player is classified by BOTH sides of the ball:
-//   all linemen tokens (OL/DL)        -> LINE
-//   all skill tokens (RB/LB, WR/DB)   -> SKILL
-//   one of each (OL/LB, DL/RB)        -> MIXED (alternates by week, see laneFor)
-const LINE_TOKENS = ["OL", "OT", "OG", "C", "DL", "DT", "DE", "NT", "NG", "LINE", "LINEMAN", "LINEMEN", "TACKLE", "GUARD", "CENTER", "END"];
-const SKILL_TOKENS = [
-  "TE", "QB", "RB", "FB", "WR", "DB", "CB", "S", "FS", "SS", "LB", "ILB", "OLB", "MLB", "WLB", "SLB", "ATH", "K", "P", "KR", "PR",
-  "BACK", "BACKER", "LINEBACKER", "RECEIVER", "QUARTERBACK", "SAFETY", "CORNERBACK", "CORNER", "RUNNING", "WIDE",
-];
-
-export function positionGroup(position: string | null | undefined): PositionGroup {
-  let p = (position ?? "").toUpperCase().replace(/[^A-Z]/g, " ").replace(/\s+/g, " ").trim();
-  if (!p) return "UNKNOWN";
-  // Multi-word names that would otherwise split into a lineman token + a skill token.
-  p = p.replace(/TIGHT END/g, "TE").replace(/LINE BACKER/g, "LB");
-  const tokens = p.split(" ");
-  const isLine = tokens.some((t) => LINE_TOKENS.includes(t));
-  const isSkill = tokens.some((t) => SKILL_TOKENS.includes(t));
-  if (isLine && isSkill) return "MIXED";
-  if (isLine) return "LINE";
-  if (isSkill) return "SKILL";
-  return "UNKNOWN";
-}
-
+// Position classification lives in ./position.ts (re-exported here so existing imports keep working).
 // Which lane an athlete trains in this week. MIXED athletes (lineman on one side
 // of the ball, skill on the other) alternate: odd program weeks skill, even weeks
 // lineman (same odd/even idea as the deadlift / RDL alternation).
