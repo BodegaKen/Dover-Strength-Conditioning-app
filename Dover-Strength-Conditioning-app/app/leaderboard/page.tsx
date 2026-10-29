@@ -66,19 +66,9 @@ export default async function LeaderboardPage() {
         <div className="bg-surface border border-line rounded-xl p-4">
           <h2 className="text-lg">Team Leaderboard</h2>
           <p className="text-sm text-muted mt-1">
-            The all-time top 5 in the program for each lift. It ranks each player&rsquo;s most recent{" "}
-            <span className="text-fg font-semibold">tested max</span>, shown as an estimated one-rep max (e1RM = tested 5-rep
-            max &divide; 0.87). It moves when someone logs a new test max &mdash; the weights you log in your daily workouts
-            don&rsquo;t change it.
+            The all-time top 5 for each lift, ranked by estimated one-rep max. The 40-yard dash ranks each player&rsquo;s fastest
+            hand-timed time. Records stay on the board after players graduate.
           </p>
-          <ul className="text-sm text-muted mt-2 list-disc ml-5 flex flex-col gap-0.5">
-            <li>
-              <span className="text-fg font-semibold">40-Yard Dash</span> is each player&rsquo;s fastest time ever. Coaches
-              time it by hand and enter it, so close times are within the noise of hand timing.
-            </li>
-            <li>Players who graduate stay on the board, so records last past a player&rsquo;s senior year.</li>
-          </ul>
-          <p className="text-xs text-muted mt-2">Only the leaderboard is shared between players &mdash; nobody&rsquo;s daily logs are visible to teammates.</p>
         </div>
         <div className="grid sm:grid-cols-2 gap-4">
           {perLift.map((p) => (

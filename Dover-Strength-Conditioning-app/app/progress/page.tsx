@@ -59,6 +59,7 @@ export default async function ProgressPage() {
                       )}
                     </div>
                   </div>
+                  {rows.length > 1 && (
                   <ul className="text-sm text-muted mt-1 flex flex-col gap-0.5">
                     {rows.map((r) => (
                       <li key={r.date} className="flex justify-between">
@@ -67,6 +68,7 @@ export default async function ProgressPage() {
                       </li>
                     ))}
                   </ul>
+                  )}
                 </div>
               );
             })}
