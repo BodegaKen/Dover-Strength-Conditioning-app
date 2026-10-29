@@ -30,7 +30,7 @@ export type LoggedSetView = { lift: string; setNumber: number; weight: number | 
 const BACKOFF_BASE = 100;
 
 const SECTION_TITLE: Record<Section, string> = {
-  warmup: "Warm-up (NMT) - do before lifting",
+  warmup: "Warm-up - do first",
   main: "Main work",
   accessory: "Accessory circuit",
   finisher: "Finisher",
