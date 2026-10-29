@@ -1242,7 +1242,7 @@
         "weeks": [
           {
             "week": 1,
-            "label": "Test Week (Day D - Wed, upper body only)",
+            "label": "Test Week",
             "lifts": {
               "squat": {
                 "sets": null,
@@ -1293,7 +1293,7 @@
           },
           {
             "week": 2,
-            "label": "Week 2 (Day D - Wed)",
+            "label": "Week 2",
             "lifts": {
               "squat": {
                 "sets": 2,
@@ -1346,7 +1346,7 @@
           },
           {
             "week": 3,
-            "label": "Week 3 (Day D - Wed)",
+            "label": "Week 3",
             "lifts": {
               "squat": {
                 "sets": 2,
@@ -1399,7 +1399,7 @@
           },
           {
             "week": 4,
-            "label": "Week 4 (Day D - Wed)",
+            "label": "Week 4",
             "lifts": {
               "squat": {
                 "sets": 2,
@@ -1452,7 +1452,7 @@
           },
           {
             "week": 5,
-            "label": "Week 5 (Day D - Wed)",
+            "label": "Week 5",
             "lifts": {
               "squat": {
                 "sets": 2,
@@ -1505,7 +1505,7 @@
           },
           {
             "week": 6,
-            "label": "Retest Week (Day D - Wed, upper body only)",
+            "label": "Retest Week",
             "lifts": {
               "squat": {
                 "sets": null,

@@ -79,6 +79,17 @@ const P2: Record<number, WeekInfo> = {
   },
 };
 
+// Phase 3 (Early Summer) 2027 dates: Test Week Mon-Thu Jun 21-24, four training weeks, Retest Week
+// Mon-Thu Jul 26-29. Dates only; the field days are run by the coaches.
+const P3: Record<number, WeekInfo> = {
+  1: { dates: "Jun 21-24, 2027" },
+  2: { dates: "Jun 28-Jul 1, 2027" },
+  3: { dates: "Jul 5-8, 2027" },
+  4: { dates: "Jul 12-15, 2027" },
+  5: { dates: "Jul 19-22, 2027" },
+  6: { dates: "Jul 26-29, 2027" },
+};
+
 export function weekInfo(trackKey: string, week: number): WeekInfo | null {
   if (trackKey === "phase0") {
     const w = phase0Week(week);
@@ -86,5 +97,6 @@ export function weekInfo(trackKey: string, week: number): WeekInfo | null {
   }
   if (trackKey === "phase1") return P1[week] ?? null;
   if (trackKey === "phase2") return P2[week] ?? null;
+  if (trackKey === "phase3") return P3[week] ?? null;
   return null;
 }
