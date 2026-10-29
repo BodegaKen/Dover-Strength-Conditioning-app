@@ -316,6 +316,7 @@ export const ITEM_LABEL: Record<string, string> = {
   pl_jump_shrug: "Trap Bar Jump Shrug",
   pl_cat_bench: "CAT Bench Press",
   pl_rotational: "Rotational Power",
+  sled_pull: "Sled pulls",
 };
 
 // Storage keys whose rows are done/not-done checkboxes or timed holds, so

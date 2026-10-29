@@ -146,9 +146,9 @@ export default async function DashboardPage() {
           )}
           {track?.trailingNote && <p className="text-sm text-muted mt-2">{track.trailingNote}</p>}
 
-          {!testWeek && progressByDay.length > 0 && (
+          {!testWeek && progressByDay.some((p) => p.progress.total > 0) && (
             <div className="flex flex-wrap gap-2 mt-3">
-              {progressByDay.map(({ day, progress }) => (
+              {progressByDay.filter((p) => p.progress.total > 0).map(({ day, progress }) => (
                 <span
                   key={day.day}
                   className={`text-xs rounded-full px-3 py-1 border ${

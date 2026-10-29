@@ -15,6 +15,7 @@ import type { Period, RawLift } from "./prescription";
 import { getPeriod } from "./prescription";
 import { LIFTS, type LiftKey } from "./calc";
 import { buildSessionExtras, inSeasonExtras, ITEM_LABEL, type DayId } from "./sessionContent";
+import { phase3FieldDays, phase3DayDWrap } from "./phase3Days";
 import { positionGroup, type PositionGroup } from "./position";
 export { positionGroup };
 export type { PositionGroup };
@@ -41,6 +42,7 @@ export type PlanExercise = {
   reps: string; // as prescribed, e.g. "5", "3-5", "max", "12-15"
   unit?: string; // "per leg", "per side", "sec"
   pctE1RM: number | string | null;
+  pctBW?: number | string; // load as a percentage (or "low-high" range) of the athlete's bodyweight, e.g. Phase 3 sled pulls
   atTestedWeight: boolean; // pull-up phases that say "at tested added weight"
   entry: EntryKind; // weight = weight x reps; reps / time = reps (or seconds) only; check = done/not done; info = display only, never logged or counted
   allowBodyweight?: boolean; // weight entry where reps alone also counts (bodyweight allowed)
@@ -54,6 +56,8 @@ export type PlanExercise = {
 
 export type PlanDay = {
   day: string;
+  title?: string; // short name shown next to the weekday, e.g. "Day A - Acceleration & Sled"
+
   isTest: boolean;
   exercises: PlanExercise[];
   notes?: Partial<Record<PlanSection, string>>;
@@ -313,6 +317,27 @@ export function buildPlanDays(args: {
       const extras = buildSessionExtras({ phase: phaseNum as 1 | 2, week, dayId, skill, beforeRetest });
       d.exercises = [...extras.warmup, ...d.exercises, ...extras.accessory, ...extras.finisher];
       d.notes = extras.notes;
+    }
+  }
+
+  // Phase 3: Wednesday's Day D lift gets a display-only warm-up and shoulder finisher, and the field days
+  // (Day A sled load logged; every other field day display-only) join the week.
+  if (trackKey === "phase3") {
+    const wrap = phase3DayDWrap();
+    const wed = byDay.get("Wednesday");
+    if (wed && !wed.isTest) {
+      wed.exercises = [...wrap.warmup, ...wed.exercises, ...wrap.finisher];
+      wed.notes = wrap.notes;
+      wed.title = wrap.title;
+    }
+    for (const fd of phase3FieldDays(period.index)) {
+      const existing = byDay.get(fd.day);
+      if (existing) {
+        // Wednesday is the only shared day; field days never collide with it.
+        existing.title = existing.title ?? fd.title;
+      } else {
+        byDay.set(fd.day, fd);
+      }
     }
   }
 

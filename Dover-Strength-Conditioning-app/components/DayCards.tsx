@@ -47,7 +47,10 @@ export default function DayCards({
             <summary className="flex items-center justify-between gap-3 p-4 cursor-pointer list-none select-none">
               <span className="flex items-center gap-2">
                 <span className="text-accent transition-transform group-open:rotate-90">&#9656;</span>
-                <h3 className="text-base uppercase tracking-wide font-display">{d.day}</h3>
+                <h3 className="text-base uppercase tracking-wide font-display">
+                  {d.day}
+                  {d.title && <span className="normal-case tracking-normal text-muted font-sans text-sm"> &middot; {d.title}</span>}
+                </h3>
               </span>
               <span
                 className={`text-xs rounded-full px-2.5 py-1 border ${
@@ -58,7 +61,7 @@ export default function DayCards({
                     : "border-line text-muted"
                 }`}
               >
-                {progress.complete ? "Complete ✓" : `${progress.done}/${progress.total} items`}
+                {progress.total === 0 ? "Coach-run" : progress.complete ? "Complete ✓" : `${progress.done}/${progress.total} items`}
               </span>
             </summary>
             <div className="px-4 pb-4 flex flex-col gap-3">

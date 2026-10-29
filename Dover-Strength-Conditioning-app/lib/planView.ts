@@ -72,6 +72,14 @@ export function viewOf(
     ramp += e1 != null ? " lb" : " of your e1RM";
   }
 
+  // Percent-of-bodyweight loads (Phase 3 sled pulls): target = bodyweight x %, rounded to 2.5 lb.
+  let bwTarget: { text: string; first: number } | null = null;
+  if (ex.entry === "weight" && ex.pctBW != null && bodyweight != null) {
+    const parts = String(ex.pctBW).split("-").map(parseFloat);
+    const lows = parts.map((p) => round2_5(bodyweight * (p / 100)));
+    bwTarget = { text: lows.length > 1 && lows[1] !== lows[0] ? `${lows[0]}-${lows[1]}` : `${lows[0]}`, first: lows[0] };
+  }
+
   const needsMax = ex.entry === "weight" && !!ex.e1Lift && (ex.pctE1RM != null || ex.atTestedWeight);
   return {
     lift: ex.lift,
@@ -80,13 +88,15 @@ export function viewOf(
     sets: ex.sets,
     reps: ex.reps,
     unit: ex.unit,
-    pctLabel: ex.atTestedWeight
+    pctLabel: ex.pctBW != null
+      ? `${ex.pctBW}% of bodyweight`
+      : ex.atTestedWeight
       ? "tested added weight"
       : isPullup && ex.pctE1RM != null
       ? `${pctLabel(ex.pctE1RM).replace(" e1RM", "")} of total-load e1RM (belt = that minus bodyweight)`
       : pctLabel(ex.pctE1RM),
-    target: target?.text ?? null,
-    targetFirst: target?.first ?? null,
+    target: bwTarget?.text ?? target?.text ?? null,
+    targetFirst: bwTarget?.first ?? target?.first ?? null,
     entry: ex.entry,
     allowBodyweight: ex.allowBodyweight,
     backoff: ex.backoff
@@ -96,7 +106,9 @@ export function viewOf(
     note: ex.note,
     details: ex.details,
     hint:
-      needsMax && target == null && e1 == null
+      ex.entry === "weight" && ex.pctBW != null && bodyweight == null
+        ? "Your coach needs to enter your bodyweight to show your sled load."
+        : needsMax && target == null && e1 == null
         ? "Log a test max to see your target weight."
         : needsMax && target == null && isPullup && bodyweight == null
         ? "Add your bodyweight (coach roster) to see the belt load."

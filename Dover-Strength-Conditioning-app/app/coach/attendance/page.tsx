@@ -9,6 +9,8 @@ import { buildPlanDays, dayProgress, isTestPeriod, type TrainingTrack, type Pull
 import { weekInfo, weekRangeISO } from "@/lib/schedule";
 import { PHASE0_WEEKS } from "@/lib/phase0";
 import { validDate } from "@/lib/validate";
+import { coachRunDayFor, nextCoachRunDate, dateOfWeekday } from "@/lib/coachDays";
+import { sprintTable } from "@/lib/sprints";
 import NavBar from "@/components/NavBar";
 import AttendanceRoster, { type RosterRow } from "./AttendanceRoster";
 
@@ -127,6 +129,18 @@ export default async function AttendancePage({ searchParams }: { searchParams: {
   const markKey = new Map<string, boolean>();
   for (const m of allMarks) markKey.set(`${m.athleteId}|${m.date}`, m.present);
 
+  // A coach-entered speed or shuttle time on a test day is proof the athlete was there.
+  const sprintOn = new Set<string>(); // `${athleteId}|${date}`
+  try {
+    const t = sprintTable();
+    if (t) {
+      const rs: { athleteId: string; date: string }[] = await t.findMany({ where: { athleteId: { in: ids } }, select: { athleteId: true, date: true } });
+      for (const r of rs) sprintOn.add(`${r.athleteId}|${r.date}`);
+    }
+  } catch {
+    /* table not created yet */
+  }
+
   const trackRows = logKey === "phase0" ? [] : await prisma.setLog.findMany({ where: { athleteId: { in: ids }, trackKey: logKey, week: { lte: logWeek } } });
   const rowsByAthleteWeek = new Map<string, any[]>();
   for (const r of trackRows) {
@@ -168,9 +182,22 @@ export default async function AttendancePage({ searchParams }: { searchParams: {
     const mine = rowsByAthleteWeek.get(`${a.id}|${i}`) ?? [];
     for (const d of days) {
       const prog = dayProgress(d, mine.filter((r: any) => r.planDay === d.day));
+      const label = /^(Mon|Tue|Wed|Thu|Fri|Sat|Sun)/.test(d.day) ? d.day.slice(0, 3) : d.day;
+      if (prog.total === 0) {
+        // Coach-run day: nothing to log, so the coach's roll call (or a time entered that day) is the record.
+        const iso = dateOfWeekday(logKey, i, d.day);
+        const mark = iso ? markKey.get(`${a.id}|${iso}`) : undefined;
+        const timed = iso ? sprintOn.has(`${a.id}|${iso}`) : false;
+        out.push({
+          label,
+          title: `${d.day}${d.title ? ` - ${d.title}` : ""} (coach-run)${mark === false ? " - marked absent" : mark === true ? " - marked present" : timed ? " - time entered" : ""}`,
+          state: mark !== false && (mark === true || timed) ? "done" : "none",
+        });
+        continue;
+      }
       out.push({
-        label: /^(Mon|Tue|Wed|Thu|Fri|Sat|Sun)/.test(d.day) ? d.day.slice(0, 3) : d.day,
-        title: d.day,
+        label,
+        title: d.title ? `${d.day} - ${d.title}` : d.day,
         state: prog.complete ? "done" : prog.started ? "partial" : "none",
       });
     }
@@ -190,6 +217,9 @@ export default async function AttendancePage({ searchParams }: { searchParams: {
   });
   const logHref = (w: number) => `/coach/attendance?t=${logKey}&w=${w}`;
 
+  const coachDay = coachRunDayFor(date);
+  const prevCoach = nextCoachRunDate(date, -1);
+  const nextCoach = nextCoachRunDate(date, 1);
   const label = new Date(date + "T12:00:00Z").toLocaleDateString("en-US", { timeZone: "UTC", weekday: "long", month: "long", day: "numeric", year: "numeric" });
   const monthLabel = new Date(monthStart + "T12:00:00Z").toLocaleDateString("en-US", { timeZone: "UTC", month: "long", year: "numeric" });
 
@@ -213,7 +243,8 @@ export default async function AttendancePage({ searchParams }: { searchParams: {
             Each athlete&rsquo;s scheduled sessions this week, from what they log in the app: <span className="text-good font-semibold">Done</span> = every
             item logged, <span className="text-warning font-semibold">Partial</span> = some logged. &ldquo;Phase to date&rdquo; counts every scheduled
             session from Week 1 through the week shown. Phase 0 sessions can&rsquo;t be logged in the app, so there a coach&rsquo;s Present mark is what counts.
-            {logKey === "phase3" ? " Phase 3's field days (sprints, sled, plyometrics) aren't logged in the app yet, so only Wednesday's lift is counted." : ""}
+            {" "}Coach-run days (Phase 3's Tuesday and Thursday field days and the test and makeup days) have nothing to log, so they count
+            from the coach roll call below, or from a time entered on the Speed tab that day. Days with a lift or a sled load count from what the athlete logs.
           </p>
           <div className="overflow-x-auto -mx-4 px-4">
             <table className="w-full text-sm border-collapse">
@@ -262,9 +293,9 @@ export default async function AttendancePage({ searchParams }: { searchParams: {
           <div className="flex flex-wrap items-center justify-between gap-2">
             <h2 className="text-lg">Daily roll call</h2>
             <div className="flex items-center gap-2">
-              <Link href={`/coach/attendance?d=${addDaysISO(date, -1)}`} className="text-sm border border-line rounded-md px-3 py-1.5">&larr; Prev day</Link>
+              {prevCoach && <Link href={`/coach/attendance?d=${prevCoach}`} className="text-sm border border-line rounded-md px-3 py-1.5">&larr; Prev coach-run day</Link>}
               <Link href="/coach/attendance" className="text-sm border border-line rounded-md px-3 py-1.5">Today</Link>
-              <Link href={`/coach/attendance?d=${addDaysISO(date, 1)}`} className="text-sm border border-line rounded-md px-3 py-1.5">Next day &rarr;</Link>
+              {nextCoach && <Link href={`/coach/attendance?d=${nextCoach}`} className="text-sm border border-line rounded-md px-3 py-1.5">Next coach-run day &rarr;</Link>}
             </div>
           </div>
           <div className="font-semibold">{label}</div>
@@ -273,16 +304,33 @@ export default async function AttendancePage({ searchParams }: { searchParams: {
               The attendance table doesn&rsquo;t exist yet. Run `npx prisma db push` once, then reload.
             </div>
           )}
-          {weekdayOf(date) === "Saturday" || weekdayOf(date) === "Sunday" ? (
-            <div className="text-xs text-muted">That is a weekend day; roll call still works if you held a session.</div>
-          ) : null}
-          <AttendanceRoster date={date} rows={rows} />
-          <p className="text-xs text-muted">
-            An athlete is credited as present if you tap Present <em>or</em> they finish the day in the app (every required item), so
-            athletes training at another gym still get credit. App completion is self-reported and can be entered after the fact, so you
-            can tap Absent to override it. Out-of-season sessions are voluntary under the program&rsquo;s own rules; confirm with the AD that
-            keeping attendance for them is fine.
-          </p>
+          {coachDay ? (
+            <>
+              <div className="text-sm rounded-md border border-accent px-3 py-2">
+                <span className="font-semibold">Coach-run day:</span> {coachDay.title}. Nothing for athletes to log today, so your roll call is the record.
+              </div>
+              <AttendanceRoster date={date} rows={rows} />
+              <p className="text-xs text-muted">
+                Roll call is only offered on coach-run days: Phase 0 Prep sessions and Phase 3&rsquo;s field, test and makeup days. Days with a lift or
+                a sled load are credited from what athletes log themselves. Out-of-season sessions are voluntary under the program&rsquo;s own rules;
+                confirm with the AD that keeping attendance for them is fine.
+              </p>
+            </>
+          ) : (
+            <div className="text-sm text-muted rounded-md border border-line px-3 py-3">
+              No roll call is needed on this date: either no session is scheduled, or it is a day athletes log themselves (lifts, sled load), which the
+              Training log above already counts.
+              {nextCoach && (
+                <>
+                  {" "}Next coach-run day:{" "}
+                  <Link href={`/coach/attendance?d=${nextCoach}`} className="text-accent font-semibold">
+                    {new Date(nextCoach + "T12:00:00Z").toLocaleDateString("en-US", { timeZone: "UTC", weekday: "long", month: "long", day: "numeric", year: "numeric" })}
+                  </Link>
+                  .
+                </>
+              )}
+            </div>
+          )}
         </div>
 
         <div className="bg-surface border border-line rounded-xl p-4">

@@ -363,6 +363,7 @@ export default function SetLogger({
         </div>
       ))}
 
+      {total > 0 && (
       <div className="flex flex-wrap items-center gap-3">
         <div>
           <label className="block text-xs font-semibold uppercase tracking-wide text-muted mb-1">Date done</label>
@@ -385,6 +386,7 @@ export default function SetLogger({
           {complete ? "Everything logged ✓" : `${done} of ${total} items`}
         </div>
       </div>
+      )}
       {msg && (
         <div className={`text-sm rounded-md border px-3 py-2 ${msg.err ? "border-danger bg-danger-bg" : "border-good bg-good-bg"}`}>
           {msg.text}
