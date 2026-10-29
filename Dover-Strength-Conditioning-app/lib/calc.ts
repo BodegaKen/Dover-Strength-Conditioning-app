@@ -18,6 +18,19 @@ export function pullupSystemE1RM(addedFiveRM: number, bodyweight: number): numbe
   return calcE1RM(bodyweight + addedFiveRM);
 }
 
+// What the Leaderboard, Progress, and coach tables show for a weighted pull-up: the added
+// (belt) weight, i.e. the stored total-load e1RM minus the bodyweight used for that test.
+// Older entries have no bodyweightAtTest and were stored as the added weight already.
+export function pullupAddedE1RM(storedE1RM: number, bodyweightAtTest: number | null | undefined): number {
+  if (bodyweightAtTest == null) return storedE1RM;
+  return Math.max(0, round2_5(storedE1RM - bodyweightAtTest));
+}
+
+// Display value for any lift's stored e1RM (only the pull-up needs converting).
+export function shownE1RM(lift: string, storedE1RM: number, bodyweightAtTest: number | null | undefined): number {
+  return lift === "pullup" ? pullupAddedE1RM(storedE1RM, bodyweightAtTest) : storedE1RM;
+}
+
 export function pullupBeltLoad(systemE1RM: number, pct: number, bodyweight: number): number {
   return Math.max(0, round2_5((systemE1RM * pct) / 100 - bodyweight));
 }

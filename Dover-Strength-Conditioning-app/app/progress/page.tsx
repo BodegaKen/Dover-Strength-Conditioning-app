@@ -3,6 +3,7 @@ import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import type { TestEntryRecord } from "@/lib/types";
 import NavBar from "@/components/NavBar";
+import { shownE1RM } from "@/lib/calc";
 import ProgressCharts from "./ProgressCharts";
 
 export default async function ProgressPage() {
@@ -21,7 +22,7 @@ export default async function ProgressPage() {
       <NavBar role="PLAYER" name={user.name} />
       <main className="max-w-3xl mx-auto px-4 py-5 flex flex-col gap-5">
         <ProgressCharts
-          tests={tests.map((t: TestEntryRecord) => ({ date: t.date, lift: t.lift, e1RM: t.e1RM }))}
+          tests={tests.map((t: TestEntryRecord) => ({ date: t.date, lift: t.lift, e1RM: shownE1RM(t.lift, t.e1RM, t.bodyweightAtTest) }))}
         />
       </main>
     </div>

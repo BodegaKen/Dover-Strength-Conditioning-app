@@ -13,7 +13,7 @@ import { getPeriod, getTrack } from "@/lib/prescription";
 import { buildPlanDays, isTestPeriod, type TrainingTrack, type PullupMode } from "@/lib/plan";
 import { weekInfo } from "@/lib/schedule";
 import Phase0Days from "@/components/Phase0Days";
-import { LIFTS, LIFT_LABEL, computeLoadStats, acwrStatus, addDaysISO, todayISO } from "@/lib/calc";
+import { LIFTS, LIFT_LABEL, computeLoadStats, acwrStatus, addDaysISO, todayISO, shownE1RM } from "@/lib/calc";
 import type { AthleteRecord, TestEntryRecord, SessionEntryRecord } from "@/lib/types";
 
 function mondayOf(iso: string): string {
@@ -76,6 +76,12 @@ export default async function AthleteDetailPage({
   const calendarData = await getCalendarData(athlete.id);
   const calMonth = /^\d{4}-\d{2}$/.test(searchParams?.m ?? "") ? (searchParams.m as string) : todayISO().slice(0, 7);
 
+  // latestShown is what the "current numbers" panel displays (pull-up as added weight);
+  // latestByLift keeps the stored values, which the log forms need (pull-up = total load).
+  const latestShown: Record<string, number> = {};
+  for (const t of tests) {
+    if (!(t.lift in latestShown)) latestShown[t.lift] = shownE1RM(t.lift, t.e1RM, t.bodyweightAtTest);
+  }
   const latestByLift: Record<string, number> = {};
   for (const t of tests) {
     if (!(t.lift in latestByLift)) latestByLift[t.lift] = t.e1RM;
@@ -199,8 +205,8 @@ export default async function AthleteDetailPage({
               <div key={l.key} className="rounded-md border border-line px-3 py-2">
                 <div className="text-xs uppercase tracking-wide text-muted">{l.label}</div>
                 <div className="num text-lg font-semibold">
-                  {latestByLift[l.key] != null ? (
-                    `${latestByLift[l.key]} lb`
+                  {latestShown[l.key] != null ? (
+                    `${latestShown[l.key]} lb`
                   ) : (
                     <span className="text-muted text-base">&mdash;</span>
                   )}

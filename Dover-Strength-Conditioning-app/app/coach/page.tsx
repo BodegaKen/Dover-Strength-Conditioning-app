@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { getCoachPage } from "@/lib/admin";
 import { prisma } from "@/lib/db";
 import { getAllTracks } from "@/lib/prescription";
-import { LIFTS, computeLoadStats, acwrStatus } from "@/lib/calc";
+import { LIFTS, computeLoadStats, acwrStatus, shownE1RM } from "@/lib/calc";
 import type { AthleteRecord, TestEntryRecord, SessionEntryRecord } from "@/lib/types";
 import Link from "next/link";
 import NavBar from "@/components/NavBar";
@@ -38,7 +38,7 @@ export default async function CoachPage() {
   const latestByAthleteLift: Record<string, Record<string, number>> = {};
   for (const t of tests.sort((a: TestEntryRecord, b: TestEntryRecord) => (a.date < b.date ? 1 : -1))) {
     latestByAthleteLift[t.athleteId] ??= {};
-    if (!(t.lift in latestByAthleteLift[t.athleteId])) latestByAthleteLift[t.athleteId][t.lift] = t.e1RM;
+    if (!(t.lift in latestByAthleteLift[t.athleteId])) latestByAthleteLift[t.athleteId][t.lift] = shownE1RM(t.lift, t.e1RM, t.bodyweightAtTest);
   }
 
   const active = athletes.filter((a: AthleteRecord) => a.active);

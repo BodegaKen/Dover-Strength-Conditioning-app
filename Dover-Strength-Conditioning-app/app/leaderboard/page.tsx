@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import NavBar from "@/components/NavBar";
-import { LIFTS, TOTAL_LIFTS } from "@/lib/calc";
+import { LIFTS, TOTAL_LIFTS, shownE1RM } from "@/lib/calc";
 import type { AthleteRecord, TestEntryRecord } from "@/lib/types";
 
 export default async function LeaderboardPage() {
@@ -20,7 +20,7 @@ export default async function LeaderboardPage() {
   for (const t of tests) {
     latestByAthleteLift[t.athleteId] ??= {};
     if (!(t.lift in latestByAthleteLift[t.athleteId])) {
-      latestByAthleteLift[t.athleteId][t.lift] = t.e1RM;
+      latestByAthleteLift[t.athleteId][t.lift] = shownE1RM(t.lift, t.e1RM, t.bodyweightAtTest);
     }
   }
 
