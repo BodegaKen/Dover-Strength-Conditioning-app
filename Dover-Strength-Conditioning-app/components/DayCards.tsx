@@ -14,6 +14,8 @@ export default function DayCards({
   dayNotes,
   athleteId,
   bodyweight,
+  askRpe,
+  ratings,
 }: {
   days: PlanDay[];
   rows: Row[];
@@ -21,6 +23,8 @@ export default function DayCards({
   dayNotes?: Record<string, string>;
   athleteId?: string;
   bodyweight?: number | null;
+  askRpe?: boolean; // Phase 4 / Camp Bridge: ask for the post-session rating
+  ratings?: Record<string, { rpe: number; durationMin: number }>;
 }) {
   const today = weekdayOf(todayISO());
   const info = days.map((d) => {
@@ -68,6 +72,8 @@ export default function DayCards({
                 initialDate={latestDate}
                 sectionNotes={d.notes}
                 athleteId={athleteId}
+                askRpe={askRpe}
+                ratings={ratings}
               />
             </div>
           </details>

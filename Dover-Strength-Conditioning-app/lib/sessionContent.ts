@@ -256,6 +256,33 @@ export function buildSessionExtras(ctx: SessionCtx): SessionExtras {
   };
 }
 
+
+// ------------------------------------------------- Phase 4 (in-season) display-only extras
+// In-season lift days carry the trimmed NMT warm-up and the post-lift finisher (shoulder-health work,
+// then the Nordic hamstring lower). Coaches are present for both, so none of it is logged: it is on the
+// page so the athlete knows it is part of the day. Only the barbell numbers are entered.
+export function inSeasonExtras(): SessionExtras {
+  return {
+    warmup: warmup({ phase: 2, week: 1, dayId: "A", skill: false, beforeRetest: false }),
+    accessory: [],
+    finisher: [
+      info("shoulder_health", "Shoulder-health work (face pull or band pull-apart), 2 x 15-20", "finisher", {
+        details: ["Light band or low cable pulley. Done after the lifts, before the Nordic."],
+      }),
+      info("nordic", "Nordic hamstring lower, 2 x 6-8", "finisher", {
+        details: [
+          "Two lift days a week only (never on consecutive days).",
+          "A first-time athlete with fewer than 7 completed Nordic sessions does 2 x 4-6 for sessions 1-6, then 2 x 6-8.",
+        ],
+      }),
+    ],
+    notes: {
+      warmup: "Trimmed NMT warm-up (about 5-7 min): Part 2 plus two build-up sprints, run with the team before practice every practice day. Nothing to check off - it is on the page so you know it is part of the day.",
+      finisher: "Your coach runs these with you. Nothing to log - just do them after the lifts.",
+    },
+  };
+}
+
 // Human labels for every storage key, so the calendar can show what was logged.
 export const ITEM_LABEL: Record<string, string> = {
   wu_part1: "NMT Part 1 (retired Oct 21, 2026)",

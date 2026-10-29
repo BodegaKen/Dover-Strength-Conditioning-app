@@ -77,6 +77,7 @@ export type LoadStats = {
   monotony: number | null;
   strain: number | null;
   hasData: boolean;
+  weeksLogged: number; // how many of the last four 7-day blocks have any logged load
 };
 
 export function computeLoadStats(sessions: SessionLike[], today = todayISO()): LoadStats {
@@ -87,7 +88,18 @@ export function computeLoadStats(sessions: SessionLike[], today = todayISO()): L
   const acuteLoad = acute.reduce((a, s) => a + (s.load || 0), 0);
   const chronicSum = chronic.reduce((a, s) => a + (s.load || 0), 0);
   const chronicAvg = chronicSum / 4;
-  const acwr = chronicAvg > 0 ? acuteLoad / chronicAvg : null;
+
+  // The Phase 4 protocol needs four logged weeks before any ratio is shown: with fewer,
+  // dividing by 4 understates the baseline and makes the ratio look dangerous. A week with
+  // no logged load (a missed week, blackout week) leaves the ratio unavailable rather than
+  // counting as zero.
+  let weeksLogged = 0;
+  for (let w = 0; w < 4; w++) {
+    const from = addDaysISO(today, -(w * 7 + 6));
+    const to = addDaysISO(today, -(w * 7));
+    if (sessions.some((s) => s.date >= from && s.date <= to && (s.load || 0) > 0)) weeksLogged++;
+  }
+  const acwr = weeksLogged >= 4 && chronicAvg > 0 ? acuteLoad / chronicAvg : null;
 
   const days: string[] = [];
   for (let i = 6; i >= 0; i--) days.push(addDaysISO(today, -i));
@@ -100,13 +112,14 @@ export function computeLoadStats(sessions: SessionLike[], today = todayISO()): L
   const monotony = sd > 0 ? mean / sd : null;
   const strain = monotony != null ? acuteLoad * monotony : null;
 
-  return { acuteLoad, chronicAvg, acwr, monotony, strain, hasData: chronic.length > 0 };
+  return { acuteLoad, chronicAvg, acwr, monotony, strain, hasData: chronic.length > 0, weeksLogged };
 }
 
 export type AcwrStatus = { label: string; tone: "good" | "warning" | "danger" | "neutral" };
 
 export function acwrStatus(stats: LoadStats): AcwrStatus {
-  if (!stats.hasData || stats.acwr == null) return { label: "No data yet", tone: "neutral" };
+  if (!stats.hasData) return { label: "No data yet", tone: "neutral" };
+  if (stats.acwr == null) return { label: `Needs 4 logged weeks (${stats.weeksLogged} so far)`, tone: "neutral" };
   if (stats.acwr >= 1.5) return { label: "Danger zone", tone: "danger" };
   if (stats.acwr >= 0.8 && stats.acwr <= 1.3) return { label: "Sweet spot", tone: "good" };
   return { label: "Caution", tone: "warning" };

@@ -14,7 +14,7 @@
 import type { Period, RawLift } from "./prescription";
 import { getPeriod } from "./prescription";
 import { LIFTS, type LiftKey } from "./calc";
-import { buildSessionExtras, ITEM_LABEL, type DayId } from "./sessionContent";
+import { buildSessionExtras, inSeasonExtras, ITEM_LABEL, type DayId } from "./sessionContent";
 import { positionGroup, type PositionGroup } from "./position";
 export { positionGroup };
 export type { PositionGroup };
@@ -312,6 +312,16 @@ export function buildPlanDays(args: {
       if (!dayId) continue;
       const extras = buildSessionExtras({ phase: phaseNum as 1 | 2, week, dayId, skill, beforeRetest });
       d.exercises = [...extras.warmup, ...d.exercises, ...extras.accessory, ...extras.finisher];
+      d.notes = extras.notes;
+    }
+  }
+
+  // Phase 4 (In-Season, key phase5): the lift days carry display-only warm-up and finisher blocks.
+  if (trackKey === "phase5" && !isTestWeek) {
+    for (const d of byDay.values()) {
+      if (d.isTest) continue;
+      const extras = inSeasonExtras();
+      d.exercises = [...extras.warmup, ...d.exercises, ...extras.finisher];
       d.notes = extras.notes;
     }
   }

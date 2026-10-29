@@ -39,6 +39,18 @@ export async function POST(req: NextRequest) {
   if (!athlete) return NextResponse.json({ error: "Unknown athlete." }, { status: 404 });
 
   const load = rpe * durationMin;
+  // The post-session prompt sends replace: true so rating the same day's lift twice
+  // updates the one entry instead of doubling that day's load.
+  if (body?.replace === true) {
+    const existing = await prisma.sessionEntry.findFirst({ where: { athleteId, type, date } });
+    if (existing) {
+      const updated = await prisma.sessionEntry.update({
+        where: { id: existing.id },
+        data: { rpe, durationMin, load },
+      });
+      return NextResponse.json({ session: updated });
+    }
+  }
   const entry = await prisma.sessionEntry.create({
     data: { athleteId, type, date, rpe, durationMin, load },
   });

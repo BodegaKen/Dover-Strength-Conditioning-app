@@ -44,6 +44,15 @@ export default async function DashboardPage() {
   const planDays = buildPlanDays({ trackKey, period, variant, pullupMode, position: user.position }).filter((d) => !d.isTest);
   const setRows = await prisma.setLog.findMany({ where: { athleteId: user.id, trackKey, week } });
 
+  // Post-session rating (RPE x minutes) is only asked for in Phase 4 (In-Season, key phase5) and the
+  // Camp Bridge: it feeds the in-season load tracking. Earlier phases never prompt for it.
+  const askRpe = trackKey === "phase5" || trackKey === "camp_bridge";
+  const ratings: Record<string, { rpe: number; durationMin: number }> = {};
+  if (askRpe) {
+    const rated = await prisma.sessionEntry.findMany({ where: { athleteId: user.id, type: "lift" } });
+    for (const r of rated) ratings[r.date] = { rpe: r.rpe, durationMin: r.durationMin };
+  }
+
   // Testing / retest weeks: max-effort tests spread across specific days,
   // logged with the test form below rather than set by set.
   const liftItems: LiftItem[] = LIFTS.map(
@@ -194,6 +203,8 @@ export default async function DashboardPage() {
             latest={latestByLift}
             dayNotes={info?.dayNotes}
             bodyweight={user.bodyweight}
+            askRpe={askRpe}
+            ratings={ratings}
           />
         )}
 

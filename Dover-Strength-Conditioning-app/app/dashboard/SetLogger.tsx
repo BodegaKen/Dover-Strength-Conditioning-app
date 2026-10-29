@@ -44,6 +44,8 @@ export default function SetLogger({
   initialDate,
   sectionNotes,
   athleteId,
+  askRpe,
+  ratings,
 }: {
   planDay: string;
   exercises: ExerciseView[];
@@ -51,6 +53,8 @@ export default function SetLogger({
   initialDate?: string;
   sectionNotes?: Partial<Record<Section, string>>;
   athleteId?: string; // coach editing on a player's behalf
+  askRpe?: boolean; // Phase 4 / Camp Bridge only: ask for the session rating once the day is complete
+  ratings?: Record<string, { rpe: number; durationMin: number }>; // existing lift-session ratings by date
 }) {
   const router = useRouter();
   const k = (lift: string, n: number) => `${lift}:${n}`;
@@ -68,6 +72,10 @@ export default function SetLogger({
   const [date, setDate] = useState(initialDate ?? todayISO());
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState<{ text: string; err?: boolean } | null>(null);
+  const [rated, setRated] = useState<Record<string, { rpe: number; durationMin: number }>>(ratings ?? {});
+  const [duration, setDuration] = useState("35");
+  const [rateMsg, setRateMsg] = useState<string | null>(null);
+  const [rateSkipped, setRateSkipped] = useState(false);
 
   function setField(lift: string, n: number, field: "weight" | "reps", v: string) {
     setVals((p) => ({
@@ -98,6 +106,31 @@ export default function SetLogger({
     0
   );
   const complete = total > 0 && done >= total;
+
+  async function rate(rpe: number) {
+    const d = parseFloat(duration);
+    if (!(d > 0)) {
+      setRateMsg("Enter how many minutes the session took, then tap a number.");
+      return;
+    }
+    setRateMsg(null);
+    try {
+      const res = await fetch("/api/sessions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type: "lift", date, rpe, durationMin: d, replace: true }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setRateMsg(data.error ?? "Couldn't save the rating.");
+        return;
+      }
+      setRated((p) => ({ ...p, [date]: { rpe, durationMin: d } }));
+      router.refresh();
+    } catch {
+      setRateMsg("Couldn't save the rating. Check your connection and try again.");
+    }
+  }
 
   async function save() {
     setSaving(true);
@@ -355,6 +388,70 @@ export default function SetLogger({
       {msg && (
         <div className={`text-sm rounded-md border px-3 py-2 ${msg.err ? "border-danger bg-danger-bg" : "border-good bg-good-bg"}`}>
           {msg.text}
+        </div>
+      )}
+      {askRpe && !athleteId && complete && (
+        <div className="rounded-lg border border-line bg-bg p-3 flex flex-col gap-2">
+          {rated[date] ? (
+            <div className="text-sm">
+              <span className="text-good font-semibold">Session rated ✓</span>{" "}
+              <span className="text-muted">
+                RPE {rated[date].rpe} &middot; {rated[date].durationMin} min. Tap a different number to change it.
+              </span>
+            </div>
+          ) : (
+            !rateSkipped && (
+              <div className="text-xs uppercase tracking-wide text-accent font-display font-semibold">
+                How hard was today&rsquo;s whole session?
+              </div>
+            )
+          )}
+          {(!rateSkipped || rated[date]) && (
+            <>
+              <p className="text-xs text-muted">
+                0 = rest, 3 = moderate, 5 = hard, 7 = very hard, 10 = max. Rate the whole session, from the start of the warm-up to the
+                end of the finisher, not a single set.
+              </p>
+              <div className="flex flex-wrap gap-1.5">
+                {Array.from({ length: 11 }, (_, n) => (
+                  <button
+                    key={n}
+                    type="button"
+                    onClick={() => rate(n)}
+                    aria-label={`Rate session ${n} out of 10`}
+                    className={`num w-10 h-10 rounded-md border text-base font-semibold ${
+                      rated[date]?.rpe === n ? "bg-accent text-accent-ink border-accent" : "border-line bg-surface"
+                    }`}
+                  >
+                    {n}
+                  </button>
+                ))}
+              </div>
+              <div className="flex flex-wrap items-center gap-2 text-sm">
+                <label className="text-xs font-semibold uppercase tracking-wide text-muted">Minutes</label>
+                <input
+                  type="number"
+                  inputMode="numeric"
+                  min={1}
+                  max={240}
+                  className="bg-bg border border-line rounded-md px-3 py-1.5 w-20"
+                  value={rated[date] ? String(rated[date].durationMin) : duration}
+                  onChange={(e) => setDuration(e.target.value)}
+                />
+                {!rated[date] && (
+                  <button type="button" onClick={() => setRateSkipped(true)} className="text-xs text-muted underline ml-auto">
+                    Skip for now
+                  </button>
+                )}
+              </div>
+              {rateMsg && <div className="text-sm text-danger">{rateMsg}</div>}
+            </>
+          )}
+          {!rated[date] && rateSkipped && (
+            <button type="button" onClick={() => setRateSkipped(false)} className="text-xs text-accent underline self-start">
+              Rate today&rsquo;s session
+            </button>
+          )}
         </div>
       )}
     </div>

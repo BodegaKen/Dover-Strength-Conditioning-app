@@ -67,12 +67,14 @@ function buildPhase5Track(p5: any): Track {
   const periods: Period[] = ramp.map((r: any, i: number) => ({
     index: i + 1,
     label: `Week ${r.weekOfSeason} of season (re-entry ramp)`,
+    // The Week 3+ entry only restates Squat and Deadlift (their ramp ends); Bench and Pull-up are
+    // unchanged from steady state, so any lift the entry leaves out falls back to steadyState.
     lifts: {
-      squat: r.squat,
-      bench: r.bench,
-      deadlift: r.deadlift,
-      ohp: r.ohp,
-      pullup: r.pullup,
+      squat: r.squat ?? p5.steadyState?.squat,
+      bench: r.bench ?? p5.steadyState?.bench,
+      deadlift: r.deadlift ?? p5.steadyState?.deadlift,
+      ohp: r.ohp ?? p5.steadyState?.ohp,
+      pullup: r.pullup ?? p5.steadyState?.pullup,
     },
   }));
   // Index 3 and onward: steady state (same lifts object reused for every later week).
