@@ -2,8 +2,12 @@ import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import NavBar from "@/components/NavBar";
-import { LIFTS, TOTAL_LIFTS, shownE1RM } from "@/lib/calc";
+import { LIFTS, shownE1RM } from "@/lib/calc";
+import { sprintTable } from "@/lib/sprints";
 import type { AthleteRecord, TestEntryRecord } from "@/lib/types";
+
+// The four barbell lifts, plus the 40-yard dash (coach-entered, hand-timed).
+const BOARD_LIFTS = ["squat", "bench", "deadlift", "ohp"];
 
 export default async function LeaderboardPage() {
   const session = await getSession();
@@ -24,7 +28,7 @@ export default async function LeaderboardPage() {
     }
   }
 
-  const perLift = LIFTS.map((l) => {
+  const perLift = LIFTS.filter((l) => BOARD_LIFTS.includes(l.key)).map((l) => {
     const entries = athletes
       .map((a) => {
         const val = latestByAthleteLift[a.id]?.[l.key];
@@ -36,27 +40,24 @@ export default async function LeaderboardPage() {
     return { key: l.key, label: l.label, entries };
   });
 
-  const totals = athletes
-    .map((a) => {
-      const lifts = latestByAthleteLift[a.id] ?? {};
-      if (!TOTAL_LIFTS.every((k) => k in lifts)) return null;
-      const sum = TOTAL_LIFTS.reduce((s, k) => s + lifts[k], 0);
-      return { name: a.name, gradYear: a.gradYear, val: sum };
-    })
-    .filter((x): x is { name: string; gradYear: number | null; val: number } => x !== null)
-    .sort((a, b) => b.val - a.val)
-    .slice(0, 5);
-
-  const relative = athletes
-    .map((a) => {
-      const lifts = latestByAthleteLift[a.id] ?? {};
-      if (!a.bodyweight || !TOTAL_LIFTS.every((k) => k in lifts)) return null;
-      const sum = TOTAL_LIFTS.reduce((s, k) => s + lifts[k], 0);
-      return { name: a.name, gradYear: a.gradYear, val: sum / a.bodyweight };
-    })
-    .filter((x): x is { name: string; gradYear: number | null; val: number } => x !== null)
-    .sort((a, b) => b.val - a.val)
-    .slice(0, 5);
+  // 40-yard dash: each athlete's best (fastest) hand-timed time ever, fastest first. A missing table
+  // (before `prisma db push`) just leaves the board empty.
+  let dash: { name: string; gradYear: number | null; val: number }[] = [];
+  try {
+    const rows: { athleteId: string; seconds: number }[] = await sprintTable().findMany({ where: { event: "dash40" } });
+    const best = new Map<string, number>();
+    for (const r of rows) {
+      const cur = best.get(r.athleteId);
+      if (cur == null || r.seconds < cur) best.set(r.athleteId, r.seconds);
+    }
+    dash = athletes
+      .filter((a) => best.has(a.id))
+      .map((a) => ({ name: a.name, gradYear: a.gradYear, val: best.get(a.id) as number }))
+      .sort((a, b) => a.val - b.val)
+      .slice(0, 5);
+  } catch {
+    dash = [];
+  }
 
   return (
     <div>
@@ -72,28 +73,18 @@ export default async function LeaderboardPage() {
           </p>
           <ul className="text-sm text-muted mt-2 list-disc ml-5 flex flex-col gap-0.5">
             <li>
-              <span className="text-fg font-semibold">Big-4 Total</span> adds squat + bench + deadlift + overhead press. A
-              player needs all four tested to appear.
-            </li>
-            <li>
-              <span className="text-fg font-semibold">Relative Strength</span> is that total divided by bodyweight, so
-              smaller players can climb it too.
-            </li>
-            <li>
-              <span className="text-fg font-semibold">Weighted Pull-up</span> ranks the added weight only.
+              <span className="text-fg font-semibold">40-Yard Dash</span> is each player&rsquo;s fastest time ever. Coaches
+              time it by hand and enter it, so close times are within the noise of hand timing.
             </li>
             <li>Players who graduate stay on the board, so records last past a player&rsquo;s senior year.</li>
           </ul>
           <p className="text-xs text-muted mt-2">Only the leaderboard is shared between players &mdash; nobody&rsquo;s daily logs are visible to teammates.</p>
         </div>
         <div className="grid sm:grid-cols-2 gap-4">
-          <LbCard title="Big-4 Total (Squat+Bench+DL+OHP)" entries={totals} unit="lb" />
           {perLift.map((p) => (
             <LbCard key={p.key} title={p.label} entries={p.entries} unit="lb" />
           ))}
-          {relative.length > 0 && (
-            <LbCard title="Relative Strength (Total ÷ bodyweight)" entries={relative} unit="x" />
-          )}
+          <LbCard title="40-Yard Dash" entries={dash} unit="s" />
         </div>
       </main>
     </div>
@@ -107,7 +98,7 @@ function LbCard({
 }: {
   title: string;
   entries: { name: string; gradYear: number | null; val: number }[];
-  unit: "lb" | "x";
+  unit: "lb" | "s";
 }) {
   return (
     <div className="bg-surface border border-line rounded-xl p-4">
@@ -124,7 +115,7 @@ function LbCard({
                 {e.gradYear ? <span className="text-muted text-sm"> &rsquo;{String(e.gradYear).slice(-2)}</span> : ""}
               </span>
               <span className={`num font-semibold ${i === 0 ? "text-accent" : ""}`}>
-                {unit === "x" ? `${(Math.round(e.val * 100) / 100).toFixed(2)}×` : `${Math.round(e.val * 10) / 10} lb`}
+                {unit === "s" ? `${e.val.toFixed(2)} s` : `${Math.round(e.val * 10) / 10} lb`}
               </span>
             </li>
           ))}

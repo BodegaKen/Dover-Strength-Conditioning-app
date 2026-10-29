@@ -100,3 +100,21 @@ export function weekInfo(trackKey: string, week: number): WeekInfo | null {
   if (trackKey === "phase3") return P3[week] ?? null;
   return null;
 }
+
+const MONTH_NUM: Record<string, number> = { Jan: 1, Feb: 2, Mar: 3, Apr: 4, May: 5, Jun: 6, Jul: 7, Aug: 8, Sep: 9, Oct: 10, Nov: 11, Dec: 12 };
+
+// ISO start/end dates of a week, parsed from its display string ("Jan 11-15, 2027", "Jun 28-Jul 1, 2027",
+// "Oct 26 - Nov 1, 2026"). Null when the week has no dates (e.g. in-season weeks).
+export function weekRangeISO(trackKey: string, week: number): { start: string; end: string } | null {
+  const info = weekInfo(trackKey, week);
+  if (!info) return null;
+  const m = info.dates.match(/^([A-Z][a-z]{2}) (\d{1,2})\s*-\s*(?:([A-Z][a-z]{2}) )?(\d{1,2}), (\d{4})$/);
+  if (!m) return null;
+  const sm = MONTH_NUM[m[1]];
+  const em = m[3] ? MONTH_NUM[m[3]] : sm;
+  if (!sm || !em) return null;
+  const year = Number(m[5]);
+  const startYear = sm > em ? year - 1 : year;
+  const p = (n: number) => String(n).padStart(2, "0");
+  return { start: `${startYear}-${p(sm)}-${p(Number(m[2]))}`, end: `${year}-${p(em)}-${p(Number(m[4]))}` };
+}

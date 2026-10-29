@@ -50,6 +50,7 @@ model User {
   sessions     SessionEntry[]
   setLogs      SetLog[]
   attendance   Attendance[]
+  sprintTests  SprintTest[]
 
   @@index([active])
 }
@@ -149,4 +150,21 @@ model AuditLog {
   detail     String?
 
   @@index([at])
+}
+
+// Coach-entered, hand-timed speed tests (40-yard dash, 10 m / 20 m splits, 300-yard shuttle). One row
+// per athlete per event per day (the athlete's best attempt that day). Athletes never enter these;
+// they see them on their Progress page, and the 40-yard dash feeds the Leaderboard.
+model SprintTest {
+  id        String   @id @default(cuid())
+  athleteId String
+  athlete   User     @relation(fields: [athleteId], references: [id], onDelete: Cascade)
+  event     String   // "dash40" | "split10" | "split20" | "shuttle300"
+  seconds   Float
+  date      String   // ISO yyyy-mm-dd
+  enteredBy String   // coach's name at the time
+  enteredAt DateTime @default(now())
+
+  @@unique([athleteId, event, date])
+  @@index([event, date])
 }
