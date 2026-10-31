@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-29",
+ "updated": "2026-10-31",
  "note": "Phase dates and a typical week for each phase, shown at the top of each phase tab on the coach Docs page.",
  "phases": {
   "0": {
@@ -451,7 +451,7 @@
    ],
    "keyDates": [
     "Each lift's first two completed sessions run a lower re-entry ramp on Squat and Deadlift (70%, then 78% of e1RM). A missed session does not advance it, and Monday autoregulation can only hold or lower it.",
-    "Saturday game: lifts move to Tuesday and Thursday (Monday is practice only). Thursday game: no Sunday session, so only one lift day runs (Squat + Bench on Monday); the Deadlift/Pull-up day is skipped, not made up.",
+    "Saturday game: lifts move to Tuesday and Thursday (Monday is practice only). Thursday game: no Sunday session, so only one lift day runs (Squat + Bench on Monday, no Nordic that week); the Deadlift/Pull-up day is skipped, not made up.",
     "A missed lift is not made up in season. Bye week: lifts stay on Monday and Wednesday (Tuesday and Thursday after a Saturday game). First-time athletes load each lift off its own test: Bench and Pull-up from Phase 3's upper-body 5RM test (Week 3 by default, Test Week for the fast lane, Week 4 Day D or the open Friday if repeated), Squat and Deadlift from the Phase 3 Week 4 and Week 5 tests.",
     "During camp, once two-a-days begin, one weekly maintenance lift resumes (see Camp Bridge)."
    ],
@@ -465,7 +465,7 @@
        "kind": "lift",
        "title": "GD-4 - Lift Day 1",
        "lines": [
-        "Squat and Bench Press, 3 x 3-5 at about 80-85%",
+        "Squat and Bench Press, 3 x 3-5 at about 80-85%, rest 2-3 min between sets",
         "Finisher: shoulder health, Nordic"
        ]
       },
@@ -483,7 +483,7 @@
        "kind": "lift",
        "title": "GD-2 - Lift Day 2",
        "lines": [
-        "Deadlift and Pull-up, 3 x 3-5 at about 80-85%",
+        "Deadlift and Pull-up, 3 x 3-5 at about 80-85%, rest 2-3 min between sets. A substituted deadlift variation is loaded at RPE 7-8, not by the percentage",
         "Finisher: shoulder health, Nordic"
        ]
       },
@@ -657,7 +657,7 @@
        "kind": "hard",
        "title": "End-of-practice conditioning",
        "lines": [
-        "Phase 3's SIT format: 20m out-and-back shuttles. Volume follows the ramp day: 1 x 4 (Days 1-2), 2 x 4 (Days 3-5), 2 x 5 from Day 6",
+        "Phase 3's SIT format: 20m out-and-back shuttles. Volume follows the ramp day: 1 x 4 (Days 1-2), 2 x 4 (Days 3-5), 2 x 5 from Day 6. One dose per athlete per day, even on a two-a-day",
         "30 sec between reps, about 3 min between sets; linemen get 25% more recovery. Rest is never shortened to fit more volume",
         "Orange WBGT day: this segment is shortened or cut first. Red: no conditioning of any kind"
        ]
