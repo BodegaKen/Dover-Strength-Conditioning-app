@@ -9,6 +9,8 @@ import phaseCal from "../data/phase-calendar.json";
 type PlanKind = "s" | "t" | "o" | "c";
 const PLAN_DAYS = phaseCal.days as unknown as Record<string, [string, PlanKind]>;
 const PLAN_PHASES = phaseCal.phases as unknown as Record<string, { label: string; color: string }>;
+const CLOSED_DAYS = new Set(phaseCal.closed as string[]); // no school for students
+const SINGLE_DAYS = new Set(phaseCal.single as string[]); // single-session day for students
 const BAR_STYLE: Record<PlanKind, string> = { s: "solid", t: "solid", o: "dashed", c: "dotted" };
 
 function shiftMonth(m: string, delta: number): string {
@@ -47,6 +49,8 @@ export default function MonthCalendar({
   const planInMonth = cells.filter((c): c is string => !!c && !!PLAN_DAYS[c]).map((c) => PLAN_DAYS[c]);
   const planPhases = Array.from(new Set(planInMonth.map((p) => p[0])));
   const planKinds = new Set(planInMonth.map((p) => p[1]));
+  const monthHasClosed = cells.some((c) => !!c && CLOSED_DAYS.has(c));
+  const monthHasSingle = cells.some((c) => !!c && SINGLE_DAYS.has(c));
 
   return (
     <div className="flex flex-col gap-4">
@@ -76,11 +80,15 @@ export default function MonthCalendar({
             const complete = entries.some((e) => e.complete);
             const partial = !complete && entries.length > 0;
             const plan = PLAN_DAYS[iso];
+            const closed = CLOSED_DAYS.has(iso);
+            const single = SINGLE_DAYS.has(iso);
+            const tint = !complete && !partial && (closed || single);
             const planPhase = plan ? PLAN_PHASES[plan[0]] : undefined;
             return (
               <div
                 key={i}
-                title={plan && planPhase ? `${planPhase.label}${plan[1] === "o" ? " (optional)" : plan[1] === "t" ? " (test or retest week)" : plan[1] === "c" ? " (only if school is open)" : ""}` : undefined}
+                style={tint ? { backgroundColor: closed ? "rgba(220, 90, 90, 0.2)" : "rgba(230, 190, 40, 0.25)" } : undefined}
+                title={closed ? "No school" : single ? "Single-session day" : plan && planPhase ? `${planPhase.label}${plan[1] === "o" ? " (optional)" : plan[1] === "t" ? " (test or retest week)" : plan[1] === "c" ? " (only if school is open)" : ""}` : undefined}
                 className={`relative aspect-square rounded-md border flex flex-col items-center justify-center text-sm ${
                   complete
                     ? "border-good bg-good-bg text-good font-bold"
@@ -90,7 +98,7 @@ export default function MonthCalendar({
                 } ${iso === today ? "ring-2 ring-accent" : ""}`}
               >
                 <span className="num leading-none">{Number(iso.slice(8))}</span>
-                <span className="leading-none mt-0.5 text-xs">{complete ? "✓" : partial ? "●" : plan && plan[1] === "t" ? "T" : " "}</span>
+                <span className="leading-none mt-0.5 text-xs">{complete ? "✓" : partial ? "●" : plan && plan[1] === "t" ? "T" : closed ? "Closed" : single ? "Single" : " "}</span>
                 {plan && planPhase && (
                   <span
                     className="absolute left-1 right-1 bottom-0.5"
@@ -105,9 +113,21 @@ export default function MonthCalendar({
           <span><span className="text-good font-bold">{"✓"}</span> completed</span>
           <span><span className="text-warning">{"●"}</span> started, not finished</span>
         </div>
-        {planPhases.length > 0 && (
+        {(planPhases.length > 0 || monthHasClosed || monthHasSingle) && (
           <div className="mt-2 pt-2 border-t border-line flex flex-col gap-1 text-xs text-muted">
             <div className="flex flex-wrap gap-x-4 gap-y-1">
+              {monthHasClosed && (
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="inline-block w-4 h-3 rounded-sm" style={{ backgroundColor: "rgba(220, 90, 90, 0.35)" }} />
+                  No school
+                </span>
+              )}
+              {monthHasSingle && (
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="inline-block w-4 h-3 rounded-sm" style={{ backgroundColor: "rgba(230, 190, 40, 0.45)" }} />
+                  Single-session day
+                </span>
+              )}
               {planPhases.map((k) => (
                 <span key={k} className="inline-flex items-center gap-1.5">
                   <span className="inline-block w-4" style={{ borderTop: `3px solid ${PLAN_PHASES[k].color}` }} />
@@ -115,12 +135,14 @@ export default function MonthCalendar({
                 </span>
               ))}
             </div>
+            {planPhases.length > 0 && (
             <div>
               Bar = scheduled session{planKinds.has("t") ? "; T = test or retest week" : ""}
               {planKinds.has("o") ? "; dashed bar = optional session" : ""}
               {planKinds.has("c") ? "; dotted bar = only if school is open that day (emergency make-up day)" : ""}. Nothing here counts as
               missed; the green check only comes from what you log.
             </div>
+            )}
           </div>
         )}
       </div>
