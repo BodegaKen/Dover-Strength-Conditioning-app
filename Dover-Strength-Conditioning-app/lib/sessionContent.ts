@@ -272,7 +272,8 @@ export function inSeasonExtras(): SessionExtras {
       info("nordic", "Nordic hamstring lower, 2 x 6-8", "finisher", {
         details: [
           "Two lift days a week only (never on consecutive days).",
-          "A first-time athlete with fewer than 7 completed Nordic sessions does 2 x 4-6 for sessions 1-6, then 2 x 6-8.",
+          "Season opener: your first two completed Nordic sessions of the season are 2 x 4-6, then 2 x 6-8.",
+          "A first-time athlete with fewer than 7 completed Nordic sessions does 2 x 4-6 for sessions 1-6, then 2 x 6-8 (the same lighter start, so it does not stack).",
         ],
       }),
     ],
