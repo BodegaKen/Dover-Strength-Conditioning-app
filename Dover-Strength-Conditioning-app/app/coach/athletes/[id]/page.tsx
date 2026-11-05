@@ -295,7 +295,7 @@ export default async function AthleteDetailPage({
                   </thead>
                   <tbody>
                     {w.rows.map((r, i) => (
-                      <tr key={i} className="border-t border-line">
+                      <tr key={r.id ?? i} className="border-t border-line">
                         <td className="py-2 pr-3 whitespace-nowrap num">{fmtDate(r.date)}</td>
                         {r.kind === "session" ? (
                           <>

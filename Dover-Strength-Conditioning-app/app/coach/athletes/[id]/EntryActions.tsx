@@ -60,6 +60,7 @@ export default function EntryActions(props: TestInit | SessionInit) {
       router.refresh();
     } finally {
       setBusy(false);
+      setConfirming(false);
     }
   }
 
