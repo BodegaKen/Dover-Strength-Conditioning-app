@@ -11,6 +11,7 @@ export default function EntryActions(props: TestInit | SessionInit) {
   const router = useRouter();
   const [editing, setEditing] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [confirming, setConfirming] = useState(false); // inline "are you sure" (browser pop-up dialogs are blocked in some in-app browsers)
   const [err, setErr] = useState<string | null>(null);
   const [date, setDate] = useState(props.date);
   const [five, setFive] = useState(props.kind === "test" ? String(props.fiveRM) : "");
@@ -46,7 +47,6 @@ export default function EntryActions(props: TestInit | SessionInit) {
   }
 
   async function remove() {
-    if (!window.confirm("Delete this entry? This can't be undone.")) return;
     setBusy(true);
     setErr(null);
     try {
@@ -54,6 +54,7 @@ export default function EntryActions(props: TestInit | SessionInit) {
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
         setErr(data.error ?? "Couldn't delete.");
+        setConfirming(false);
         return;
       }
       router.refresh();
@@ -64,13 +65,28 @@ export default function EntryActions(props: TestInit | SessionInit) {
 
   const input = "bg-bg border border-line rounded-md px-2 py-1.5 num text-sm";
 
+  if (!editing && confirming) {
+    return (
+      <span className="inline-flex items-center gap-3 whitespace-nowrap">
+        <span className="text-xs text-muted">Delete this entry? Can&rsquo;t be undone.</span>
+        <button type="button" onClick={remove} disabled={busy} className="text-xs uppercase tracking-wide text-danger font-semibold disabled:opacity-50">
+          Yes, delete
+        </button>
+        <button type="button" onClick={() => setConfirming(false)} disabled={busy} className="text-xs uppercase tracking-wide text-muted font-semibold">
+          Cancel
+        </button>
+        {err && <span className="text-xs text-danger">{err}</span>}
+      </span>
+    );
+  }
+
   if (!editing) {
     return (
       <span className="inline-flex gap-3 whitespace-nowrap">
         <button type="button" onClick={() => setEditing(true)} className="text-xs uppercase tracking-wide text-accent font-semibold">
           Edit
         </button>
-        <button type="button" onClick={remove} disabled={busy} className="text-xs uppercase tracking-wide text-danger font-semibold disabled:opacity-50">
+        <button type="button" onClick={() => { setErr(null); setConfirming(true); }} disabled={busy} className="text-xs uppercase tracking-wide text-danger font-semibold disabled:opacity-50">
           Delete
         </button>
         {err && <span className="text-xs text-danger">{err}</span>}
