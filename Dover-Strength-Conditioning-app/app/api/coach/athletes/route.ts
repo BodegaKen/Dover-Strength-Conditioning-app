@@ -1,16 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
-import { hashPin, slugifyUsername, randomPin, weakPinReason } from "@/lib/auth";
+import { hashPin, slugifyUsername, randomPin, weakPinReason, initialLastUsername } from "@/lib/auth";
+import { usernameProblem } from "@/lib/validate";
 import { prisma } from "@/lib/db";
 import { getCoachApi } from "@/lib/admin";
 import { audit } from "@/lib/audit";
 
 const requireCoach = getCoachApi;
 
-async function uniqueUsername(base: string): Promise<string> {
-  let candidate = slugifyUsername(base);
+// Default sign-in name: first initial + last name ("Alex Rivera" -> "arivera"); a clash gets -2, -3, ...
+async function uniqueUsername(name: string): Promise<string> {
+  const initial = initialLastUsername(name);
+  const root = usernameProblem(initial) ? slugifyUsername(name) : initial;
+  let candidate = root;
   let n = 2;
   while (await prisma.user.findUnique({ where: { username: candidate } })) {
-    candidate = `${slugifyUsername(base)}-${n}`;
+    candidate = `${root}-${n}`;
     n++;
   }
   return candidate;

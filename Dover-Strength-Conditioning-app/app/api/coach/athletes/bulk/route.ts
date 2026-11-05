@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { hashPin, slugifyUsername, randomPin } from "@/lib/auth";
+import { hashPin, slugifyUsername, randomPin, initialLastUsername } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { getCoachApi } from "@/lib/admin";
 import { audit } from "@/lib/audit";
-import { nameProblem } from "@/lib/validate";
+import { nameProblem, usernameProblem } from "@/lib/validate";
 
 // Bounds for one paste: a roster is about 100 players, so these leave plenty of room while stopping a runaway request.
 const MAX_PASTE_CHARS = 12000;
@@ -111,10 +111,13 @@ export async function POST(req: NextRequest) {
       skipped++;
       continue;
     }
-    let username = slugifyUsername(entry.name);
+    // First initial + last name ("Alex Rivera" -> "arivera"); a clash gets -2, -3, ...
+    const initial = initialLastUsername(entry.name);
+    const root = usernameProblem(initial) ? slugifyUsername(entry.name) : initial;
+    let username = root;
     let n = 2;
     while (await prisma.user.findUnique({ where: { username } })) {
-      username = `${slugifyUsername(entry.name)}-${n}`;
+      username = `${root}-${n}`;
       n++;
     }
     const pin = randomPin();
