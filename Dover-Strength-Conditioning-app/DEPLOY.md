@@ -60,9 +60,10 @@ Vercel deploys from a GitHub repo.
    | `DATABASE_URL` | the **pooled** Neon connection string from step 1 |
    | `DIRECT_URL` | the **direct** Neon connection string from step 1 |
    | `JWT_SECRET` | a long random string: generate one with `openssl rand -base64 32` (or `node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"`); do not make one up by hand |
-   | `COACH_NAME` | your name, e.g. `Coach Quinones` |
-   | `COACH_USERNAME` | the username you want to log in with, e.g. `kquinones` |
-   | `COACH_PIN` | a 4-6 digit PIN you'll use to log in the first time |
+
+   Do not add the coach account values here. They are used once, from your own
+   computer (step 4), and a PIN stored in Vercel's settings is a standing copy of
+   a credential. Tick **Production** and **Preview** for each variable above.
 
 4. Click **Deploy**. First build takes 1-2 minutes. When it finishes you'll
    have a live URL like `dover-sc-app.vercel.app`.
@@ -80,14 +81,15 @@ cd dover-sc-app
 npm install
 ```
 Create a file named `.env` in the project folder (same folder as
-`package.json`) with the same six values you put into Vercel:
+`package.json`) with the same `DATABASE_URL`, `DIRECT_URL` and `JWT_SECRET` you
+put into Vercel, plus the coach account values (used once, by the seed command):
 ```
 DATABASE_URL="<pooled Neon connection string>"
 DIRECT_URL="<direct Neon connection string>"
 JWT_SECRET="<same long random string you put in Vercel>"
 COACH_NAME="Coach Quinones"
 COACH_USERNAME="kquinones"
-COACH_PIN="1234"
+COACH_PIN="<6 digits only you know: not a run like 123456, a repeat, a year or a common PIN>"
 ```
 Then run:
 ```
