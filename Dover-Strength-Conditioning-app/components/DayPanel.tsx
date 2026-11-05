@@ -29,6 +29,11 @@ export type DayPanelUser = {
   bodyweight?: number | null;
 };
 
+// Warm-up parts, tempo runs and other display or check items carry no set x rep count to show.
+function hasDose(e: { sets: number; reps: string }): boolean {
+  return e.sets > 0 && String(e.reps ?? "").trim() !== "";
+}
+
 function ReadOnlyDay({ day }: { day: PlanDay }) {
   const sections = (["warmup", "main", "accessory", "finisher"] as PlanSection[])
     .map((s) => ({ s, items: day.exercises.filter((e) => e.section === s) }))
@@ -44,12 +49,13 @@ function ReadOnlyDay({ day }: { day: PlanDay }) {
               return (
                 <li key={i} className="px-3 py-2 text-sm">
                   <span className="font-semibold">{e.label}</span>
-                  <span className="text-muted">
-                    {" "}
-                    &mdash; {e.sets} x {e.reps}
-                    {e.unit ? ` ${e.unit}` : ""}
-                    {v.pctLabel ? ` @ ${v.pctLabel}` : ""}
-                  </span>
+                  {(hasDose(e) || v.pctLabel) && (
+                    <span className="text-muted">
+                      {" "}
+                      &mdash;{hasDose(e) ? ` ${e.sets} x ${e.reps}${e.unit ? ` ${e.unit}` : ""}` : ""}
+                      {v.pctLabel ? ` @ ${v.pctLabel}` : ""}
+                    </span>
+                  )}
                 </li>
               );
             })}
