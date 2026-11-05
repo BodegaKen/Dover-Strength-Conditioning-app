@@ -8,10 +8,12 @@ export default function LogForms({
   currentE1RMs,
   athleteId,
   bodyweight,
+  showSession = true,
 }: {
   currentE1RMs: Record<string, number | null>;
   athleteId?: string; // coach logging on a player's behalf
   bodyweight?: number | null; // the athlete's current bodyweight, prefilled for weighted pull-up tests
+  showSession?: boolean; // false hides the session-log button (athletes outside Phase 4 / Camp Bridge)
 }) {
   const [mode, setMode] = useState<"test" | "session" | null>(null);
 
@@ -22,13 +24,15 @@ export default function LogForms({
           <strong className="block font-display uppercase text-sm">Log a test max</strong>
           <span className="text-muted text-xs">5RM on a major lift &rarr; auto e1RM</span>
         </ModeButton>
-        <ModeButton active={mode === "session"} onClick={() => setMode("session")}>
-          <strong className="block font-display uppercase text-sm">Log a session</strong>
-          <span className="text-muted text-xs">RPE + duration &rarr; auto load</span>
-        </ModeButton>
+        {showSession && (
+          <ModeButton active={mode === "session"} onClick={() => setMode("session")}>
+            <strong className="block font-display uppercase text-sm">Log a session</strong>
+            <span className="text-muted text-xs">RPE + duration &rarr; auto load</span>
+          </ModeButton>
+        )}
       </div>
       {mode === "test" && <TestForm currentE1RMs={currentE1RMs} athleteId={athleteId} bodyweight={bodyweight} />}
-      {mode === "session" && <SessionForm athleteId={athleteId} />}
+      {showSession && mode === "session" && <SessionForm athleteId={athleteId} />}
     </div>
   );
 }
