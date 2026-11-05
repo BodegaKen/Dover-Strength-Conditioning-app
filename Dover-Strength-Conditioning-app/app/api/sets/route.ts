@@ -3,11 +3,14 @@ import { getApiSession } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { getPeriod } from "@/lib/prescription";
 import { buildPlanDays, dayProgress, BACKOFF_BASE, type TrainingTrack, type PullupMode } from "@/lib/plan";
-import { todayISO } from "@/lib/calc";
+import { todayISO, addDaysISO } from "@/lib/calc";
 import { validDate } from "@/lib/validate";
 
 // Generous ceiling on sets in one request (a day is a few dozen at most).
 const MAX_SET_ENTRIES = 100;
+
+// How far back an athlete may date their own sets (a coach has no limit). Never the future.
+const PLAYER_DATE_WINDOW_DAYS = 14;
 
 // Saves (or clears) the sets an athlete entered for one prescribed day of the
 // team's current week. The plan is rebuilt server-side from ProgramState and
@@ -30,6 +33,15 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Bad date." }, { status: 400 });
   }
   const date = body?.date ? String(body.date) : todayISO();
+  if (session.role !== "COACH") {
+    const today = todayISO();
+    if (date > today || date < addDaysISO(today, -PLAYER_DATE_WINDOW_DAYS)) {
+      return NextResponse.json(
+        { error: `Use a date from the past ${PLAYER_DATE_WINDOW_DAYS} days. Ask a coach to enter an older day.` },
+        { status: 400 }
+      );
+    }
+  }
   const entries: unknown = body?.entries;
   if (!planDay || !Array.isArray(entries)) {
     return NextResponse.json({ error: "Missing day or entries." }, { status: 400 });
