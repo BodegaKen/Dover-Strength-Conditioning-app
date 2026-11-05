@@ -1,6 +1,5 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { prisma } from "@/lib/db";
 import { getPeriod, getTrack, type RawLift } from "@/lib/prescription";
 import { buildPlanDays, isTestPeriod, type TrainingTrack, type PullupMode, type PlanDay, type PlanSection } from "@/lib/plan";
 import { viewOf } from "@/lib/planView";
@@ -9,9 +8,9 @@ import { PHASE0_WEEKS } from "@/lib/phase0";
 import { LIFTS, weekdayOf } from "@/lib/calc";
 import phaseCal from "../data/phase-calendar.json";
 
-// What happens on the day picked in the calendar. Players get that day's session, loggable when it is
-// in the week the team is on; anything else (another week, a coach viewing) is read-only. Phases 0-3
-// only: in-season weeks follow the game schedule and have no fixed dates.
+// What happens on the day picked in the calendar: that day's whole session, read-only and as percentages
+// (athletes see their weights and log on the This Week tab). Phases 0-3 only: in-season weeks follow the
+// game schedule and have no fixed dates.
 type PlanKind = "s" | "t" | "o" | "c";
 const PLAN_DAYS = phaseCal.days as unknown as Record<string, [string, PlanKind]>;
 const PLAN_PHASES = phaseCal.phases as unknown as Record<string, { label: string; color: string }>;
@@ -36,7 +35,7 @@ function hasDose(e: { sets: number; reps: string }): boolean {
 type LatestMap = Record<string, { e1RM: number; fiveRM: number } | undefined>;
 
 // Read-only copy of a session: everything the athlete sees on This Week (notes, warm-up parts, ramps,
-// back-off sets), with their own weights when the day is in the team's current week.
+// back-off sets) as percentages. Weights and logging live on the This Week tab only.
 function ReadOnlyDay({ day, latest, bodyweight }: { day: PlanDay; latest: LatestMap; bodyweight?: number | null }) {
   const sections = (["warmup", "main", "accessory", "finisher"] as PlanSection[])
     .map((s) => ({ s, items: day.exercises.filter((e) => e.section === s) }))
@@ -171,23 +170,13 @@ export default async function DayPanel({ iso, user }: { iso: string; user: DayPa
       if (!day) {
         body = <p className="text-sm text-muted">No barbell session is scheduled on this date.</p>;
       } else {
-        const state = user ? await prisma.programState.findUnique({ where: { id: "current" } }) : null;
-        const active = (state?.trackKey ?? "phase1") === at.trackKey && (state?.week ?? 1) === at.week;
-        // Weights only when the day is in the team's current week; later phases run off later maxes.
-        const latest: LatestMap = {};
-        if (user && active) {
-          const tests = await prisma.testEntry.findMany({ where: { athleteId: user.id }, orderBy: { date: "desc" } });
-          for (const t of tests) if (!latest[t.lift]) latest[t.lift] = t;
-        }
         body = (
           <div className="flex flex-col gap-2">
-            <ReadOnlyDay day={day} latest={latest} bodyweight={user && active ? user.bodyweight : null} />
+            <ReadOnlyDay day={day} latest={{}} bodyweight={null} />
             <p className="text-xs text-muted">
               {user
-                ? active
-                  ? "To log this session, use the This Week tab."
-                  : "Percentages only. This is not the team's current week; your weights show on This Week when the team gets here."
-                : "Percentages of each athlete's tested max. Athletes log on their own This Week tab."}
+                ? "Percentages only. Your weights and logging are on the This Week tab."
+                : "Percentages of each athlete's tested max. Athletes see their own weights and log on their This Week tab."}
             </p>
           </div>
         );
