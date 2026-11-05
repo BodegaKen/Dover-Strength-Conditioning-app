@@ -63,7 +63,9 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     existing.athlete.name,
     `${existing.lift} ${existing.date}, 5RM ${existing.fiveRM} -> ${test.fiveRM}` +
       (test.lift !== existing.lift ? `, lift ${existing.lift} -> ${test.lift}` : "") +
-      (test.date !== existing.date ? `, date ${existing.date} -> ${test.date}` : "")
+      (test.date !== existing.date ? `, date ${existing.date} -> ${test.date}` : "") +
+      (test.bodyweightAtTest !== existing.bodyweightAtTest ? `, bodyweight at test ${existing.bodyweightAtTest ?? "none"} -> ${test.bodyweightAtTest ?? "none"}` : "") +
+      (Math.round(test.e1RM * 10) !== Math.round(existing.e1RM * 10) ? `, e1RM ${Math.round(existing.e1RM * 10) / 10} -> ${Math.round(test.e1RM * 10) / 10}` : "")
   );
   return NextResponse.json({ test });
 }

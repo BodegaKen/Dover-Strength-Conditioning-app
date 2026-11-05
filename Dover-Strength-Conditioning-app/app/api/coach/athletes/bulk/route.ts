@@ -105,6 +105,7 @@ export async function POST(req: NextRequest) {
   const existingNames = new Set(existing.map((e: { name: string }) => e.name.toLowerCase()));
 
   const created: { name: string; username: string; pin: string }[] = [];
+  const auditRows: string[] = []; // one line per created athlete for the audit log (never includes a PIN)
   let skipped = 0;
   for (const entry of entries) {
     if (existingNames.has(entry.name.toLowerCase())) {
@@ -133,9 +134,10 @@ export async function POST(req: NextRequest) {
       },
     });
     created.push({ name: entry.name, username, pin });
+    auditRows.push(`${entry.name} (@${username}${entry.position ? `, ${entry.position}` : ""}${entry.gradYear ? `, class of ${entry.gradYear}` : ""})`);
     existingNames.add(entry.name.toLowerCase());
   }
 
-  await audit(coach, "bulk add athletes", null, `${created.length} created, ${skipped} skipped: ${created.map((c) => c.name).join("; ").slice(0, 2500)}`);
+  await audit(coach, "bulk add athletes", null, `${created.length} created, ${skipped} skipped: ${auditRows.join("; ").slice(0, 8000)}`);
   return NextResponse.json({ created, skipped });
 }

@@ -27,10 +27,15 @@ export async function POST(req: NextRequest) {
   }
 
   if (body?.bulk === "present" || body?.bulk === "clear") {
-    const athletes = await prisma.user.findMany({ where: { role: "PLAYER", active: true }, select: { id: true } });
+    const athletes = await prisma.user.findMany({ where: { role: "PLAYER", active: true }, select: { id: true, name: true } });
+    // Who had what mark before, so the audit entry can say exactly which athletes changed.
+    const marks = await prisma.attendance.findMany({ where: { date, athleteId: { in: athletes.map((a) => a.id) } }, select: { athleteId: true, present: true } });
+    const markOf = new Map(marks.map((m) => [m.athleteId, m.present]));
+    const nameOf = (v: boolean | null | undefined) => (v === true ? "present" : v === false ? "absent" : "no mark");
     if (body.bulk === "clear") {
       const cleared = await prisma.attendance.deleteMany({ where: { date, athleteId: { in: athletes.map((a) => a.id) } } });
-      await audit(coach, "attendance: clear all", date, `${cleared.count} marks cleared`);
+      const lines = athletes.filter((a) => markOf.has(a.id)).map((a) => `${a.name} (${nameOf(markOf.get(a.id))})`);
+      await audit(coach, "attendance: clear all", date, `${cleared.count} marks cleared: ${lines.join("; ")}`.slice(0, 8000));
     } else {
       await prisma.$transaction(
         athletes.map((a) =>
@@ -41,7 +46,8 @@ export async function POST(req: NextRequest) {
           })
         )
       );
-      await audit(coach, "attendance: mark all present", date, `${athletes.length} athletes`);
+      const changed = athletes.filter((a) => markOf.get(a.id) !== true).map((a) => `${a.name} (${nameOf(markOf.get(a.id))} -> present)`);
+      await audit(coach, "attendance: mark all present", date, `${athletes.length} on roster, ${changed.length} changed: ${changed.join("; ")}`.slice(0, 8000));
     }
     return NextResponse.json({ ok: true });
   }

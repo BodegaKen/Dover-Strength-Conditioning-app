@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { Prisma } from "@prisma/client";
 import { getApiSession } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { audit } from "@/lib/audit";
 import { todayISO, addDaysISO } from "@/lib/calc";
 import { SESSION_TYPES, MAX_SESSION_MIN, validDate } from "@/lib/validate";
 
@@ -62,13 +63,26 @@ export async function POST(req: NextRequest) {
         const existing = await tx.sessionEntry.findFirst({ where: { athleteId, type, date } });
         if (existing) {
           const updated = await tx.sessionEntry.update({ where: { id: existing.id }, data: { rpe, durationMin, load } });
-          return { entry: updated, replaced: true };
+          return { entry: updated, replaced: true, before: { rpe: existing.rpe, durationMin: existing.durationMin } };
         }
         const created = await tx.sessionEntry.create({ data: { athleteId, type, date, rpe, durationMin, load } });
-        return { entry: created, replaced: false };
+        return { entry: created, replaced: false, before: null };
       },
       { isolationLevel: Prisma.TransactionIsolationLevel.Serializable }
     );
+    if (session.role === "COACH") {
+      const actor = await prisma.user.findUnique({ where: { id: session.sub }, select: { id: true, name: true } });
+      if (actor) {
+        await audit(
+          actor,
+          result.replaced ? "coach updated session" : "coach logged session",
+          athlete.name,
+          `${type} ${date}: ` +
+            (result.before ? `RPE ${result.before.rpe} x ${result.before.durationMin} min -> ` : "") +
+            `RPE ${rpe} x ${durationMin} min`
+        );
+      }
+    }
     return NextResponse.json({ session: result.entry, replaced: result.replaced });
   } catch (e) {
     if ((e as { code?: string })?.code === "P2034") {

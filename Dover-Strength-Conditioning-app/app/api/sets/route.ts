@@ -5,6 +5,7 @@ import { getPeriod } from "@/lib/prescription";
 import { buildPlanDays, dayProgress, BACKOFF_BASE, type TrainingTrack, type PullupMode } from "@/lib/plan";
 import { todayISO, addDaysISO } from "@/lib/calc";
 import { validDate } from "@/lib/validate";
+import { audit } from "@/lib/audit";
 
 // Generous ceiling on sets in one request (a day is a few dozen at most).
 const MAX_SET_ENTRIES = 100;
@@ -93,6 +94,10 @@ export async function POST(req: NextRequest) {
     },
   });
 
+  // When a coach saves sets for an athlete, keep what was there so the audit entry can show before and after.
+  const byCoach = session.role === "COACH";
+  const beforeRows = byCoach ? await prisma.setLog.findMany({ where: { athleteId, trackKey, week, planDay } }) : [];
+
   await prisma.$transaction(
     clean.map((c) =>
       c.weight == null && c.reps == null
@@ -108,6 +113,24 @@ export async function POST(req: NextRequest) {
           })
     )
   );
+
+  if (byCoach) {
+    const actor = await prisma.user.findUnique({ where: { id: session.sub }, select: { id: true, name: true } });
+    if (actor) {
+      const was = new Map(beforeRows.map((r) => [`${r.lift}:${r.setNumber}`, r]));
+      const show = (w: number | null | undefined, r: number | null | undefined) => (w == null && r == null ? "empty" : `${w ?? "-"} x ${r ?? "-"}`);
+      const changes: string[] = [];
+      for (const c of clean) {
+        const b = was.get(`${c.lift}:${c.setNumber}`);
+        const from = b ? show(b.weight, b.reps) : "empty";
+        const to = show(c.weight, c.reps);
+        if (from !== to) changes.push(`${c.lift} set ${c.setNumber}: ${from} -> ${to}`);
+      }
+      if (changes.length > 0) {
+        await audit(actor, "coach saved sets", athlete.name, `${trackKey} week ${week} ${planDay}, dated ${date}: ${changes.join("; ")}`.slice(0, 8000));
+      }
+    }
+  }
 
   const rows = await prisma.setLog.findMany({ where: { athleteId, trackKey, week, planDay } });
   const progress = dayProgress(day, rows);
