@@ -2,7 +2,7 @@
 // and Phase 2 Coaching Copies and the Dover Public Schools 2026-27 district
 // calendar. Display-only: the coach still sets the active week by hand.
 
-import { phase0Week } from "./phase0";
+import { phase0Week, PHASE0_WEEKS } from "./phase0";
 
 export type WeekInfo = {
   dates: string;
@@ -117,4 +117,41 @@ export function weekRangeISO(trackKey: string, week: number): { start: string; e
   const startYear = sm > em ? year - 1 : year;
   const p = (n: number) => String(n).padStart(2, "0");
   return { start: `${startYear}-${p(sm)}-${p(Number(m[2]))}`, end: `${year}-${p(em)}-${p(Number(m[4]))}` };
+}
+
+// Which program week (Phases 0-3) a calendar date falls in, from the dated week tables above. Null
+// for dates outside them (in-season weeks follow the game schedule and have no fixed dates).
+export function weekForDate(iso: string): { trackKey: string; week: number } | null {
+  const tracks: [string, number][] = [
+    ["phase0", PHASE0_WEEKS.length],
+    ["phase1", Object.keys(P1).length],
+    ["phase2", Object.keys(P2).length],
+    ["phase3", Object.keys(P3).length],
+  ];
+  for (const [trackKey, n] of tracks) {
+    for (let week = 1; week <= n; week++) {
+      const r = weekRangeISO(trackKey, week);
+      if (r && iso >= r.start && iso <= r.end) return { trackKey, week };
+    }
+  }
+  return null;
+}
+
+// Which plan day (named for the weekday it is written for) runs on a date. Normally that is the date's
+// own weekday; these are the weeks where a closure moves it. null = no session that date.
+const DAY_ON_DATE: Record<string, string | null> = {
+  "2027-01-18": null, // MLK Day: Day A moves to Tuesday
+  "2027-01-19": "Monday",
+  "2027-01-20": "Tuesday",
+  "2027-02-08": null, // Staff in-service: Day A moves to Tuesday
+  "2027-02-09": "Monday",
+  "2027-02-10": "Tuesday",
+  "2027-02-15": null, // Presidents' Day: Day A moves to Tuesday
+  "2027-02-16": "Monday",
+  "2027-02-17": "Tuesday",
+  "2027-03-26": null, // First Spring Break day: Day D is skipped
+};
+
+export function planDayForDate(iso: string, weekday: string): string | null {
+  return iso in DAY_ON_DATE ? DAY_ON_DATE[iso] : weekday;
 }

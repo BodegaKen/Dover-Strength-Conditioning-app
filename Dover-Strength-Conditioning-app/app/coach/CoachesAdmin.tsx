@@ -96,7 +96,7 @@ export default function CoachesAdmin({ coaches, meId }: { coaches: CoachRow[]; m
               className="w-full bg-bg border border-line rounded-md px-3 py-2.5"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              placeholder="e.g. cgonzalez"
+              placeholder="e.g. bgoble"
               autoCapitalize="none"
               autoCorrect="off"
             />

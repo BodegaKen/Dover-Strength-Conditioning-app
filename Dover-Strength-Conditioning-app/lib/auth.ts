@@ -44,6 +44,21 @@ export async function getApiSession(): Promise<SessionPayload | null> {
   return s;
 }
 
+// Default coach sign-in name: first initial + last name ("Bill Goble" -> "bgoble"). Name suffixes
+// (Jr, Sr, II, III, IV) are ignored; a one-word name is used as is.
+export function initialLastUsername(name: string): string {
+  const parts = name
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .split(/\s+/)
+    .map((p) => p.replace(/[^a-z0-9]/g, ""))
+    .filter((p) => p && !["jr", "sr", "ii", "iii", "iv"].includes(p));
+  if (parts.length === 0) return "coach";
+  if (parts.length === 1) return parts[0].slice(0, 40);
+  return (parts[0][0] + parts[parts.length - 1]).slice(0, 40);
+}
+
 export function slugifyUsername(name: string): string {
   return name
     .toLowerCase()

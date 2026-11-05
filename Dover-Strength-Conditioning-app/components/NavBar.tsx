@@ -11,6 +11,7 @@ export default function NavBar({ role, name }: { role: "PLAYER" | "COACH"; name:
     role === "COACH"
       ? [
           { href: "/coach", label: "Coach" },
+          { href: "/coach/calendar", label: "Calendar" },
           { href: "/coach/attendance", label: "Attendance" },
           { href: "/coach/speed", label: "Speed" },
           { href: "/coach/docs", label: "Docs" },
@@ -61,7 +62,7 @@ export default function NavBar({ role, name }: { role: "PLAYER" | "COACH"; name:
               <Link
                 key={l.href}
                 href={l.href}
-                className={`flex-1 text-center font-display uppercase text-sm tracking-wide py-2.5 border-b-[3px] -mb-px ${
+                className={`flex-1 text-center font-display uppercase ${links.length > 6 ? "text-[0.78rem] sm:text-sm" : "text-sm"} tracking-wide py-2.5 border-b-[3px] -mb-px ${
                   active ? "border-accent text-fg" : "border-transparent text-muted"
                 }`}
               >

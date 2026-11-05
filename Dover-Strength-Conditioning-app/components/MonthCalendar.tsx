@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { ReactNode } from "react";
 import type { CalendarData } from "@/lib/calendar";
 import { summarizeSets } from "@/lib/calendar";
 import phaseCal from "../data/phase-calendar.json";
@@ -28,11 +29,17 @@ export default function MonthCalendar({
   data,
   today,
   basePath,
+  selected,
+  showLog = true,
+  children,
 }: {
   month: string; // YYYY-MM
   data: CalendarData;
   today: string;
   basePath: string;
+  selected?: string; // the picked day (YYYY-MM-DD), filled in accent color
+  showLog?: boolean; // false for the coach view: no personal log, just the plan
+  children?: ReactNode; // the day panel, shown between the grid and the logged list
 }) {
   const [y, mo] = month.split("-").map(Number);
   const first = new Date(y, mo - 1, 1);
@@ -61,7 +68,7 @@ export default function MonthCalendar({
           </Link>
           <div className="text-center">
             <h2 className="text-lg">{title}</h2>
-            <div className="text-xs text-muted">{trainedDays} training day{trainedDays === 1 ? "" : "s"} completed</div>
+            {showLog && <div className="text-xs text-muted">{trainedDays} training day{trainedDays === 1 ? "" : "s"} completed</div>}
           </div>
           <Link href={`${basePath}?m=${shiftMonth(month, 1)}`} className="text-accent font-semibold px-2">
             &rarr;
@@ -82,15 +89,21 @@ export default function MonthCalendar({
             const plan = PLAN_DAYS[iso];
             const closed = CLOSED_DAYS.has(iso);
             const single = SINGLE_DAYS.has(iso);
-            const tint = !complete && !partial && (closed || single);
+            const isSel = iso === selected;
+            const tint = !isSel && !complete && !partial && (closed || single);
             const planPhase = plan ? PLAN_PHASES[plan[0]] : undefined;
             return (
-              <div
+              <Link
                 key={i}
+                href={`${basePath}?m=${month}&d=${iso}`}
+                prefetch={false}
+                scroll={false}
                 style={tint ? { backgroundColor: closed ? "rgba(220, 90, 90, 0.2)" : "rgba(230, 190, 40, 0.25)" } : undefined}
                 title={closed ? "No school" : single ? "Single-session day" : plan && planPhase ? `${planPhase.label}${plan[1] === "o" ? " (optional)" : plan[1] === "t" ? " (test or retest week)" : plan[1] === "c" ? " (only if school is open)" : ""}` : undefined}
                 className={`relative aspect-square rounded-md border flex flex-col items-center justify-center text-sm ${
-                  complete
+                  isSel
+                    ? "border-accent bg-accent text-accent-ink font-bold"
+                    : complete
                     ? "border-good bg-good-bg text-good font-bold"
                     : partial
                     ? "border-warning bg-warning-bg text-warning"
@@ -105,13 +118,14 @@ export default function MonthCalendar({
                     style={{ borderTop: `3px ${BAR_STYLE[plan[1]]} ${planPhase.color}` }}
                   />
                 )}
-              </div>
+              </Link>
             );
           })}
         </div>
-        <div className="flex gap-4 mt-3 text-xs text-muted">
-          <span><span className="text-good font-bold">{"✓"}</span> completed</span>
-          <span><span className="text-warning">{"●"}</span> started, not finished</span>
+        <div className="flex flex-wrap gap-x-4 gap-y-1 mt-3 text-xs text-muted">
+          {showLog && <span><span className="text-good font-bold">{"✓"}</span> completed</span>}
+          {showLog && <span><span className="text-warning">{"●"}</span> started, not finished</span>}
+          <span><span className="inline-block w-3 h-3 rounded-sm bg-accent align-middle" /> selected day (tap a day to see it)</span>
         </div>
         {(planPhases.length > 0 || monthHasClosed || monthHasSingle) && (
           <div className="mt-2 pt-2 border-t border-line flex flex-col gap-1 text-xs text-muted">
@@ -139,14 +153,16 @@ export default function MonthCalendar({
             <div>
               Bar = scheduled session{planKinds.has("t") ? "; T = test or retest week" : ""}
               {planKinds.has("o") ? "; dashed bar = optional session" : ""}
-              {planKinds.has("c") ? "; dotted bar = only if school is open that day (emergency make-up day)" : ""}. Nothing here counts as
-              missed; the green check only comes from what you log.
+              {planKinds.has("c") ? "; dotted bar = only if school is open that day (emergency make-up day)" : ""}.{showLog ? " Nothing here counts as missed; the green check only comes from what you log." : ""}
             </div>
             )}
           </div>
         )}
       </div>
 
+      {children}
+
+      {showLog && (
       <div className="flex flex-col gap-3">
         {monthDates.length === 0 && <p className="text-sm text-muted">Nothing logged this month yet.</p>}
         {monthDates
@@ -177,6 +193,7 @@ export default function MonthCalendar({
             </div>
           ))}
       </div>
+      )}
     </div>
   );
 }

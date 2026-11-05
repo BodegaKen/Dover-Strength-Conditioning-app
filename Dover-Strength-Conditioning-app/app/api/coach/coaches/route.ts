@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { hashPin, slugifyUsername, randomPin } from "@/lib/auth";
+import { hashPin, slugifyUsername, randomPin, initialLastUsername } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { getCoachApi } from "@/lib/admin";
 import { audit } from "@/lib/audit";
@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
 
   // Temporary 6-digit PIN, shown once to the admin; the new coach must change it at first sign-in.
   const pin = randomPin();
-  // An admin can pick a short sign-in username (e.g. cgonzalez); blank means "make one from the name".
+  // An admin can pick a short sign-in username (e.g. bgoble); blank means first initial + last name.
   const wanted = (body?.username ?? "").toString().trim().toLowerCase();
   let username: string;
   if (wanted) {
@@ -53,7 +53,9 @@ export async function POST(req: NextRequest) {
     }
     username = wanted;
   } else {
-    username = await uniqueUsername(name);
+    // Default: first initial + last name ("Bill Goble" -> "bgoble"); a clash gets -2, -3, ...
+    const base = initialLastUsername(name);
+    username = await uniqueUsername(usernameProblem(base) ? name : base);
   }
   const created = await prisma.user
     .create({ data: { name, username, pinHash: await hashPin(pin), role: "COACH", isAdmin, mustChangePin: true } })

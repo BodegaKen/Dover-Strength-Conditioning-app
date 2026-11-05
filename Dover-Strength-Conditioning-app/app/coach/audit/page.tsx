@@ -13,6 +13,7 @@ export default async function AuditPage() {
   const rows = await prisma.auditLog
     .findMany({ orderBy: { at: "desc" }, take: 300 })
     .catch(() => null); // table missing until `prisma db push` has been run
+  const total = await prisma.auditLog.count().catch(() => null);
 
   return (
     <div>
@@ -24,8 +25,15 @@ export default async function AuditPage() {
         <div className="bg-surface border border-line rounded-xl p-4">
           <h2 className="text-lg mb-1">Coach audit log</h2>
           <p className="text-sm text-muted mb-3">
-            Adding or removing accounts, PIN resets, roster edits, edited or deleted test and session entries, and team
-            phase/week changes. Attendance marks and set logging are not recorded here. Times are Eastern.
+            Adding or removing accounts, PIN resets, roster edits, edited or deleted test and session entries,
+            attendance marks, speed times, roster imports, and team phase/week changes. Athletes&rsquo; own set logging is
+            not recorded here. Times are Eastern.
+            {total != null && (
+              <>
+                {" "}
+                {total} {total === 1 ? "entry" : "entries"} stored in all; the newest {Math.min(total, 300)} are shown.
+              </>
+            )}
           </p>
           {rows == null ? (
             <p className="text-sm text-danger">The audit table doesn&rsquo;t exist yet. Run `npx prisma db push` once.</p>
