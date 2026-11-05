@@ -213,6 +213,7 @@ export default async function DashboardPage() {
             currentE1RMs={Object.fromEntries(LIFTS.map((l) => [l.key, latestByLift[l.key]?.e1RM ?? null]))}
             bodyweight={user.bodyweight}
             showSession={askRpe}
+            showTest={testWeek}
           />
         )}
       </main>

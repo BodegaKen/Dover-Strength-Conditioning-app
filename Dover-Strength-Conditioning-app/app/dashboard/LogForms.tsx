@@ -9,21 +9,26 @@ export default function LogForms({
   athleteId,
   bodyweight,
   showSession = true,
+  showTest = true,
 }: {
   currentE1RMs: Record<string, number | null>;
   athleteId?: string; // coach logging on a player's behalf
   bodyweight?: number | null; // the athlete's current bodyweight, prefilled for weighted pull-up tests
   showSession?: boolean; // false hides the session-log button (athletes outside Phase 4 / Camp Bridge)
+  showTest?: boolean; // false hides the test-max button (athletes outside Testing and retest weeks)
 }) {
   const [mode, setMode] = useState<"test" | "session" | null>(null);
+  if (!showTest && !showSession) return null;
 
   return (
     <div className="flex flex-col gap-4">
       <div className="flex gap-3">
-        <ModeButton active={mode === "test"} onClick={() => setMode("test")}>
-          <strong className="block font-display uppercase text-sm">Log a test max</strong>
-          <span className="text-muted text-xs">5RM on a major lift &rarr; auto e1RM</span>
-        </ModeButton>
+        {showTest && (
+          <ModeButton active={mode === "test"} onClick={() => setMode("test")}>
+            <strong className="block font-display uppercase text-sm">Log a test max</strong>
+            <span className="text-muted text-xs">5RM on a major lift &rarr; auto e1RM</span>
+          </ModeButton>
+        )}
         {showSession && (
           <ModeButton active={mode === "session"} onClick={() => setMode("session")}>
             <strong className="block font-display uppercase text-sm">Log a session</strong>
@@ -31,7 +36,7 @@ export default function LogForms({
           </ModeButton>
         )}
       </div>
-      {mode === "test" && <TestForm currentE1RMs={currentE1RMs} athleteId={athleteId} bodyweight={bodyweight} />}
+      {showTest && mode === "test" && <TestForm currentE1RMs={currentE1RMs} athleteId={athleteId} bodyweight={bodyweight} />}
       {showSession && mode === "session" && <SessionForm athleteId={athleteId} />}
     </div>
   );
