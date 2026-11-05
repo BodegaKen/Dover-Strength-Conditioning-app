@@ -16,8 +16,6 @@ export default function DayCards({
   bodyweight,
   askRpe,
   ratings,
-  forDate,
-  alwaysOpen,
 }: {
   days: PlanDay[];
   rows: Row[];
@@ -27,8 +25,6 @@ export default function DayCards({
   bodyweight?: number | null;
   askRpe?: boolean; // Phase 4 / Camp Bridge: ask for the post-session rating
   ratings?: Record<string, { rpe: number; durationMin: number }>;
-  forDate?: string; // calendar day view: the date new entries default to
-  alwaysOpen?: boolean; // calendar day view: keep the card open
 }) {
   const today = weekdayOf(todayISO());
   const info = days.map((d) => {
@@ -45,7 +41,7 @@ export default function DayCards({
         return (
           <details
             key={d.day}
-            open={alwaysOpen || d.day === openDay}
+            open={d.day === openDay}
             className="group bg-surface border border-line rounded-xl overflow-hidden"
           >
             <summary className="flex items-center justify-between gap-3 p-4 cursor-pointer list-none select-none">
@@ -76,7 +72,7 @@ export default function DayCards({
                 planDay={d.day}
                 exercises={d.exercises.map((e) => viewOf(e, latest, bodyweight))}
                 initial={dayRows.map((r) => ({ lift: r.lift, setNumber: r.setNumber, weight: r.weight, reps: r.reps }))}
-                initialDate={latestDate ?? forDate}
+                initialDate={latestDate}
                 sectionNotes={d.notes}
                 athleteId={athleteId}
                 askRpe={askRpe}

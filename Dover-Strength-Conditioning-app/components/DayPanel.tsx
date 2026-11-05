@@ -7,7 +7,6 @@ import { viewOf } from "@/lib/planView";
 import { weekInfo, weekForDate, planDayForDate } from "@/lib/schedule";
 import { PHASE0_WEEKS } from "@/lib/phase0";
 import { LIFTS, weekdayOf } from "@/lib/calc";
-import DayCards from "@/components/DayCards";
 import phaseCal from "../data/phase-calendar.json";
 
 // What happens on the day picked in the calendar. Players get that day's session, loggable when it is
@@ -34,7 +33,11 @@ function hasDose(e: { sets: number; reps: string }): boolean {
   return e.sets > 0 && String(e.reps ?? "").trim() !== "";
 }
 
-function ReadOnlyDay({ day }: { day: PlanDay }) {
+type LatestMap = Record<string, { e1RM: number; fiveRM: number } | undefined>;
+
+// Read-only copy of a session: everything the athlete sees on This Week (notes, warm-up parts, ramps,
+// back-off sets), with their own weights when the day is in the team's current week.
+function ReadOnlyDay({ day, latest, bodyweight }: { day: PlanDay; latest: LatestMap; bodyweight?: number | null }) {
   const sections = (["warmup", "main", "accessory", "finisher"] as PlanSection[])
     .map((s) => ({ s, items: day.exercises.filter((e) => e.section === s) }))
     .filter((x) => x.items.length > 0);
@@ -43,9 +46,10 @@ function ReadOnlyDay({ day }: { day: PlanDay }) {
       {sections.map(({ s, items }) => (
         <div key={s}>
           <div className="text-xs uppercase tracking-wide font-semibold text-accent mb-1">{SECTION_LABEL[s]}</div>
+          {day.notes?.[s] && <p className="text-sm text-muted mb-1.5">{day.notes[s]}</p>}
           <ul className="flex flex-col divide-y divide-line border border-line rounded-lg">
             {items.map((e, i) => {
-              const v = viewOf(e, {}, null);
+              const v = viewOf(e, latest, bodyweight);
               return (
                 <li key={i} className="px-3 py-2 text-sm">
                   <span className="font-semibold">{e.label}</span>
@@ -55,6 +59,22 @@ function ReadOnlyDay({ day }: { day: PlanDay }) {
                       &mdash;{hasDose(e) ? ` ${e.sets} x ${e.reps}${e.unit ? ` ${e.unit}` : ""}` : ""}
                       {v.pctLabel ? ` @ ${v.pctLabel}` : ""}
                     </span>
+                  )}
+                  {v.target && <span className="num font-semibold"> &rarr; {v.target} lb</span>}
+                  {v.ramp && <div className="text-xs text-muted mt-0.5">Ramp: {v.ramp}</div>}
+                  {v.backoff && (
+                    <div className="text-xs text-muted mt-0.5">
+                      Back-off: {v.backoff.sets} x {v.backoff.reps} @ {v.backoff.pctLabel}
+                      {v.backoff.target ? ` \u2192 ${v.backoff.target} lb` : ""}
+                    </div>
+                  )}
+                  {e.note && <div className="text-xs text-muted mt-0.5">{e.note}</div>}
+                  {e.details && e.details.length > 0 && (
+                    <ul className="text-xs text-muted mt-1 list-disc pl-4">
+                      {e.details.map((d, di) => (
+                        <li key={di}>{d}</li>
+                      ))}
+                    </ul>
                   )}
                 </li>
               );
@@ -153,28 +173,24 @@ export default async function DayPanel({ iso, user }: { iso: string; user: DayPa
       } else {
         const state = user ? await prisma.programState.findUnique({ where: { id: "current" } }) : null;
         const active = (state?.trackKey ?? "phase1") === at.trackKey && (state?.week ?? 1) === at.week;
+        // Weights only when the day is in the team's current week; later phases run off later maxes.
+        const latest: LatestMap = {};
         if (user && active) {
-          const rows = await prisma.setLog.findMany({
-            where: { athleteId: user.id, trackKey: at.trackKey, week: at.week, planDay: day.day },
-          });
           const tests = await prisma.testEntry.findMany({ where: { athleteId: user.id }, orderBy: { date: "desc" } });
-          const latest: Record<string, (typeof tests)[number]> = {};
           for (const t of tests) if (!latest[t.lift]) latest[t.lift] = t;
-          body = (
-            <DayCards days={[day]} rows={rows} latest={latest} bodyweight={user.bodyweight} forDate={iso} alwaysOpen />
-          );
-        } else {
-          body = (
-            <div className="flex flex-col gap-2">
-              <ReadOnlyDay day={day} />
-              <p className="text-xs text-muted">
-                {user
-                  ? "Percentages only. You can log this session once your coach moves the team to this week; your weights show then."
-                  : "Percentages of each athlete's tested max. Athletes log this session on their own This Week page while the team is on this week."}
-              </p>
-            </div>
-          );
         }
+        body = (
+          <div className="flex flex-col gap-2">
+            <ReadOnlyDay day={day} latest={latest} bodyweight={user && active ? user.bodyweight : null} />
+            <p className="text-xs text-muted">
+              {user
+                ? active
+                  ? "To log this session, use the This Week tab."
+                  : "Percentages only. This is not the team's current week; your weights show on This Week when the team gets here."
+                : "Percentages of each athlete's tested max. Athletes log on their own This Week tab."}
+            </p>
+          </div>
+        );
       }
     }
   }
