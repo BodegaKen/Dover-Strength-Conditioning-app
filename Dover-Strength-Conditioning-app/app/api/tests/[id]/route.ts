@@ -18,7 +18,8 @@ async function requireCoach() {
 
 const LIFT_KEYS = ["squat", "bench", "deadlift", "ohp", "pullup"];
 
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(req: NextRequest, { params: paramsP }: { params: Promise<{ id: string }> }) {
+  const params = await paramsP;
   const auth = await requireCoach();
   if (auth.error) return auth.error;
   const body = await req.json().catch(() => null);
@@ -70,7 +71,8 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   return NextResponse.json({ test });
 }
 
-export async function DELETE(_req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(_req: NextRequest, { params: paramsP }: { params: Promise<{ id: string }> }) {
+  const params = await paramsP;
   const auth = await requireCoach();
   if (auth.error) return auth.error;
   const existing = await prisma.testEntry.findUnique({ where: { id: params.id }, include: { athlete: true } });

@@ -11,7 +11,7 @@ and getting this live at its own URL.
 
 ## Stack
 
-- Next.js 14 (App Router) + TypeScript + Tailwind
+- Next.js 16 (App Router) + TypeScript + Tailwind
 - PostgreSQL via Prisma (hosted free on Neon)
 - Username + PIN auth (no email — appropriate for a roster of minors),
   httpOnly JWT session cookie

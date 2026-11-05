@@ -37,12 +37,14 @@ type ActivityRow =
   | { kind: "test"; id: string; date: string; lift: string; fiveRM: number; e1RM: number };
 
 export default async function AthleteDetailPage({
-  params,
-  searchParams,
+  params: paramsP,
+  searchParams: searchParamsP,
 }: {
-  params: { id: string };
-  searchParams: { m?: string; edit?: string };
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ m?: string; edit?: string }>;
 }) {
+  const params = await paramsP;
+  const searchParams = await searchParamsP;
   const session = await getSession();
   if (!session) redirect("/login");
   const coach = await prisma.user.findUnique({ where: { id: session.sub } });

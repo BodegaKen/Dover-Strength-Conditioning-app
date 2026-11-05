@@ -9,7 +9,8 @@ import { nameProblem, usernameProblem } from "@/lib/validate";
 // edit ({ name?, username? }: fixes a typo or shortens the sign-in username; the PIN is untouched).
 // A coach can't archive or demote their own account, and the last active admin can't be
 // archived or demoted, so the team can't lock itself out.
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(req: NextRequest, { params: paramsP }: { params: Promise<{ id: string }> }) {
+  const params = await paramsP;
   const me = await getCoachApi();
   if (!me) return NextResponse.json({ error: "Coach access only." }, { status: 403 });
   if (!me.isAdmin) return NextResponse.json({ error: "Only a full admin coach can do that." }, { status: 403 });

@@ -9,7 +9,8 @@ import SpeedEntry, { type SpeedRow } from "./SpeedEntry";
 
 // Coach entry for hand-timed speed tests (Phase 3 Test Week and Retest Week, plus anything else you time).
 // Athletes never type these; they see them on their Progress page.
-export default async function SpeedPage({ searchParams }: { searchParams: { e?: string; d?: string } }) {
+export default async function SpeedPage({ searchParams: searchParamsP }: { searchParams: Promise<{ e?: string; d?: string }> }) {
+  const searchParams = await searchParamsP;
   const coach = await getCoachPage();
   if (!coach) redirect("/dashboard");
 

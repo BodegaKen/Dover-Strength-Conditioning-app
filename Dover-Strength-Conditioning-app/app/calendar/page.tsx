@@ -7,7 +7,8 @@ import NavBar from "@/components/NavBar";
 import MonthCalendar from "@/components/MonthCalendar";
 import DayPanel from "@/components/DayPanel";
 
-export default async function CalendarPage({ searchParams }: { searchParams: { m?: string; d?: string } }) {
+export default async function CalendarPage({ searchParams: searchParamsP }: { searchParams: Promise<{ m?: string; d?: string }> }) {
+  const searchParams = await searchParamsP;
   const session = await getSession();
   if (!session) redirect("/login");
   const user = await prisma.user.findUnique({ where: { id: session.sub } });

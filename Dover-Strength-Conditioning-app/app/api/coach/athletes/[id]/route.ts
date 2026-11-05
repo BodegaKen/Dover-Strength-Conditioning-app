@@ -7,7 +7,8 @@ import { audit } from "@/lib/audit";
 const requireCoach = getCoachApi;
 const ADMIN_ONLY = "Only a full admin coach can do that.";
 
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(req: NextRequest, { params: paramsP }: { params: Promise<{ id: string }> }) {
+  const params = await paramsP;
   const session = await requireCoach();
   if (!session) return NextResponse.json({ error: "Coach access only." }, { status: 403 });
 
@@ -98,7 +99,8 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   return NextResponse.json({ ok: true, changed: true });
 }
 
-export async function DELETE(_req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(_req: NextRequest, { params: paramsP }: { params: Promise<{ id: string }> }) {
+  const params = await paramsP;
   const session = await requireCoach();
   if (!session) return NextResponse.json({ error: "Coach access only." }, { status: 403 });
   if (!session.isAdmin) return NextResponse.json({ error: ADMIN_ONLY }, { status: 403 });

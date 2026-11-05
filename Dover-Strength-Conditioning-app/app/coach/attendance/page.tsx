@@ -17,7 +17,8 @@ import AttendanceRoster, { type RosterRow } from "./AttendanceRoster";
 // Coach attendance: pick a day, mark the roster present or absent, and see for each athlete whether
 // they also completed the day in the app. Credit = coach-marked present OR completed in the app (a coach's
 // Absent mark overrides). The month tally measures credited days against counted days, not an assumed schedule.
-export default async function AttendancePage({ searchParams }: { searchParams: { d?: string; t?: string; w?: string } }) {
+export default async function AttendancePage({ searchParams: searchParamsP }: { searchParams: Promise<{ d?: string; t?: string; w?: string }> }) {
+  const searchParams = await searchParamsP;
   const coach = await getCoachPage();
   if (!coach) redirect("/dashboard");
 

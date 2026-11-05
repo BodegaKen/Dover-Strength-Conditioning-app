@@ -50,7 +50,7 @@ export default function Markdown({ source }: { source: string }) {
         level === 1 ? "text-xl font-display uppercase tracking-wide mt-2"
         : level === 2 ? "text-lg font-display uppercase tracking-wide mt-4 border-b border-line pb-1"
         : "text-base font-semibold mt-3";
-      const Tag = (`h${Math.min(level + 1, 6)}`) as keyof JSX.IntrinsicElements;
+      const Tag = (`h${Math.min(level + 1, 6)}`) as keyof React.JSX.IntrinsicElements;
       blocks.push(React.createElement(Tag, { key: k(), className: cls }, inline(h[2], `h${key}`)));
       i++; continue;
     }

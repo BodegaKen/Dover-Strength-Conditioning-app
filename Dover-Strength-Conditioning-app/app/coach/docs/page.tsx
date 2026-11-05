@@ -27,7 +27,8 @@ function sectionsOf(markdown: string): Section[] {
   });
 }
 
-export default async function CoachDocsPage({ searchParams }: { searchParams: { s?: string } }) {
+export default async function CoachDocsPage({ searchParams: searchParamsP }: { searchParams: Promise<{ s?: string }> }) {
+  const searchParams = await searchParamsP;
   const coach = await getCoachPage();
   if (!coach) redirect("/dashboard");
 

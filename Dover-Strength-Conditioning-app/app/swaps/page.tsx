@@ -12,7 +12,8 @@ type Tab = { key: string; title: string; intro: string; groups: Group[] };
 // Equipment substitutions for athletes and coaches: what to do when a station's equipment is taken,
 // broken or missing. Generated from the Equipment Substitutions tables in the phase documents
 // (data/substitutions.json), so it is a snapshot like the Docs tab.
-export default async function SwapsPage({ searchParams }: { searchParams: { t?: string } }) {
+export default async function SwapsPage({ searchParams: searchParamsP }: { searchParams: Promise<{ t?: string }> }) {
+  const searchParams = await searchParamsP;
   const session = await getSession();
   if (!session) redirect("/login");
   const user = await prisma.user.findUnique({ where: { id: session.sub } });

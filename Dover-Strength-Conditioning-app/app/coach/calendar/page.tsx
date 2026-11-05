@@ -7,7 +7,8 @@ import DayPanel from "@/components/DayPanel";
 
 // Any coach: the lifting calendar. Tap a day to see what is scheduled that day. Read-only; athletes log
 // on their own pages.
-export default async function CoachCalendarPage({ searchParams }: { searchParams: { m?: string; d?: string } }) {
+export default async function CoachCalendarPage({ searchParams: searchParamsP }: { searchParams: Promise<{ m?: string; d?: string }> }) {
+  const searchParams = await searchParamsP;
   const coach = await getCoachPage();
   if (!coach) redirect("/dashboard");
 

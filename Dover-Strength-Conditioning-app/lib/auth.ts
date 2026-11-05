@@ -22,7 +22,7 @@ export async function verifyPin(pin: string, hash: string): Promise<boolean> {
 // still act: it must exist, be active, and still hold the PIN the token was
 // issued against. Role and mustChangePin come from the current user record.
 export async function getSession(): Promise<SessionPayload | null> {
-  const token = cookies().get(SESSION_COOKIE)?.value;
+  const token = (await cookies()).get(SESSION_COOKIE)?.value;
   if (!token) return null;
   const claims = await verifySessionToken(token);
   if (!claims) return null;
