@@ -36,7 +36,7 @@ function LoginForm() {
       }
       const next = params.get("next");
       if (data.mustChangePin) {
-        router.push("/change-pin");
+        router.push(data.weakPin ? "/change-pin?why=weak" : "/change-pin");
       } else {
         router.push(next || (data.role === "COACH" ? "/coach" : "/dashboard"));
       }

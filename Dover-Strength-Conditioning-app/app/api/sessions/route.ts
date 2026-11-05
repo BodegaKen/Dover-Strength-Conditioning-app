@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
+import { Prisma } from "@prisma/client";
 import { getApiSession } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { todayISO } from "@/lib/calc";
+import { todayISO, addDaysISO } from "@/lib/calc";
 import { SESSION_TYPES, MAX_SESSION_MIN, validDate } from "@/lib/validate";
+
+// Athletes can log or rate a session dated up to this many days back; older ones go through a coach.
+const PLAYER_DATE_WINDOW_DAYS = 14;
 
 export async function GET(req: NextRequest) {
   const session = await getApiSession();
@@ -36,23 +40,40 @@ export async function POST(req: NextRequest) {
   if (!SESSION_TYPES.includes(type)) return NextResponse.json({ error: "Unknown type." }, { status: 400 });
   if (!validDate(date)) return NextResponse.json({ error: "Bad date." }, { status: 400 });
   const athlete = await prisma.user.findUnique({ where: { id: athleteId } });
-  if (!athlete) return NextResponse.json({ error: "Unknown athlete." }, { status: 404 });
-
-  const load = rpe * durationMin;
-  // The post-session prompt sends replace: true so rating the same day's lift twice
-  // updates the one entry instead of doubling that day's load.
-  if (body?.replace === true) {
-    const existing = await prisma.sessionEntry.findFirst({ where: { athleteId, type, date } });
-    if (existing) {
-      const updated = await prisma.sessionEntry.update({
-        where: { id: existing.id },
-        data: { rpe, durationMin, load },
-      });
-      return NextResponse.json({ session: updated });
+  if (!athlete || athlete.role !== "PLAYER") return NextResponse.json({ error: "Unknown athlete." }, { status: 404 });
+  if (session.role !== "COACH") {
+    const today = todayISO();
+    if (date > today || date < addDaysISO(today, -PLAYER_DATE_WINDOW_DAYS)) {
+      return NextResponse.json(
+        { error: `Use a date from the past ${PLAYER_DATE_WINDOW_DAYS} days. Ask a coach to enter an older session.` },
+        { status: 400 }
+      );
     }
   }
-  const entry = await prisma.sessionEntry.create({
-    data: { athleteId, type, date, rpe, durationMin, load },
-  });
-  return NextResponse.json({ session: entry });
+
+  // One entry per athlete, day and session type: logging it again replaces the first instead of adding a
+  // second one, so a day's workload cannot be counted twice. (Two practices in one day are logged as one
+  // entry with the total minutes.) Done in one serializable transaction so simultaneous requests cannot
+  // both add a row.
+  const load = rpe * durationMin;
+  try {
+    const result = await prisma.$transaction(
+      async (tx) => {
+        const existing = await tx.sessionEntry.findFirst({ where: { athleteId, type, date } });
+        if (existing) {
+          const updated = await tx.sessionEntry.update({ where: { id: existing.id }, data: { rpe, durationMin, load } });
+          return { entry: updated, replaced: true };
+        }
+        const created = await tx.sessionEntry.create({ data: { athleteId, type, date, rpe, durationMin, load } });
+        return { entry: created, replaced: false };
+      },
+      { isolationLevel: Prisma.TransactionIsolationLevel.Serializable }
+    );
+    return NextResponse.json({ session: result.entry, replaced: result.replaced });
+  } catch (e) {
+    if ((e as { code?: string })?.code === "P2034") {
+      return NextResponse.json({ error: "Another entry was saving at the same moment. Try again." }, { status: 409 });
+    }
+    throw e;
+  }
 }

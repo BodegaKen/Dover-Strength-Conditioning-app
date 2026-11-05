@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function ChangePinPage() {
@@ -10,6 +10,10 @@ export default function ChangePinPage() {
   const [confirmPin, setConfirmPin] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [weak, setWeak] = useState(false);
+  useEffect(() => {
+    setWeak(new URLSearchParams(window.location.search).get("why") === "weak");
+  }, []);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -44,6 +48,11 @@ export default function ChangePinPage() {
         <p className="text-sm text-muted text-center mb-6">
           Pick a 4-6 digit PIN only you know. You&rsquo;ll use it every time you sign in.
         </p>
+        {weak && (
+          <p className="text-sm rounded-md border border-warning bg-warning-bg px-3 py-2 mb-4">
+            Your current PIN is too easy to guess under the app&rsquo;s PIN rules, so you need to pick a new one before you continue.
+          </p>
+        )}
         <form onSubmit={onSubmit} className="bg-surface border border-line rounded-xl p-5 flex flex-col gap-4">
           <Field label="Current PIN" value={currentPin} onChange={setCurrentPin} />
           <Field label="New PIN (4-6 digits; coaches 6)" value={newPin} onChange={setNewPin} />

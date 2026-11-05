@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
   }
   if (!validDate(date)) return NextResponse.json({ error: "Bad date." }, { status: 400 });
   const athlete = await prisma.user.findUnique({ where: { id: athleteId } });
-  if (!athlete) return NextResponse.json({ error: "Unknown athlete." }, { status: 404 });
+  if (!athlete || athlete.role !== "PLAYER") return NextResponse.json({ error: "Unknown athlete." }, { status: 404 });
 
   // An athlete can enter max tests only in a Testing or Retest week (the same rule the dashboard uses to
   // show the form), for a recent date, and within sane limits. Anything else goes through a coach.

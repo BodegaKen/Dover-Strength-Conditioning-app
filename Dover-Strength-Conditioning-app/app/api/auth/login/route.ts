@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { verifyPin, signSession, pinFingerprint, SESSION_COOKIE } from "@/lib/auth";
+import { pinProblemFor } from "@/lib/pinpolicy";
 import { claimPinAttempt, clearPinFailures, MAX_FAILS, LOCK_MINUTES } from "@/lib/throttle";
 
 // Wrong-PIN throttling lives in lib/throttle.ts (shared with change-pin).
@@ -38,11 +39,21 @@ export async function POST(req: NextRequest) {
 
   await clearPinFailures(user.id);
 
+  // A PIN set before the current strength rules (or by the seed or an admin) is checked here, the one
+  // moment the plain PIN is in hand; a PIN that does not meet today's rules must be changed now.
+  const weakPin = pinProblemFor(user.role, pin) !== null;
+  let mustChangePin = user.mustChangePin;
+  if (weakPin && !mustChangePin) {
+    await prisma.user.update({ where: { id: user.id }, data: { mustChangePin: true } });
+    mustChangePin = true;
+  }
+
   const token = await signSession({ sub: user.id, role: user.role, pv: await pinFingerprint(user.pinHash) });
   const res = NextResponse.json({
     ok: true,
     role: user.role,
-    mustChangePin: user.mustChangePin,
+    mustChangePin,
+    weakPin,
   });
   res.cookies.set(SESSION_COOKIE, token, {
     httpOnly: true,

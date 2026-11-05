@@ -226,7 +226,11 @@ function SessionForm({ athleteId }: { athleteId?: string }) {
         setFeedback({ msg: data.error ?? "Couldn't save that session.", err: true });
         return;
       }
-      setFeedback({ msg: `${type} session logged: RPE ${rpe} × ${d} min = ${rpe * d} load.` });
+      setFeedback({
+        msg: data.replaced
+          ? `Updated your ${type} session for that date: RPE ${rpe} × ${d} min = ${rpe * d} load. (There is one entry per day and type; two practices in a day go in as one entry with the total minutes.)`
+          : `${type} session logged: RPE ${rpe} × ${d} min = ${rpe * d} load.`,
+      });
       router.refresh();
     } finally {
       setLoading(false);
