@@ -46,7 +46,7 @@ export default function ChangePinPage() {
         </p>
         <form onSubmit={onSubmit} className="bg-surface border border-line rounded-xl p-5 flex flex-col gap-4">
           <Field label="Current PIN" value={currentPin} onChange={setCurrentPin} />
-          <Field label="New PIN (4-6 digits)" value={newPin} onChange={setNewPin} />
+          <Field label="New PIN (4-6 digits; coaches 6)" value={newPin} onChange={setNewPin} />
           <Field label="Confirm new PIN" value={confirmPin} onChange={setConfirmPin} />
           {error && <div className="text-sm rounded-md border border-danger bg-danger-bg px-3 py-2">{error}</div>}
           <button

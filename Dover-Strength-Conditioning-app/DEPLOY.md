@@ -59,7 +59,7 @@ Vercel deploys from a GitHub repo.
    |---|---|
    | `DATABASE_URL` | the **pooled** Neon connection string from step 1 |
    | `DIRECT_URL` | the **direct** Neon connection string from step 1 |
-   | `JWT_SECRET` | any long random string — generate one with `openssl rand -base64 32`, or just mash the keyboard for 40+ characters |
+   | `JWT_SECRET` | a long random string: generate one with `openssl rand -base64 32` (or `node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"`); do not make one up by hand |
    | `COACH_NAME` | your name, e.g. `Coach Quinones` |
    | `COACH_USERNAME` | the username you want to log in with, e.g. `kquinones` |
    | `COACH_PIN` | a 4-6 digit PIN you'll use to log in the first time |

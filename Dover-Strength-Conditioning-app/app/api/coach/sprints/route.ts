@@ -21,8 +21,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Send between 1 and 500 entries." }, { status: 400 });
   }
 
-  const players = await prisma.user.findMany({ where: { role: "PLAYER" }, select: { id: true } });
+  const players = await prisma.user.findMany({ where: { role: "PLAYER" }, select: { id: true, name: true } });
   const ok = new Set(players.map((p) => p.id));
+  const nameOf = new Map(players.map((p) => [p.id, p.name]));
   const clear: string[] = [];
   const save: { athleteId: string; seconds: number }[] = [];
   for (const raw of entries as any[]) {
@@ -42,6 +43,15 @@ export async function POST(req: NextRequest) {
     save.push({ athleteId, seconds });
   }
 
+  // Previous times, so the audit entry can show what was replaced or removed.
+  const previous = new Map<string, number>();
+  try {
+    const prev = await sprintTable().findMany({ where: { event: ev.key, date, athleteId: { in: [...save.map((s) => s.athleteId), ...clear] } } });
+    for (const r of prev as { athleteId: string; seconds: number }[]) previous.set(r.athleteId, r.seconds);
+  } catch {
+    /* the save below reports a missing table */
+  }
+
   try {
     const t = sprintTable();
     if (clear.length) await t.deleteMany({ where: { event: ev.key, date, athleteId: { in: clear } } });
@@ -55,6 +65,12 @@ export async function POST(req: NextRequest) {
   } catch {
     return NextResponse.json({ error: "The speed-test table doesn't exist yet. Run `npx prisma db push` once, then try again." }, { status: 500 });
   }
-  await audit(coach, "speed_times", `${ev.label} ${date}`, `${save.length} saved, ${clear.length} cleared`);
+  const fmt = (id: string) => nameOf.get(id) ?? id;
+  const savedList = save
+    .filter((s) => previous.get(s.athleteId) !== s.seconds)
+    .map((s) => `${fmt(s.athleteId)} ${previous.has(s.athleteId) ? `${previous.get(s.athleteId)} -> ` : ""}${s.seconds}`);
+  const clearedList = clear.filter((id) => previous.has(id)).map((id) => `${fmt(id)} (was ${previous.get(id)})`);
+  const detail = `${save.length} saved, ${clear.length} cleared. Changed: ${savedList.join("; ") || "none"}. Removed: ${clearedList.join("; ") || "none"}.`;
+  await audit(coach, "speed_times", `${ev.label} ${date}`, detail.length > 3000 ? detail.slice(0, 3000) + "..." : detail);
   return NextResponse.json({ ok: true, saved: save.length, cleared: clear.length });
 }

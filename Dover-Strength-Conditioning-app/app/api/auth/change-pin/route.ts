@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSession, hashPin, verifyPin, signSession, pinFingerprint, weakPinReason, SESSION_COOKIE } from "@/lib/auth";
+import { getSession, hashPin, verifyPin, signSession, pinFingerprint, SESSION_COOKIE } from "@/lib/auth";
+import { pinProblemFor } from "@/lib/pinpolicy";
 import { prisma } from "@/lib/db";
 import { claimPinAttempt } from "@/lib/throttle";
 
@@ -12,7 +13,7 @@ export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => null);
   const currentPin = (body?.currentPin ?? "").toString().trim();
   const newPin = (body?.newPin ?? "").toString().trim();
-  const weak = weakPinReason(newPin);
+  const weak = pinProblemFor(session.role, newPin);
   if (weak) return NextResponse.json({ error: weak }, { status: 400 });
   if (newPin === currentPin) {
     return NextResponse.json({ error: "Pick a PIN different from your current one." }, { status: 400 });

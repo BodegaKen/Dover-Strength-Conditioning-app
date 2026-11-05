@@ -1,6 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getApiSession, hashPin, slugifyUsername, randomPin } from "@/lib/auth";
+import { hashPin, slugifyUsername, randomPin } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { getCoachApi } from "@/lib/admin";
+import { audit } from "@/lib/audit";
+import { nameProblem } from "@/lib/validate";
+
+// Bounds for one paste: a roster is about 100 players, so these leave plenty of room while stopping a runaway request.
+const MAX_PASTE_CHARS = 12000;
+const MAX_ENTRIES = 150;
+const MAX_POSITION_CHARS = 40;
 
 // Pulls a trailing graduation-year token off the end of a string, however
 // it's written: "2027", "'27" (apostrophe required for 2-digit so a bare
@@ -69,14 +77,26 @@ function parseRosterPaste(text: string): { name: string; position: string; gradY
 }
 
 export async function POST(req: NextRequest) {
-  const session = await getApiSession();
-  if (!session || session.role !== "COACH") {
+  const coach = await getCoachApi();
+  if (!coach) {
     return NextResponse.json({ error: "Coach access only." }, { status: 403 });
   }
   const body = await req.json().catch(() => null);
   const text = (body?.text ?? "").toString();
+  if (text.length > MAX_PASTE_CHARS) {
+    return NextResponse.json({ error: `That paste is too long (over ${MAX_PASTE_CHARS} characters). Add the roster in smaller batches.` }, { status: 400 });
+  }
   const entries = parseRosterPaste(text);
   if (!entries.length) return NextResponse.json({ error: "Nothing to add." }, { status: 400 });
+  if (entries.length > MAX_ENTRIES) {
+    return NextResponse.json({ error: `Add at most ${MAX_ENTRIES} athletes at a time (this paste has ${entries.length}).` }, { status: 400 });
+  }
+  // Same name rules as the single-athlete form; nothing is created if any line fails.
+  for (const entry of entries) {
+    entry.name = entry.name.replace(/\s+/g, " ").trim();
+    const problem = nameProblem(entry.name) ?? (entry.position.length > MAX_POSITION_CHARS ? `Position is too long for "${entry.name}" (max ${MAX_POSITION_CHARS} characters).` : null);
+    if (problem) return NextResponse.json({ error: `${entry.name ? `"${entry.name.slice(0, 40)}": ` : ""}${problem} Nothing was added.` }, { status: 400 });
+  }
 
   const existing: { name: string }[] = await prisma.user.findMany({
     where: { role: "PLAYER" },
@@ -113,5 +133,6 @@ export async function POST(req: NextRequest) {
     existingNames.add(entry.name.toLowerCase());
   }
 
+  await audit(coach, "bulk add athletes", null, `${created.length} created, ${skipped} skipped: ${created.map((c) => c.name).join("; ").slice(0, 2500)}`);
   return NextResponse.json({ created, skipped });
 }

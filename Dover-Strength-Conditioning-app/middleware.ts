@@ -11,6 +11,22 @@ function isPublic(pathname: string): boolean {
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
+
+  // Same-origin check for writes: a browser POST/PATCH/DELETE to the API must come from this site.
+  // Requests with no Origin header (not a browser) fall through to the normal session checks.
+  if (pathname.startsWith("/api/") && !["GET", "HEAD", "OPTIONS"].includes(req.method)) {
+    const origin = req.headers.get("origin");
+    if (origin) {
+      let sameOrigin = false;
+      try {
+        sameOrigin = new URL(origin).host === (req.headers.get("host") ?? req.nextUrl.host);
+      } catch {
+        sameOrigin = false;
+      }
+      if (!sameOrigin) return NextResponse.json({ error: "Cross-site request blocked." }, { status: 403 });
+    }
+  }
+
   if (isPublic(pathname)) return NextResponse.next();
 
   const token = req.cookies.get(SESSION_COOKIE)?.value;

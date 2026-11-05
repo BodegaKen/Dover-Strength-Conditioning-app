@@ -55,7 +55,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     const pin = randomPin();
     // Resetting your own PIN here would just sign you out with a PIN you must change; use Change PIN instead.
     if (target.id === me.id) return NextResponse.json({ error: "Change your own PIN from the Change PIN screen." }, { status: 400 });
-    await prisma.user.update({ where: { id: target.id }, data: { pinHash: await hashPin(pin), mustChangePin: true } });
+    await prisma.user.update({ where: { id: target.id }, data: { pinHash: await hashPin(pin), mustChangePin: true, failedLogins: 0, lockedUntil: null } });
     await audit(me, "reset coach PIN", target.name);
     return NextResponse.json({ ok: true, pin });
   }

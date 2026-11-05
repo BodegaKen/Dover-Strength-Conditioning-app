@@ -19,7 +19,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   const auth = await requireCoach();
   if (auth.error) return auth.error;
   const body = await req.json().catch(() => null);
-  const existing = await prisma.sessionEntry.findUnique({ where: { id: params.id } });
+  const existing = await prisma.sessionEntry.findUnique({ where: { id: params.id }, include: { athlete: { select: { name: true } } } });
   if (!existing) return NextResponse.json({ error: "Entry not found." }, { status: 404 });
 
   const rpe = body && "rpe" in body ? Number(body.rpe) : existing.rpe;
@@ -36,16 +36,23 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     where: { id: params.id },
     data: { rpe, durationMin, date, type, load: rpe * durationMin },
   });
-  await audit(auth.coach, "edit session entry", null, `${existing.type} ${existing.date}`);
+  await audit(
+    auth.coach,
+    "edit session entry",
+    existing.athlete.name,
+    `${existing.type} ${existing.date}: RPE ${existing.rpe} -> ${rpe}, ${existing.durationMin} min -> ${durationMin} min` +
+      (date !== existing.date ? `, date -> ${date}` : "") +
+      (type !== existing.type ? `, type -> ${type}` : "")
+  );
   return NextResponse.json({ session });
 }
 
 export async function DELETE(_req: NextRequest, { params }: { params: { id: string } }) {
   const auth = await requireCoach();
   if (auth.error) return auth.error;
-  const existing = await prisma.sessionEntry.findUnique({ where: { id: params.id } });
+  const existing = await prisma.sessionEntry.findUnique({ where: { id: params.id }, include: { athlete: { select: { name: true } } } });
   if (!existing) return NextResponse.json({ error: "Entry not found." }, { status: 404 });
   await prisma.sessionEntry.delete({ where: { id: params.id } });
-  await audit(auth.coach, "delete session entry", null, `${existing.type} ${existing.date}`);
+  await audit(auth.coach, "delete session entry", existing.athlete.name, `${existing.type} ${existing.date}, RPE ${existing.rpe}, ${existing.durationMin} min`);
   return NextResponse.json({ ok: true });
 }

@@ -57,7 +57,14 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     data.bodyweightAtTest = null;
   }
   const test = await prisma.testEntry.update({ where: { id: params.id }, data });
-  await audit(auth.coach, "edit test entry", existing.athlete.name, `${existing.lift} ${existing.date}`);
+  await audit(
+    auth.coach,
+    "edit test entry",
+    existing.athlete.name,
+    `${existing.lift} ${existing.date}, 5RM ${existing.fiveRM} -> ${test.fiveRM}` +
+      (test.lift !== existing.lift ? `, lift ${existing.lift} -> ${test.lift}` : "") +
+      (test.date !== existing.date ? `, date ${existing.date} -> ${test.date}` : "")
+  );
   return NextResponse.json({ test });
 }
 
@@ -67,6 +74,6 @@ export async function DELETE(_req: NextRequest, { params }: { params: { id: stri
   const existing = await prisma.testEntry.findUnique({ where: { id: params.id }, include: { athlete: true } });
   if (!existing) return NextResponse.json({ error: "Entry not found." }, { status: 404 });
   await prisma.testEntry.delete({ where: { id: params.id } });
-  await audit(auth.coach, "delete test entry", existing.athlete.name, `${existing.lift} ${existing.date}`);
+  await audit(auth.coach, "delete test entry", existing.athlete.name, `${existing.lift} ${existing.date}, 5RM ${existing.fiveRM}, e1RM ${Math.round(existing.e1RM)}`);
   return NextResponse.json({ ok: true });
 }

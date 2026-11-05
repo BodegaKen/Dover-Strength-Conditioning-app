@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { getCoachApi } from "@/lib/admin";
 import { validDate } from "@/lib/validate";
 import { coachRunDayFor } from "@/lib/coachDays";
+import { audit } from "@/lib/audit";
 
 // Coach roll call (any coach, full admin or limited). One row per athlete per day.
 //   { date, athleteId, present: true | false | null }   null clears the mark
@@ -28,7 +29,8 @@ export async function POST(req: NextRequest) {
   if (body?.bulk === "present" || body?.bulk === "clear") {
     const athletes = await prisma.user.findMany({ where: { role: "PLAYER", active: true }, select: { id: true } });
     if (body.bulk === "clear") {
-      await prisma.attendance.deleteMany({ where: { date, athleteId: { in: athletes.map((a) => a.id) } } });
+      const cleared = await prisma.attendance.deleteMany({ where: { date, athleteId: { in: athletes.map((a) => a.id) } } });
+      await audit(coach, "attendance: clear all", date, `${cleared.count} marks cleared`);
     } else {
       await prisma.$transaction(
         athletes.map((a) =>
@@ -39,16 +41,20 @@ export async function POST(req: NextRequest) {
           })
         )
       );
+      await audit(coach, "attendance: mark all present", date, `${athletes.length} athletes`);
     }
     return NextResponse.json({ ok: true });
   }
 
   const athleteId = (body?.athleteId ?? "").toString();
-  const athlete = await prisma.user.findUnique({ where: { id: athleteId }, select: { role: true } });
+  const athlete = await prisma.user.findUnique({ where: { id: athleteId }, select: { role: true, name: true } });
   if (!athlete || athlete.role !== "PLAYER") return NextResponse.json({ error: "Unknown athlete." }, { status: 404 });
+  const before = await prisma.attendance.findUnique({ where: { athleteId_date: { athleteId, date } }, select: { present: true } });
+  const label = (v: boolean | null | undefined) => (v === true ? "present" : v === false ? "absent" : "no mark");
 
   if (body?.present === null) {
     await prisma.attendance.deleteMany({ where: { athleteId, date } });
+    await audit(coach, "attendance: clear", `${athlete.name} ${date}`, `${label(before?.present)} -> no mark`);
     return NextResponse.json({ ok: true });
   }
   if (typeof body?.present !== "boolean") return NextResponse.json({ error: "present must be true, false or null." }, { status: 400 });
@@ -57,5 +63,6 @@ export async function POST(req: NextRequest) {
     create: { athleteId, date, present: body.present, markedBy: coach.name },
     update: { present: body.present, markedBy: coach.name },
   });
+  await audit(coach, "attendance: mark", `${athlete.name} ${date}`, `${label(before?.present)} -> ${label(body.present)}`);
   return NextResponse.json({ ok: true });
 }

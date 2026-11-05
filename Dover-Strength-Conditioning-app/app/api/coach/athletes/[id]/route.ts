@@ -37,7 +37,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     const pinHash = await hashPin(pin);
     await prisma.user.update({
       where: { id: athlete.id },
-      data: { pinHash, mustChangePin: true },
+      data: { pinHash, mustChangePin: true, failedLogins: 0, lockedUntil: null },
     });
     await audit(session, "reset athlete PIN", athlete.name);
     return NextResponse.json({ ok: true, pin });

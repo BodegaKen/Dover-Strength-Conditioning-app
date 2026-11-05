@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
   if (session.role === "COACH" && body?.athleteId) athleteId = String(body.athleteId);
 
   const athlete = await prisma.user.findUnique({ where: { id: athleteId } });
-  if (!athlete) return NextResponse.json({ error: "Unknown athlete." }, { status: 404 });
+  if (!athlete || (session.role === "COACH" && athlete.role !== "PLAYER")) return NextResponse.json({ error: "Unknown athlete." }, { status: 404 });
 
   const planDay = String(body?.planDay ?? "");
   if (body?.date != null && body.date !== "" && !validDate(String(body.date))) {
