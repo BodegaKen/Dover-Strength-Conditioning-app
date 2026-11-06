@@ -12,7 +12,7 @@ type Section = { key: string; tab: string; markdown: string };
 
 // Coach-only: Program Design and Rationale (sections 1-8; the compliance and open-items sections and the
 // revision notes are left out on purpose), a snapshot copied from the program documents, shown one section
-// per tab so each phase opens on its own. Athletes never see this page (middleware and the check below
+// per tab so each phase opens on its own. Athletes never see this page (the proxy and the check below
 // both require a coach).
 function sectionsOf(markdown: string): Section[] {
   const parts = markdown.split(/^## /m).slice(1); // drop the title line before the first "## "

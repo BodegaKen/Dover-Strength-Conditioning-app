@@ -4,7 +4,7 @@ import { prisma } from "./db";
 import { weakPinReason } from "./pinpolicy";
 import { SESSION_COOKIE, verifySessionToken, pinFingerprint, type SessionPayload } from "./token";
 
-// Token helpers live in ./token (edge-safe, used by the middleware); re-exported so
+// Token helpers live in ./token (edge-safe, used by the proxy); re-exported so
 // existing "@/lib/auth" imports keep working.
 export { SESSION_COOKIE, SESSION_DAYS, signSession, verifySessionToken, pinFingerprint } from "./token";
 export type { SessionPayload, TokenClaims } from "./token";

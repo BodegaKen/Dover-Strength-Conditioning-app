@@ -1,4 +1,4 @@
-// Edge-safe session-token helpers (jose + Web Crypto only). The middleware imports
+// Edge-safe session-token helpers (jose + Web Crypto only). The proxy imports
 // from here, so nothing in this file may pull in Prisma, bcrypt or next/headers.
 import { SignJWT, jwtVerify } from "jose";
 
