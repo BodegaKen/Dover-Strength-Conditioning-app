@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-04",
+ "updated": "2026-11-11",
  "note": "Phase dates and a typical week for each phase, shown at the top of each phase tab on the coach Docs page.",
  "phases": {
   "0": {
@@ -258,7 +258,7 @@
     }
    ],
    "keyDates": [
-    "Test Week: Monday speed test (bodyweight, 10m/20m, 40-yard), Tuesday 300-yard shuttle, Wednesday first Day D (upper body only), Thursday makeups and buffer (the shuttle for first-timers who have not done a sprint runway; a returning athlete who missed the Bridge needs four separate-day non-maximal workouts first, otherwise his first shuttle is Week 2's Thursday). Friday Jun 25 is a last resort only.",
+    "Test Week: Monday speed test (bodyweight, 10m/20m, 40-yard), Tuesday 300-yard shuttle, Wednesday first Day D (upper body only), Thursday makeups and buffer (the shuttle for an athlete who has not done a sprint runway, first-timers included, but only once he has four separate-day non-maximal workouts, otherwise his first shuttle is Week 2's Thursday). Friday Jun 25 is a last resort only.",
     "Retest Week (Jul 26-29): Monday speed retest and Tuesday 300-yard shuttle retest, same protocol and same timers as Test Week; Wednesday an upper-body-only lift (2 x 5 at about 75%, no Squat, Deadlift or 5RM tests); Thursday makeups and buffer. Friday Jul 30 is a last resort only for a shuttle retest that could not run Thursday.",
     "No Nordic in Test Week or the Retest Week; the last Nordic is Thu Jul 22. No sled, plyometrics or SIT in the Retest Week. Hand timing: read group changes, and treat an individual change under about 0.15 s as noise (a coach-set rule of thumb).",
     "Sled load by week: 50-60% bodyweight (Week 2), 80-90% (Week 3), 90-100% technique-gated (Weeks 4-5). One sled session a week.",
@@ -287,7 +287,7 @@
        "title": "300-yard shuttle",
        "lines": [
         "NMT warm-up",
-        "One timed 300-yard shuttle (first-timers without a completed runway, and returning athletes who missed the Bridge and meet the four-workout gate, move to Thursday)",
+        "One timed 300-yard shuttle (an athlete without a completed runway, first-timers included, runs it Thursday only if he meets the four-workout gate; otherwise it waits for Week 2's Day C)",
         "No lifting today",
         "Then 7v7"
        ]

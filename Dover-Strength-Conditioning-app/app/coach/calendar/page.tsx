@@ -28,7 +28,7 @@ export default async function CoachCalendarPage({ searchParams: searchParamsP }:
           <p className="text-sm text-muted mb-3">
             The Dover Public Schools 2026-27 district calendar with the lifting phases outlined (Phase 0 through Phase 3 and the
             Phase 2-3 Bridge), plus a key page. Phase 4 and the blackout week are not shaded because their dates are not set yet.
-            Last updated Nov 4, 2026.
+            Last updated Nov 11, 2026.
           </p>
           <a
             href="/coach/lifting-calendar-2026-27.pdf"
