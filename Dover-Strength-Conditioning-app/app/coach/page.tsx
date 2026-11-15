@@ -36,12 +36,21 @@ export default async function CoachPage() {
   }));
 
   const latestByAthleteLift: Record<string, Record<string, number>> = {};
-  for (const t of tests.sort((a: TestEntryRecord, b: TestEntryRecord) => (a.date < b.date ? 1 : -1))) {
+  // Newest test date first; on the same date the most recently entered one counts.
+  const newestFirst = (a: TestEntryRecord, b: TestEntryRecord) =>
+    a.date !== b.date ? (a.date < b.date ? 1 : -1) : new Date(b.enteredAt).getTime() - new Date(a.enteredAt).getTime();
+  for (const t of tests.sort(newestFirst)) {
     latestByAthleteLift[t.athleteId] ??= {};
     if (!(t.lift in latestByAthleteLift[t.athleteId])) latestByAthleteLift[t.athleteId][t.lift] = shownE1RM(t.lift, t.e1RM, t.bodyweightAtTest);
   }
 
   const active = athletes.filter((a: AthleteRecord) => a.active);
+  // Every pull-up test in the app is a weighted 5RM (added weight), which the program tests only at 8+
+  // strict bodyweight reps. An athlete with one on file but still on the Bodyweight roster track keeps
+  // seeing the 3 x max-reps plan, so flag it for the coach to switch (or ignore if intended).
+  const pullupTrackCheck = active.filter(
+    (a: AthleteRecord) => a.pullupTrack === "BODYWEIGHT" && latestByAthleteLift[a.id]?.pullup != null
+  );
   const rows = active.map((a: AthleteRecord) => {
     const mySessions = sessions
       .filter((s: SessionEntryRecord) => s.athleteId === a.id)
@@ -67,6 +76,15 @@ export default async function CoachPage() {
             <Link href="/coach/audit" className="text-accent hover:underline">
               View the coach audit log &rarr;
             </Link>
+          </div>
+        )}
+
+        {pullupTrackCheck.length > 0 && (
+          <div className="text-sm rounded-md border border-warning bg-warning-bg px-3 py-2">
+            <span className="font-semibold">Pull-up track check:</span> {pullupTrackCheck.map((a) => a.name).join(", ")}{" "}
+            {pullupTrackCheck.length === 1 ? "has" : "have"} a weighted pull-up test on file but{" "}
+            {pullupTrackCheck.length === 1 ? "is" : "are"} still on the Bodyweight / assisted pull-up track, so they see the max-reps plan.
+            Set Pull-ups to Weighted in the roster below, or leave it if that is intended.
           </div>
         )}
 

@@ -4,8 +4,7 @@ import { prisma } from "@/lib/db";
 import { Prisma } from "@prisma/client";
 import { calcE1RM, pullupSystemE1RM, todayISO, mondayOf, addDaysISO } from "@/lib/calc";
 import { LIFT_KEYS, MAX_FIVE_RM, validDate } from "@/lib/validate";
-import { getPeriod } from "@/lib/prescription";
-import { isTestPeriod } from "@/lib/plan";
+import { selfTestWindow, selfTestDateProblem } from "@/lib/testWindow";
 import { audit } from "@/lib/audit";
 import { getCoachApi } from "@/lib/admin";
 
@@ -60,18 +59,15 @@ export async function POST(req: NextRequest) {
   if (!athlete || athlete.role !== "PLAYER") return NextResponse.json({ error: "Unknown athlete." }, { status: 404 });
 
   // An athlete can enter max tests only in a Testing or Retest week (the same rule the dashboard uses to
-  // show the form), for a recent date, and within sane limits. Anything else goes through a coach.
+  // show the form), dated inside that week's own dates, and within sane limits. Anything else goes
+  // through a coach; coach entries have no date limit (make-ups run in the following week).
   const byPlayer = session.role !== "COACH";
   if (byPlayer) {
     const state = await prisma.programState.findUnique({ where: { id: "current" } });
-    if (!isTestPeriod(getPeriod(state?.trackKey ?? "phase1", state?.week ?? 1))) {
-      return NextResponse.json({ error: "Max tests are entered during Testing Week and retest weeks. Ask a coach to enter a make-up test." }, { status: 403 });
-    }
-    // One self-entered test per lift per calendar week (enforced inside the save below), dated this week.
-    const today = todayISO();
-    if (date > today || mondayOf(date) !== mondayOf(today)) {
-      return NextResponse.json({ error: "Use a date from this week. Ask a coach to enter an older test." }, { status: 400 });
-    }
+    const win = selfTestWindow(state?.trackKey ?? "phase1", state?.week ?? 1);
+    const problem = selfTestDateProblem(win, date, todayISO());
+    if (problem) return NextResponse.json({ error: problem }, { status: win.open ? 400 : 403 });
+    // One self-entered test per lift per calendar week is enforced inside the save below.
     const cap = PLAYER_MAX_FIVE_RM[lift];
     if (cap && fiveRM > cap) {
       return NextResponse.json({ error: `That looks too high to enter yourself (over ${cap} lb). Check for a typo, or ask a coach to enter it.` }, { status: 400 });
@@ -113,7 +109,7 @@ export async function POST(req: NextRequest) {
           if (already) {
             throw new RuleError("You already entered this test this week. If it is wrong, ask a coach to correct it.", 409);
           }
-          const prior = await tx.testEntry.findFirst({ where: { athleteId, lift }, orderBy: { date: "desc" } });
+          const prior = await tx.testEntry.findFirst({ where: { athleteId, lift }, orderBy: [{ date: "desc" }, { enteredAt: "desc" }] });
           if (prior && e1RM > prior.e1RM * PLAYER_MAX_JUMP) {
             throw new RuleError("That is a big jump from your last test. Check for a typo; if it is right, ask a coach to enter it.", 400);
           }

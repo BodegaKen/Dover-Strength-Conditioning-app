@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { LIFTS } from "@/lib/calc";
 
-type TestInit = { kind: "test"; id: string; fiveRM: number; date: string };
+// bodyweight = the bodyweight used for a pull-up entry's total-load e1RM (or the roster one, as a prefill).
+type TestInit = { kind: "test"; id: string; lift: string; fiveRM: number; bodyweight: number | null; date: string };
 type SessionInit = { kind: "session"; id: string; type: string; rpe: number; durationMin: number; date: string };
 
 // Coach-only Edit / Delete controls for one row of an athlete's weekly log.
@@ -18,6 +20,8 @@ export default function EntryActions(props: TestInit | SessionInit) {
   const [rpe, setRpe] = useState(props.kind === "session" ? String(props.rpe) : "");
   const [dur, setDur] = useState(props.kind === "session" ? String(props.durationMin) : "");
   const [type, setType] = useState(props.kind === "session" ? props.type : "lift");
+  const [lift, setLift] = useState(props.kind === "test" ? props.lift : "squat");
+  const [bw, setBw] = useState(props.kind === "test" && props.bodyweight != null ? String(props.bodyweight) : "");
 
   const base = props.kind === "test" ? `/api/tests/${props.id}` : `/api/sessions/${props.id}`;
 
@@ -27,7 +31,7 @@ export default function EntryActions(props: TestInit | SessionInit) {
     try {
       const body =
         props.kind === "test"
-          ? { fiveRM: Number(five), date }
+          ? { fiveRM: Number(five), date, lift, ...(lift === "pullup" ? { bodyweight: bw } : {}) }
           : { rpe: Number(rpe), durationMin: Number(dur), date, type };
       const res = await fetch(base, {
         method: "PATCH",
@@ -99,10 +103,25 @@ export default function EntryActions(props: TestInit | SessionInit) {
     <span className="flex flex-wrap items-center gap-2">
       <input type="date" className={input} value={date} onChange={(e) => setDate(e.target.value)} />
       {props.kind === "test" ? (
-        <label className="flex items-center gap-1 text-xs text-muted">
-          5RM
-          <input type="number" step="any" min={1} className={`${input} w-24`} value={five} onChange={(e) => setFive(e.target.value)} />
-        </label>
+        <>
+          <select className={input} value={lift} onChange={(e) => setLift(e.target.value)} aria-label="Lift">
+            {LIFTS.map((l) => (
+              <option key={l.key} value={l.key}>
+                {l.label}
+              </option>
+            ))}
+          </select>
+          <label className="flex items-center gap-1 text-xs text-muted">
+            {lift === "pullup" ? "Added lb" : "5RM"}
+            <input type="number" step="any" min={1} className={`${input} w-24`} value={five} onChange={(e) => setFive(e.target.value)} />
+          </label>
+          {lift === "pullup" && (
+            <label className="flex items-center gap-1 text-xs text-muted">
+              Bodyweight
+              <input type="number" step="any" min={50} max={600} className={`${input} w-20`} value={bw} onChange={(e) => setBw(e.target.value)} />
+            </label>
+          )}
+        </>
       ) : (
         <>
           <select className={input} value={type} onChange={(e) => setType(e.target.value)}>

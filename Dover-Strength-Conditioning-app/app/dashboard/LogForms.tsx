@@ -176,6 +176,13 @@ function TestForm({
         </div>
       </div>
       {lift === "pullup" && (
+        <p className="text-sm rounded-md border border-line px-3 py-2">
+          Enter a pull-up here only if you did <strong>8 or more strict bodyweight reps</strong> and then tested a weighted 5RM. Type the{" "}
+          <strong>added weight</strong> on the belt or vest in pounds, not a rep count. Under 8 reps? Don&rsquo;t enter anything here: tell
+          your coach your rep count.
+        </p>
+      )}
+      {lift === "pullup" && (
         <div className="max-w-xs">
           <label className="block text-xs font-semibold uppercase tracking-wide text-muted mb-1">Bodyweight today (lb)</label>
           <input

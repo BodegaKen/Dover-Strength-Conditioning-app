@@ -3,7 +3,8 @@ import Link from "next/link";
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { getPeriod, getTrack, computeTargetWeight, formatSetsReps, type RawLift } from "@/lib/prescription";
-import { LIFTS, type LiftKey } from "@/lib/calc";
+import { LIFTS, todayISO, type LiftKey } from "@/lib/calc";
+import { selfTestWindow, selfTestOpenOn } from "@/lib/testWindow";
 import { buildPlanDays, dayProgress, isTestPeriod, laneFor, type TrainingTrack, type PullupMode } from "@/lib/plan";
 import { weekInfo } from "@/lib/schedule";
 import NavBar from "@/components/NavBar";
@@ -33,7 +34,7 @@ export default async function DashboardPage() {
 
   const latestTests = await prisma.testEntry.findMany({
     where: { athleteId: user.id },
-    orderBy: { date: "desc" },
+    orderBy: [{ date: "desc" }, { enteredAt: "desc" }], // same-date entries: the newest one counts
   });
   const latestByLift: Record<string, (typeof latestTests)[number]> = {};
   for (const t of latestTests) {
@@ -41,6 +42,9 @@ export default async function DashboardPage() {
   }
 
   const testWeek = isTestPeriod(period);
+  // The test form is offered only on the test week's own dates (same rule the /api/tests route enforces).
+  const testWin = selfTestWindow(trackKey, week);
+  const testFormOpen = selfTestOpenOn(testWin, todayISO());
   const planDays = buildPlanDays({ trackKey, period, variant, pullupMode, position: user.position }).filter((d) => !d.isTest);
   const setRows = await prisma.setLog.findMany({ where: { athleteId: user.id, trackKey, week } });
 
@@ -213,8 +217,13 @@ export default async function DashboardPage() {
             currentE1RMs={Object.fromEntries(LIFTS.map((l) => [l.key, latestByLift[l.key]?.e1RM ?? null]))}
             bodyweight={user.bodyweight}
             showSession={askRpe}
-            showTest={testWeek}
+            showTest={testFormOpen}
           />
+        )}
+        {testWeek && !testFormOpen && testWin.open && (
+          <p className="text-sm text-muted">
+            Test entry is open {testWin.label ?? "during the test week"} only. For a make-up or an older test, ask a coach to enter it.
+          </p>
         )}
       </main>
     </div>

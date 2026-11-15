@@ -34,7 +34,7 @@ function cap(s: string): string {
 
 type ActivityRow =
   | { kind: "session"; id: string; date: string; type: string; rpe: number; durationMin: number; load: number }
-  | { kind: "test"; id: string; date: string; lift: string; fiveRM: number; e1RM: number };
+  | { kind: "test"; id: string; date: string; lift: string; fiveRM: number; e1RM: number; bodyweightAtTest: number | null };
 
 export default async function AthleteDetailPage({
   params: paramsP,
@@ -68,7 +68,7 @@ export default async function AthleteDetailPage({
 
   const tests: TestEntryRecord[] = await prisma.testEntry.findMany({
     where: { athleteId: athlete.id },
-    orderBy: { date: "desc" },
+    orderBy: [{ date: "desc" }, { enteredAt: "desc" }], // same-date entries: the newest one counts
   });
   const sessions: SessionEntryRecord[] = await prisma.sessionEntry.findMany({
     where: { athleteId: athlete.id },
@@ -132,6 +132,7 @@ export default async function AthleteDetailPage({
         lift: t.lift,
         fiveRM: t.fiveRM,
         e1RM: t.e1RM,
+        bodyweightAtTest: t.bodyweightAtTest ?? null,
       })
     ),
   ];
@@ -320,7 +321,14 @@ export default async function AthleteDetailPage({
                           {r.kind === "session" ? (
                             <EntryActions kind="session" id={r.id} type={r.type} rpe={r.rpe} durationMin={r.durationMin} date={r.date} />
                           ) : (
-                            <EntryActions kind="test" id={r.id} fiveRM={r.fiveRM} date={r.date} />
+                            <EntryActions
+                              kind="test"
+                              id={r.id}
+                              lift={r.lift}
+                              fiveRM={r.fiveRM}
+                              bodyweight={r.bodyweightAtTest ?? athlete.bodyweight ?? null}
+                              date={r.date}
+                            />
                           )}
                         </td>
                       </tr>
