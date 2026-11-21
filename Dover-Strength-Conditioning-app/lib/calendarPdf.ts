@@ -1,12 +1,14 @@
-// The printable lifting calendar (DPS 2026-27 district calendar with the lifting phases outlined). It lives
-// in public/files/, which the proxy serves only to signed-in users (coaches and athletes).
-//
-// playerVisible: the athlete Calendar page shows the PDF card only when this is true. It is held false while
-// the PDF still shows the old Pre-Testing Prep dates (Nov 10 - Dec 10); set it true once the PDF has been
-// redrawn with Prep on Mon/Tue/Thu/Fri, Nov 30 - Dec 11, and replaced in public/files/.
+// The printable lifting calendar (DPS 2026-27 district calendar with the lifting phases outlined), in two copies:
+//   coachHref  : full version, in public/coach/ (the proxy serves /coach/* to coaches only)
+//   playerHref : athlete version, in public/files/ (any signed-in user). Same pages, but page 3 stops after the
+//                phase key: the coach-only sections ("What isn't shown, and why", "Changed Oct 28, 2026",
+//                "Fixed in the source documents") are removed.
+// prepDatesCurrent: false shows coaches a warning that the Pre-Testing Prep dates in the PDF are out of date.
+// playerVisible: the athlete Calendar page shows the PDF card only when this is true.
 export const CALENDAR_PDF = {
-  href: "/files/lifting-calendar-2026-27.pdf",
-  updated: "Nov 11, 2026",
-  prepDatesCurrent: false,
-  playerVisible: false,
+  coachHref: "/coach/lifting-calendar-2026-27.pdf",
+  playerHref: "/files/lifting-calendar-2026-27-athletes.pdf",
+  updated: "Nov 21, 2026",
+  prepDatesCurrent: true,
+  playerVisible: true,
 };
