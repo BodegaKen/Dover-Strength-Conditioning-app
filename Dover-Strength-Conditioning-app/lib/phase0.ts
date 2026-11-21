@@ -158,7 +158,6 @@ export const PHASE0_WEEKS: Phase0Week[] = [
       },
     ],
     footer: [
-      "Fewer than four Prep sessions attended in total? You will not take a heavy 5RM in Testing Week. Your coach will have you work up to one top set of 5 at RPE 7-8, and you test properly at the Week 6 retest or later.",
       "Missed both screen sessions (Thu Dec 10 and Fri Dec 11)? You run the movement screen on your first Testing Week day, and each lift is tested only after your coach signs off your technique on it.",
       ...GENERAL_FOOTER,
     ],

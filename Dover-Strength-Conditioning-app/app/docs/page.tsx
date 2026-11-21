@@ -33,7 +33,14 @@ export default async function PlayerDocsPage({ searchParams: searchParamsP }: { 
   const sections = sectionsOf((guide as { markdown: string }).markdown);
   const current = sections.find((s) => s.key === searchParams.s) ?? sections[0];
   const overviewKey = current.tab.match(/^Phase (\d)$/)?.[1] ?? current.tab;
-  const overview = (overviewData as { phases: Record<string, PhaseOverview> }).phases[overviewKey];
+  const fullOverview = (overviewData as { phases: Record<string, PhaseOverview> }).phases[overviewKey];
+  // The card is shared with the coach Docs page; coach-only key-date bullets are dropped here by their opening
+  // words (data/player-docs.json "glanceHide", keyed like the card: "3", "Camp Bridge"...).
+  const hide = ((guide as { glanceHide?: Record<string, string[]> }).glanceHide ?? {})[overviewKey] ?? [];
+  const overview = fullOverview && {
+    ...fullOverview,
+    keyDates: fullOverview.keyDates?.filter((k) => !hide.some((h) => k.startsWith(h))),
+  };
   const isCoach = user.role === "COACH";
 
   return (

@@ -13,7 +13,7 @@ export type WeekInfo = {
 const P1: Record<number, WeekInfo> = {
   1: {
     dates: "Dec 14-18, 2026",
-    note: "Testing Week: Mon squat, Tue bench + pull-up, Wed none, Thu deadlift, Fri overhead press + make-ups. Timed to land before Winter Break (district closure Dec 24 - Jan 1; Dec 21-23 are intentionally left unprogrammed). Fewer than 4 Prep sessions attended means no heavy 5RM this week.",
+    note: "Testing Week: Mon squat, Tue bench + pull-up, Wed none, Thu deadlift, Fri overhead press + make-ups. Timed to land before Winter Break (district closure Dec 24 - Jan 1; Dec 21-23 are intentionally left unprogrammed).",
   },
   2: { dates: "Jan 4-8, 2027", note: "First week back after Winter Break: 3 work sets instead of 4, same prescribed %." },
   3: { dates: "Jan 11-15, 2027" },
