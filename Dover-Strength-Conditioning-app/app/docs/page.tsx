@@ -37,8 +37,12 @@ export default async function PlayerDocsPage({ searchParams: searchParamsP }: { 
   // The card is shared with the coach Docs page; coach-only key-date bullets are dropped here by their opening
   // words (data/player-docs.json "glanceHide", keyed like the card: "3", "Camp Bridge"...).
   const hide = ((guide as { glanceHide?: Record<string, string[]> }).glanceHide ?? {})[overviewKey] ?? [];
+  // Athletes see the same three facts on every card (Length, Sessions, Goal); others, like the Bridge's "Who",
+  // stay on the coach card only.
+  const ATHLETE_FACTS = ["Length", "Sessions", "Goal"];
   const overview = fullOverview && {
     ...fullOverview,
+    facts: fullOverview.facts.filter((f) => ATHLETE_FACTS.includes(f.label)),
     keyDates: fullOverview.keyDates?.filter((k) => !hide.some((h) => k.startsWith(h))),
   };
   const isCoach = user.role === "COACH";
