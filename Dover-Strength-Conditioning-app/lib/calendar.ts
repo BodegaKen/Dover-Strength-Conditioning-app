@@ -86,25 +86,35 @@ export function buildCalendarData(
       byWeek.get(wk)!.push(t);
     }
     for (const [, ts] of byWeek) {
-      const latest = new Map<string, (typeof tests)[number]>();
-      for (const t of ts.slice().sort((a, b) => (a.date < b.date ? -1 : 1))) latest.set(t.lift, t);
-      const done = required.filter((l) => latest.has(l)).length;
-      const date = ts.map((t) => t.date).sort().pop() as string;
-      (out[date] ??= []).push({
-        kind: "test",
-        label: `Max tests: ${group.filter((l) => latest.has(l) || required.includes(l)).map((l) => LIFT_LABEL[l] ?? l).join(" + ")}`,
-        complete: required.length > 0 && done >= required.length,
-        done,
-        total: required.length,
-        sets: [],
-        detail: Array.from(latest.values())
-          .map((t) =>
-            t.lift === "pullup"
-              ? `${LIFT_LABEL[t.lift] ?? t.lift} 5RM +${t.fiveRM} added \u2192 total-load e1RM ${t.e1RM}`
-              : `${LIFT_LABEL[t.lift] ?? t.lift} 5RM ${t.fiveRM} \u2192 e1RM ${t.e1RM}`
-          )
-          .join("; "),
-      });
+      // Each test is shown on the date it was actually done (a Friday make-up no longer pulls Tuesday's
+      // result onto Friday). The group's checkmark still needs every required lift in that week: an
+      // earlier day shows as partial ("1 of 2") and the day that completes the group gets the check.
+      const ordered = ts
+        .slice()
+        .sort((a, b) => (a.date !== b.date ? (a.date < b.date ? -1 : 1) : new Date(a.enteredAt ?? 0).getTime() - new Date(b.enteredAt ?? 0).getTime()));
+      const dates = Array.from(new Set(ordered.map((t) => t.date as string)));
+      const doneSoFar = new Set<string>();
+      for (const date of dates) {
+        const onDate = new Map<string, (typeof tests)[number]>(); // newest entry per lift that day
+        for (const t of ordered) if (t.date === date) onDate.set(t.lift, t);
+        for (const l of onDate.keys()) doneSoFar.add(l);
+        const done = required.filter((l) => doneSoFar.has(l)).length;
+        (out[date] ??= []).push({
+          kind: "test",
+          label: `Max tests: ${group.filter((l) => onDate.has(l)).map((l) => LIFT_LABEL[l] ?? l).join(" + ")}`,
+          complete: required.length > 0 && done >= required.length,
+          done,
+          total: required.length,
+          sets: [],
+          detail: Array.from(onDate.values())
+            .map((t) =>
+              t.lift === "pullup"
+                ? `${LIFT_LABEL[t.lift] ?? t.lift} 5RM +${t.fiveRM} added \u2192 total-load e1RM ${t.e1RM}`
+                : `${LIFT_LABEL[t.lift] ?? t.lift} 5RM ${t.fiveRM} \u2192 e1RM ${t.e1RM}`
+            )
+            .join("; "),
+        });
+      }
     }
   }
   return out;
