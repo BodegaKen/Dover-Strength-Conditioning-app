@@ -6,6 +6,8 @@ import { getCalendarData } from "@/lib/calendar";
 import NavBar from "@/components/NavBar";
 import MonthCalendar from "@/components/MonthCalendar";
 import DayPanel from "@/components/DayPanel";
+import CalendarPdfCard from "@/components/CalendarPdfCard";
+import { CALENDAR_PDF } from "@/lib/calendarPdf";
 
 export default async function CalendarPage({ searchParams: searchParamsP }: { searchParams: Promise<{ m?: string; d?: string }> }) {
   const searchParams = await searchParamsP;
@@ -23,10 +25,12 @@ export default async function CalendarPage({ searchParams: searchParamsP }: { se
   return (
     <div>
       <NavBar role="PLAYER" name={user.name} />
-      <main className="max-w-3xl mx-auto px-4 py-5">
+      <main className="max-w-3xl mx-auto px-4 py-5 flex flex-col gap-4">
         <MonthCalendar month={month} data={data} today={today} basePath="/calendar" selected={selected}>
           <DayPanel iso={selected} user={user} />
         </MonthCalendar>
+        {/* Held back until the PDF shows the current Prep dates (lib/calendarPdf.ts). */}
+        {CALENDAR_PDF.playerVisible && <CalendarPdfCard forCoach={false} />}
       </main>
     </div>
   );

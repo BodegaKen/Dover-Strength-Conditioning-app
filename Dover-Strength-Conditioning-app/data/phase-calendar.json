@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-04",
+ "updated": "2026-11-21",
  "note": "Dates only, from the lifting-phase calendar (DPS 2026-27). s = scheduled session, t = max-test day, o = optional session, c = only if school is open that day (district emergency make-up day). Phase 4 (in-season), the Camp Bridge and the blackout week are not listed because their dates are not set. closed = no school for students (district closures and staff in-service days); single = single-session day for students. Nov 19-20 and 23-24 are single-session for PK-8 only, so they are not listed.",
  "phases": {
   "prep": {
@@ -24,23 +24,7 @@
   }
  },
  "days": {
-  "2026-11-10": [
-   "prep",
-   "o"
-  ],
-  "2026-11-12": [
-   "prep",
-   "o"
-  ],
-  "2026-11-17": [
-   "prep",
-   "o"
-  ],
-  "2026-11-19": [
-   "prep",
-   "o"
-  ],
-  "2026-11-24": [
+  "2026-11-30": [
    "prep",
    "o"
   ],
@@ -52,11 +36,23 @@
    "prep",
    "o"
   ],
+  "2026-12-04": [
+   "prep",
+   "o"
+  ],
+  "2026-12-07": [
+   "prep",
+   "o"
+  ],
   "2026-12-08": [
    "prep",
    "o"
   ],
   "2026-12-10": [
+   "prep",
+   "o"
+  ],
+  "2026-12-11": [
    "prep",
    "o"
   ],

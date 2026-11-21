@@ -2,8 +2,8 @@
 // coach-run sessions with the actual exercises, laid out like the Phase 1 day cards but with nothing
 // to log (the sessions are optional; attendance is taken on the coach Attendance page).
 // Transcribed from the Pre-Testing Prep wall poster and Program Design section 3.
-// Dates assume the final game is Sunday Oct 25, 2026; if a consolation game moves the final
-// game a week later, Phase 0's first week is Nov 2 and the first two (recovery) weeks shrink to one.
+// Dates assume the final game is Sunday Oct 25, 2026. Recovery runs Oct 26 - Nov 29; the eight optional
+// Pre-Testing Prep sessions run Mon/Tue/Thu/Fri at 3:30 PM, Nov 30 - Dec 11 (team decision, Nov 2026).
 
 export type Phase0Item = { name: string; detail?: string };
 export type Phase0Block = { heading: string; intro?: string; items: Phase0Item[] };
@@ -67,74 +67,60 @@ export const PHASE0_WEEKS: Phase0Week[] = [
     label: "Week 2 - Recovery",
     dates: "Nov 2 - Nov 8, 2026",
     title: "Active recovery",
-    note: "Still recovery. Pre-Testing Prep sessions start next week and are optional.",
+    note: "Still recovery. No formal training, nothing expected.",
     days: [],
   },
   {
-    label: "Week 3 - Prep Week 1",
+    label: "Week 3 - Recovery",
     dates: "Nov 9 - Nov 15, 2026",
-    title: "General reactivation",
-    note: "Optional, coach-run, Tuesday and Thursday, about 30-35 min. Bodyweight only, no barbell. Attendance does not affect roster status or playing time.",
-    days: [
-      { day: "Tuesday, Nov 10", blocks: [WARMUP, CIRCUIT("2-3 rounds"), EASY_COND("10-12 min")] },
-      { day: "Thursday, Nov 12", blocks: [WARMUP, CIRCUIT("2-3 rounds"), EASY_COND("10-12 min")] },
-    ],
-    footer: GENERAL_FOOTER,
+    title: "Active recovery",
+    note: "Still recovery. No formal training, nothing expected.",
+    days: [],
   },
   {
-    label: "Week 4 - Prep Week 2",
+    label: "Week 4 - Recovery",
     dates: "Nov 16 - Nov 22, 2026",
-    title: "Movement re-familiarization",
-    note: "Optional, Tuesday and Thursday. The barbell comes back, empty bar only, technique only.",
-    days: [
-      {
-        day: "Tuesday, Nov 17",
-        blocks: [
-          WARMUP,
-          CIRCUIT("2-3 rounds"),
-          { heading: "Barbell - technique only", items: [lift("Back squat", "2x5", "Empty bar (about 45 lb), RPE 3-4"), lift("Bench press", "2x5", "Empty bar (about 45 lb), RPE 3-4")] },
-          EASY_COND("10 min"),
-        ],
-      },
-      {
-        day: "Thursday, Nov 19",
-        blocks: [
-          WARMUP,
-          CIRCUIT("2-3 rounds"),
-          { heading: "Barbell - technique only", items: [lift("Back squat", "2x5", "Empty bar (about 45 lb), RPE 3-4"), lift("Bench press", "2x5", "Empty bar (about 45 lb), RPE 3-4")] },
-          EASY_COND("10 min"),
-        ],
-      },
-    ],
-    footer: GENERAL_FOOTER,
+    title: "Active recovery",
+    note: "Still recovery. No formal training, nothing expected.",
+    days: [],
   },
   {
-    label: "Week 5 - Prep Week 3",
+    label: "Week 5 - Recovery",
     dates: "Nov 23 - Nov 29, 2026",
-    title: "Hold steady, short week",
-    note: "Thanksgiving Break (Nov 26-27) cuts Thursday, so there is one session. No barbell this week and no finisher: let the break do the recovery work.",
-    days: [{ day: "Tuesday, Nov 24", blocks: [WARMUP, CIRCUIT("2-3 rounds")] }],
-    footer: GENERAL_FOOTER,
+    title: "Active recovery",
+    note: "Last recovery week (Thanksgiving Break Nov 26-27). Pre-Testing Prep sessions start Monday, Nov 30 at 3:30 PM and are optional.",
+    days: [],
   },
   {
-    label: "Week 6 - Prep Week 4",
+    label: "Week 6 - Prep Week 1",
     dates: "Nov 30 - Dec 6, 2026",
-    title: "Light barbell touches, all four lifts",
-    note: "RPE 5-6 only, well short of a working set. Bar-path familiarity is the point, not load.",
+    title: "Reactivation, then the bar comes back",
+    note: "Optional, coach-run, Monday, Tuesday, Thursday and Friday at 3:30 PM, about 30-35 min. Bodyweight first, then the empty bar for technique, then light touches. Attendance does not affect roster status or playing time.",
     days: [
+      { day: "Monday, Nov 30", blocks: [WARMUP, CIRCUIT("2-3 rounds"), EASY_COND("10-12 min")] },
       {
         day: "Tuesday, Dec 1",
         blocks: [
           WARMUP,
-          { heading: "Barbell - light touches", items: [lift("Back squat", "2-3x5", "RPE 5-6"), lift("Bench press", "2-3x5", "RPE 5-6")] },
-          CIRCUIT("1-2 rounds, short", "Bodyweight accessory circuit"),
+          CIRCUIT("2-3 rounds"),
+          { heading: "Barbell - technique only", items: [lift("Back squat", "2x5", "Empty bar (about 45 lb), RPE 3-4"), lift("Bench press", "2x5", "Empty bar (about 45 lb), RPE 3-4")] },
+          EASY_COND("10 min"),
         ],
       },
       {
         day: "Thursday, Dec 3",
         blocks: [
           WARMUP,
-          { heading: "Barbell - light touches", items: [lift("Deadlift", "2-3x5", "RPE 5-6"), lift("Overhead press", "2-3x5", "RPE 5-6")] },
+          CIRCUIT("2-3 rounds"),
+          { heading: "Barbell - technique only", items: [lift("Deadlift", "2x5", "Light technique load (bar on bumper plates), RPE 3-4"), lift("Overhead press", "2x5", "Empty bar (about 45 lb), RPE 3-4")] },
+          EASY_COND("10 min"),
+        ],
+      },
+      {
+        day: "Friday, Dec 4",
+        blocks: [
+          WARMUP,
+          { heading: "Barbell - light touches", items: [lift("Back squat", "2-3x5", "RPE 5-6"), lift("Bench press", "2-3x5", "RPE 5-6")] },
           CIRCUIT("1-2 rounds, short", "Bodyweight accessory circuit"),
         ],
       },
@@ -142,20 +128,29 @@ export const PHASE0_WEEKS: Phase0Week[] = [
     footer: GENERAL_FOOTER,
   },
   {
-    label: "Week 7 - Prep Week 5",
+    label: "Week 7 - Prep Week 2",
     dates: "Dec 7 - Dec 13, 2026",
-    title: "Testing Week lead-in",
-    note: "This is the acclimation window before Testing Week. No conditioning and no extra volume: arrive fresh and technically sharp. Testing Week opens Monday, Dec 14.",
+    title: "Light touches, then the Testing Week lead-in",
+    note: "Optional, Monday, Tuesday, Thursday and Friday at 3:30 PM. No conditioning this week. Thursday and Friday are the acclimation window before Testing Week: arrive fresh and technically sharp. Testing Week opens Monday, Dec 14.",
     days: [
       {
-        day: "Tuesday, Dec 8",
+        day: "Monday, Dec 7",
+        blocks: [
+          WARMUP,
+          { heading: "Barbell - light touches", items: [lift("Deadlift", "2-3x5", "RPE 5-6"), lift("Overhead press", "2-3x5", "RPE 5-6")] },
+          CIRCUIT("1-2 rounds, short", "Bodyweight accessory circuit"),
+        ],
+      },
+      { day: "Tuesday, Dec 8", blocks: [WARMUP, CIRCUIT("2-3 rounds", "Bodyweight circuit (no barbell today)")] },
+      {
+        day: "Thursday, Dec 10",
         blocks: [
           WARMUP,
           { heading: "Barbell - brief movement screen", items: [lift("Back squat", "1-2x5", "RPE 4-5"), lift("Bench press", "1-2x5", "RPE 4-5")] },
         ],
       },
       {
-        day: "Thursday, Dec 10",
+        day: "Friday, Dec 11",
         blocks: [
           WARMUP,
           { heading: "Barbell - brief movement screen", items: [lift("Deadlift", "1-2x5", "RPE 4-5"), lift("Overhead press", "1-2x5", "RPE 4-5")] },
@@ -164,6 +159,7 @@ export const PHASE0_WEEKS: Phase0Week[] = [
     ],
     footer: [
       "Fewer than four Prep sessions attended in total? You will not take a heavy 5RM in Testing Week. Your coach will have you work up to one top set of 5 at RPE 7-8, and you test properly at the Week 6 retest or later.",
+      "Missed both screen sessions (Thu Dec 10 and Fri Dec 11)? You run the movement screen on your first Testing Week day, and each lift is tested only after your coach signs off your technique on it.",
       ...GENERAL_FOOTER,
     ],
   },

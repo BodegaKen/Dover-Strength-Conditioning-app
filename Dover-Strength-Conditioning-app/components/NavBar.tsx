@@ -22,6 +22,7 @@ export default function NavBar({ role, name }: { role: "PLAYER" | "COACH"; name:
           { href: "/dashboard", label: "This Week" },
           { href: "/calendar", label: "Calendar" },
           { href: "/progress", label: "Progress" },
+          { href: "/docs", label: "Docs" },
           { href: "/swaps", label: "Swaps" },
           { href: "/leaderboard", label: "Leaderboard" },
         ];

@@ -4,6 +4,7 @@ import { todayISO } from "@/lib/calc";
 import NavBar from "@/components/NavBar";
 import MonthCalendar from "@/components/MonthCalendar";
 import DayPanel from "@/components/DayPanel";
+import CalendarPdfCard from "@/components/CalendarPdfCard";
 
 // Any coach: the lifting calendar. Tap a day to see what is scheduled that day. Read-only; athletes log
 // on their own pages.
@@ -23,22 +24,7 @@ export default async function CoachCalendarPage({ searchParams: searchParamsP }:
         <MonthCalendar month={month} data={{}} today={today} basePath="/coach/calendar" selected={selected} showLog={false}>
           <DayPanel iso={selected} user={null} />
         </MonthCalendar>
-        <div className="bg-surface border border-line rounded-xl p-4">
-          <h2 className="text-lg mb-1">Printable calendar</h2>
-          <p className="text-sm text-muted mb-3">
-            The Dover Public Schools 2026-27 district calendar with the lifting phases outlined (Phase 0 through Phase 3 and the
-            Phase 2-3 Bridge), plus a key page. Phase 4 and the blackout week are not shaded because their dates are not set yet.
-            Last updated Nov 11, 2026.
-          </p>
-          <a
-            href="/coach/lifting-calendar-2026-27.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block bg-accent text-accent-ink font-display uppercase tracking-wide font-bold rounded-md px-5 py-2.5"
-          >
-            Open calendar (PDF)
-          </a>
-        </div>
+        <CalendarPdfCard forCoach />
       </main>
     </div>
   );

@@ -9,7 +9,7 @@ import { buildPlanDays, dayProgress, isTestPeriod, type TrainingTrack, type Pull
 import { weekInfo, weekRangeISO } from "@/lib/schedule";
 import { PHASE0_WEEKS } from "@/lib/phase0";
 import { validDate } from "@/lib/validate";
-import { coachRunDayFor, nextCoachRunDate, dateOfWeekday } from "@/lib/coachDays";
+import { rollCallDayFor, nextRollCallDate, dateOfPlanDay } from "@/lib/coachDays";
 import { sprintTable } from "@/lib/sprints";
 import NavBar from "@/components/NavBar";
 import AttendanceRoster, { type RosterRow } from "./AttendanceRoster";
@@ -181,25 +181,40 @@ export default async function AttendancePage({ searchParams: searchParamsP }: { 
       days = [];
     }
     const mine = rowsByAthleteWeek.get(`${a.id}|${i}`) ?? [];
+    // Present marks this week on scheduled dates, for plan days not tied to a weekday (Multi-Sport "Track Day 1/2"):
+    // the n-th such day counts as done once the athlete has n Present marks in the week.
+    const wk = weekRangeISO(logKey, i);
+    let floatingPresent = 0;
+    if (wk) for (let k = 0; k < 7; k++) {
+      const iso = addDaysISO(wk.start, k);
+      if (iso > wk.end) break;
+      if (rollCallDayFor(iso) && markKey.get(`${a.id}|${iso}`) === true) floatingPresent++;
+    }
+    let floatingSeen = 0;
     for (const d of days) {
       const prog = dayProgress(d, mine.filter((r: any) => r.planDay === d.day));
       const label = /^(Mon|Tue|Wed|Thu|Fri|Sat|Sun)/.test(d.day) ? d.day.slice(0, 3) : d.day;
+      // The date this plan day actually ran (closure weeks move Monday's Day A to Tuesday).
+      const iso = dateOfPlanDay(logKey, i, d.day);
+      const mark = iso ? markKey.get(`${a.id}|${iso}`) : undefined;
+      const markNote = mark === false ? " - marked absent" : mark === true ? " - marked present" : "";
       if (prog.total === 0) {
         // Coach-run day: nothing to log, so the coach's roll call (or a time entered that day) is the record.
-        const iso = dateOfWeekday(logKey, i, d.day);
-        const mark = iso ? markKey.get(`${a.id}|${iso}`) : undefined;
         const timed = iso ? sprintOn.has(`${a.id}|${iso}`) : false;
         out.push({
           label,
-          title: `${d.day}${d.title ? ` - ${d.title}` : ""} (coach-run)${mark === false ? " - marked absent" : mark === true ? " - marked present" : timed ? " - time entered" : ""}`,
+          title: `${d.day}${d.title ? ` - ${d.title}` : ""} (coach-run)${markNote || (timed ? " - time entered" : "")}`,
           state: mark !== false && (mark === true || timed) ? "done" : "none",
         });
         continue;
       }
+      // Lifting day: a coach's Present mark counts (athletes without a phone), an Absent mark overrides the log.
+      let present = mark === true;
+      if (!iso) present = ++floatingSeen <= floatingPresent;
       out.push({
         label,
-        title: d.title ? `${d.day} - ${d.title}` : d.day,
-        state: prog.complete ? "done" : prog.started ? "partial" : "none",
+        title: (d.title ? `${d.day} - ${d.title}` : d.day) + (markNote || (present ? " - marked present" : "")),
+        state: mark === false ? "none" : present || prog.complete ? "done" : prog.started ? "partial" : "none",
       });
     }
     return out;
@@ -218,9 +233,9 @@ export default async function AttendancePage({ searchParams: searchParamsP }: { 
   });
   const logHref = (w: number) => `/coach/attendance?t=${logKey}&w=${w}`;
 
-  const coachDay = coachRunDayFor(date);
-  const prevCoach = nextCoachRunDate(date, -1);
-  const nextCoach = nextCoachRunDate(date, 1);
+  const coachDay = rollCallDayFor(date);
+  const prevCoach = nextRollCallDate(date, -1);
+  const nextCoach = nextRollCallDate(date, 1);
   const label = new Date(date + "T12:00:00Z").toLocaleDateString("en-US", { timeZone: "UTC", weekday: "long", month: "long", day: "numeric", year: "numeric" });
   const monthLabel = new Date(monthStart + "T12:00:00Z").toLocaleDateString("en-US", { timeZone: "UTC", month: "long", year: "numeric" });
 
@@ -243,9 +258,10 @@ export default async function AttendancePage({ searchParams: searchParamsP }: { 
           <p className="text-sm text-muted my-2">
             Each athlete&rsquo;s scheduled sessions this week, from what they log in the app: <span className="text-good font-semibold">Done</span> = every
             item logged, <span className="text-warning font-semibold">Partial</span> = some logged. &ldquo;Phase to date&rdquo; counts every scheduled
-            session from Week 1 through the week shown. Phase 0 sessions can&rsquo;t be logged in the app, so there a coach&rsquo;s Present mark is what counts.
-            {" "}Coach-run days (Phase 3's Tuesday and Thursday field days and the test and makeup days) have nothing to log, so they count
-            from the coach roll call below, or from a time entered on the Speed tab that day. Days with a lift or a sled load count from what the athlete logs.
+            session from Week 1 through the week shown. A coach&rsquo;s Present mark in the roll call below also counts a day as done (for
+            athletes without a phone), and an Absent mark overrides what was logged. Phase 0 sessions and coach-run days (Phase 3&rsquo;s Tuesday and
+            Thursday field days and the test and makeup days) have nothing to log, so they count only from the roll call, or from a time entered on the
+            Speed tab that day.
           </p>
           <div className="overflow-x-auto -mx-4 px-4">
             <table className="w-full text-sm border-collapse">
@@ -294,9 +310,9 @@ export default async function AttendancePage({ searchParams: searchParamsP }: { 
           <div className="flex flex-wrap items-center justify-between gap-2">
             <h2 className="text-lg">Daily roll call</h2>
             <div className="flex items-center gap-2">
-              {prevCoach && <Link href={`/coach/attendance?d=${prevCoach}`} className="text-sm border border-line rounded-md px-3 py-1.5">&larr; Prev coach-run day</Link>}
+              {prevCoach && <Link href={`/coach/attendance?d=${prevCoach}`} className="text-sm border border-line rounded-md px-3 py-1.5">&larr; Prev session</Link>}
               <Link href="/coach/attendance" className="text-sm border border-line rounded-md px-3 py-1.5">Today</Link>
-              {nextCoach && <Link href={`/coach/attendance?d=${nextCoach}`} className="text-sm border border-line rounded-md px-3 py-1.5">Next coach-run day &rarr;</Link>}
+              {nextCoach && <Link href={`/coach/attendance?d=${nextCoach}`} className="text-sm border border-line rounded-md px-3 py-1.5">Next session &rarr;</Link>}
             </div>
           </div>
           <div className="font-semibold">{label}</div>
@@ -308,22 +324,30 @@ export default async function AttendancePage({ searchParams: searchParamsP }: { 
           {coachDay ? (
             <>
               <div className="text-sm rounded-md border border-accent px-3 py-2">
-                <span className="font-semibold">Coach-run day:</span> {coachDay.title}. Nothing for athletes to log today, so your roll call is the record.
+                {coachDay.coachRun ? (
+                  <>
+                    <span className="font-semibold">Coach-run day:</span> {coachDay.title}. Nothing for athletes to log today, so your roll call is the record.
+                  </>
+                ) : (
+                  <>
+                    <span className="font-semibold">Scheduled:</span> {coachDay.title}. Athletes who log in the app are credited automatically; mark
+                    Present for anyone training without a phone.
+                  </>
+                )}
               </div>
               <AttendanceRoster date={date} rows={rows} />
               <p className="text-xs text-muted">
-                Roll call is only offered on coach-run days: Phase 0 Prep sessions and Phase 3&rsquo;s field, test and makeup days. Days with a lift or
-                a sled load are credited from what athletes log themselves. Out-of-season sessions are voluntary under the program&rsquo;s own rules;
-                confirm with the AD that keeping attendance for them is fine.
+                Roll call is offered on every scheduled session date (Pre-Testing Prep, Phases 1-3, the Phase 2-3 Bridge). A Present mark credits the day;
+                an Absent mark overrides anything logged. Phase 4 and the Camp Bridge have no fixed dates yet, so they have no roll call. Out-of-season
+                sessions are voluntary under the program&rsquo;s own rules; confirm with the AD that keeping attendance for them is fine.
               </p>
             </>
           ) : (
             <div className="text-sm text-muted rounded-md border border-line px-3 py-3">
-              No roll call is needed on this date: either no session is scheduled, or it is a day athletes log themselves (lifts, sled load), which the
-              Training log above already counts.
+              No session is scheduled on this date, so there is no roll call.
               {nextCoach && (
                 <>
-                  {" "}Next coach-run day:{" "}
+                  {" "}Next session:{" "}
                   <Link href={`/coach/attendance?d=${nextCoach}`} className="text-accent font-semibold">
                     {new Date(nextCoach + "T12:00:00Z").toLocaleDateString("en-US", { timeZone: "UTC", weekday: "long", month: "long", day: "numeric", year: "numeric" })}
                   </Link>

@@ -1,19 +1,18 @@
 {
- "updated": "2026-11-11",
- "note": "Phase dates and a typical week for each phase, shown at the top of each phase tab on the coach Docs page.",
+ "updated": "2026-11-21",
+ "note": "Phase dates and a typical week for each phase, shown at the top of each phase tab on the coach and athlete Docs pages.",
  "phases": {
   "0": {
    "name": "Phase 0 - Transition & Pre-Testing Prep",
    "dates": "Mon Oct 26 - Sun Dec 13, 2026",
-   "dateNote": "If a consolation game moves the final game a week later, Phase 0 starts Mon Nov 2 and the recovery block shrinks to one week.",
    "facts": [
     {
      "label": "Length",
-     "value": "6-7 weeks: 1-2 recovery weeks, then 5 weeks of optional prep sessions"
+     "value": "7 weeks: 5 recovery weeks, then 2 weeks of optional Prep sessions"
     },
     {
      "label": "Sessions",
-     "value": "Prep sessions Tue and Thu, about 30-35 min, coach-run, attendance optional"
+     "value": "Prep sessions Mon, Tue, Thu and Fri at 3:30 PM, about 30-35 min, coach-run, attendance optional"
     },
     {
      "label": "Goal",
@@ -21,19 +20,23 @@
     }
    ],
    "keyDates": [
-    "Prep sessions run Nov 10 - Dec 10 (nine sessions); Thanksgiving Break (Nov 26-27) cuts Thursday of Prep Week 3.",
+    "Prep sessions run Mon Nov 30 - Fri Dec 11 (eight sessions).",
     "Testing Week opens Mon Dec 14. Fewer than four Prep sessions attended means no heavy 5RM in Testing Week."
    ],
    "weeksTitle": "A typical prep week",
    "weeks": [
     {
-     "label": "Prep week (Weeks 3-7)",
+     "label": "Prep week (Weeks 6-7)",
      "days": [
       {
        "day": "Mon",
-       "kind": "rest",
-       "title": "Open",
-       "lines": []
+       "kind": "light",
+       "title": "Prep session",
+       "lines": [
+        "NMT warm-up",
+        "Week 6: bodyweight circuit + easy conditioning",
+        "Week 7: light deadlift and overhead press touches (RPE 5-6)"
+       ]
       },
       {
        "day": "Tue",
@@ -41,8 +44,8 @@
        "title": "Prep session",
        "lines": [
         "NMT warm-up",
-        "Bodyweight circuit: squat, push-up, row, RDL reach, plank",
-        "Weeks 2-5 add a light barbell touch (RPE 6 or below)"
+        "Week 6: circuit + empty-bar squat and bench, technique only",
+        "Week 7: bodyweight circuit only"
        ]
       },
       {
@@ -56,26 +59,28 @@
        "kind": "light",
        "title": "Prep session",
        "lines": [
-        "Same format as Tuesday",
-        "Weeks 4-5 rotate which lifts get the barbell touch"
+        "NMT warm-up",
+        "Week 6: circuit + empty-bar deadlift and overhead press",
+        "Week 7: movement screen, squat and bench (RPE 4-5)"
        ]
       },
       {
        "day": "Fri",
-       "kind": "rest",
-       "title": "Open",
-       "lines": []
+       "kind": "light",
+       "title": "Prep session",
+       "lines": [
+        "NMT warm-up",
+        "Week 6: light squat and bench touches (RPE 5-6)",
+        "Week 7: movement screen, deadlift and overhead press (RPE 4-5)"
+       ]
       }
      ]
     }
    ],
    "progression": [
-    "Weeks 1-2 (recovery): no training, nothing expected. If something hurts, tell the athletic trainer.",
-    "Prep Week 1: bodyweight only, plus 10-12 min easy conditioning.",
-    "Prep Week 2: empty bar for squat and bench, technique only.",
-    "Prep Week 3: short week, one session, bodyweight only.",
-    "Prep Week 4: light barbell touches on all four lifts, RPE 5-6.",
-    "Prep Week 5: movement screen only. Arrive fresh for Testing Week."
+    "Weeks 1-5 (Oct 26 - Nov 29, recovery): no training, nothing expected. If something hurts, tell the athletic trainer.",
+    "Prep Week 1 (Nov 30 - Dec 4): bodyweight first, then the empty bar on all four lifts for technique, then light squat and bench touches on Friday.",
+    "Prep Week 2 (Dec 7 - Dec 11): light deadlift and overhead press touches Monday, bodyweight only Tuesday, then the movement screen Thursday and Friday. No conditioning. Arrive fresh for Testing Week."
    ]
   },
   "1": {
@@ -89,7 +94,7 @@
     },
     {
      "label": "Sessions",
-     "value": "4 lifts a week (Mon, Tue, Thu, Fri), about 55 min each (estimate)"
+     "value": "4 lifts a week (Mon, Tue, Thu, Fri) starting at 3:30 PM, about 55 min each (estimate)"
     },
     {
      "label": "Goal",

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getCoachApi } from "@/lib/admin";
 import { validDate } from "@/lib/validate";
-import { coachRunDayFor } from "@/lib/coachDays";
+import { rollCallDayFor } from "@/lib/coachDays";
 import { audit } from "@/lib/audit";
 
 // Coach roll call (any coach, full admin or limited). One row per athlete per day.
@@ -15,15 +15,12 @@ export async function POST(req: NextRequest) {
   const date = (body?.date ?? "").toString();
   if (!validDate(date)) return NextResponse.json({ error: "Bad date." }, { status: 400 });
 
-  // Roll call is only for coach-run days: scheduled sessions with nothing for athletes to log (Phase 0 sessions,
-  // Phase 3's field and test days). Days with lifts or a sled load are credited from the athletes' own logs.
-  // Clearing a mark is always allowed, so an old mark on any date can still be removed.
+  // Roll call is for scheduled session dates (data/phase-calendar.json: Prep, Phases 1-3, the Bridge), lifting
+  // days included, so a coach can mark athletes who have no phone. Clearing a mark is always allowed, so an
+  // old mark on any date can still be removed.
   const clearing = body?.bulk === "clear" || (body?.athleteId && body?.present === null);
-  if (!clearing && !coachRunDayFor(date)) {
-    return NextResponse.json(
-      { error: "Roll call is only used on coach-run days (Phase 0 sessions and Phase 3's field and test days). Athletes' own logs cover the lifting days." },
-      { status: 400 }
-    );
+  if (!clearing && !rollCallDayFor(date)) {
+    return NextResponse.json({ error: "No session is scheduled on that date, so there is no roll call for it." }, { status: 400 });
   }
 
   if (body?.bulk === "present" || body?.bulk === "clear") {
